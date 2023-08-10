@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentHomeBinding
+import com.google.android.material.snackbar.Snackbar
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import kotlin.math.cos
 
-class HomeFragment : Fragment() {
+class PaymetCardFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
 
@@ -32,7 +29,8 @@ class HomeFragment : Fragment() {
 
         binding.btnCalcula.setOnClickListener {
             if(binding.etCosto.text.toString().trim().isEmpty()){
-                Toast.makeText(context,"Agrega la cantidad a calcular.", Toast.LENGTH_LONG).show()
+                Snackbar.make(it, "Agrega la cantidad a calcular.", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
                 return@setOnClickListener
             }
             calcular(binding.etCosto.text.toString().toDouble())
