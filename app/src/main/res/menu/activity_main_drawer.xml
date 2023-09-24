@@ -16,5 +16,9 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_medical"
             android:title="@string/menu_slideshow" />
+        <item
+            android:id="@+id/nav_responsivas"
+            android:icon="@drawable/ic_pddf"
+            android:title="@string/menu_responsivas" />
     </group>
 </menu>

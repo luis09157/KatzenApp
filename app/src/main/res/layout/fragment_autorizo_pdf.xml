@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="25dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200px"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/logo_katzen" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.6"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="KATZEN"
+                    android:textColor="#9C1FE8"
+                    android:textSize="19dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="SERVICIOS VETERINARIOS"
+                    android:textColor="#0BD7EF"
+                    android:textSize="10dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Autorización de Esterilización"
+                    android:textColor="#000000"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:src="@drawable/mascota" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="75px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170px"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="No.Exp. "
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/txt_pdf_dat" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autoLink="phone"
+                        android:gravity="center|left"
+                        android:text="2394894"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/txt_pdf_dat"></TextView>
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right|center"
+                    android:text="Fecha: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:autoLink="phone"
+                    android:gravity="right|center"
+                    android:text="24 / 09 / 2023 "
+                    android:textSize="@dimen/txt_pdf_dat" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Paciente: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="Chocolate"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Especie: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="Canino"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Sexo: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="Macho"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Edad: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="10 Años"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Raza: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="Pitbul"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Vacunas: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="  SI  "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="  NO  "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Especificaciones: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="Esta Feo este pinche perro"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Desparasitación: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="  SI  "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="  NO  "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Sufre alguna enfermedad/Ha estado enfermo: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="si pinche perro ta todo culero"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Hora de ayuno: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=" 9:00 pm"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Observaciones: "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Si no vienen por el ahorita se nos muere"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70px"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Yo "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoLink="phone"
+                    android:gravity="center"
+                    android:text="Wicho Poncho Niño Martinez"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="con direccion en "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoLink="phone"
+                    android:gravity="center|left"
+                    android:text="San Jose #349, Santa Fe"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoLink="phone"
+                    android:gravity="center|left"
+                    android:text="Apodaca Nuevo Leon"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="y numero telefonico "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:autoLink="phone"
+                    android:gravity="center"
+                    android:text="8123428343"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
+            </LinearLayout>
+
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/txt_pdf_title"
+                android:textColor="@color/black"
+                android:text="AUTORIZO"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

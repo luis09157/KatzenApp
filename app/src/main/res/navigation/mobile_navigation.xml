@@ -22,4 +22,10 @@
         android:name="com.example.katzen.ui.medical.MedicalFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_responsivas"
+        android:name="com.example.katzen.ui.responsivas.ResponsivaFragment"
+        android:label="@string/menu_responsivas"
+        tools:layout="@layout/fragment_slideshow" />
 </navigation>
