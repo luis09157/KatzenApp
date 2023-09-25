@@ -463,15 +463,234 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100px">
+            android:gravity="center"
+            android:layout_height="40px">
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textSize="@dimen/txt_pdf_title"
                 android:textColor="@color/black"
                 android:text="AUTORIZO"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50px" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="350px"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left"
+                android:textStyle="bold"
+                android:textSize="@dimen/txt_pdf_dat"
+                android:textColor="@color/black"
+                android:text="Al personal médico y encargados de Katzen Servicios Veterinarios realizar la cirugía de"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:text="____________"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text=" Ovariohisterectomía "
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text="____________"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10px" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left|top"
+                android:textColor="@color/black"
+                android:text="@string/txt_acuerdo_1"
+                android:textSize="@dimen/txt_pdf_dat"/>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10px" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left|top"
+                android:textColor="@color/black"
+                android:text="@string/txt_acuerdo_2"
+                android:textSize="@dimen/txt_pdf_dat"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:text="____________"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text=" dias del mes de "
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text="____________"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text="del año 20"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:text="____________"
+                    android:textSize="@dimen/txt_pdf_dat"/>
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100px" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_height="100px">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="______________"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="FIRMA DEL PROPIETARIO"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="______________"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="FIRMA DEL PROPIETARIO"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100px" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_height="100px">
+
+            <TextView
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="_________________________________________________________"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:layout_weight="1"
+                    android:gravity="center|left
+"
+                    android:textSize="@dimen/txt_pdf_dat"
+                    android:text="@string/txt_direccion"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:gravity="center|right"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_pdf_dat"
+                    android:text="@string/txt_tel"/>
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

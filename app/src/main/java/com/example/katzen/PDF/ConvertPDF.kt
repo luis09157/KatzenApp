@@ -58,10 +58,12 @@ class ConvertPDF (activity: Activity) {
         val document = PdfDocument()
 
         // Obtain the width and height of the view
-        //int viewWidth = view.getMeasuredWidth();
-        //int viewHeight = view.getMeasuredHeight();
-        val viewWidth = view.width
-        val viewHeight = view.height
+        val viewWidth = view.getMeasuredWidth();
+        val viewHeight = view.getMeasuredHeight();
+        //val viewWidth = 1920
+        //val viewHeight = 1280
+
+
         //Log.d("mylog", "Width: " + viewWidth);
         // Create a PageInfo object specifying the page attributes
         val pageInfo = PageInfo.Builder(viewWidth, viewHeight, 1).create()
