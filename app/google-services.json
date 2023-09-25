@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "262209452533",
+    "project_id": "katzen-a0e3e",
+    "storage_bucket": "katzen-a0e3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262209452533:android:51d15c863c1a8f18d3c8bc",
+        "android_client_info": {
+          "package_name": "com.example.katzen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApZp_M5CYcCo6jLmBTQ3ElIAheLKWdYUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

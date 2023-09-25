@@ -28,4 +28,10 @@
         android:name="com.example.katzen.ui.responsivas.ResponsivaFragment"
         android:label="@string/menu_responsivas"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_add_paciente"
+        android:name="com.example.katzen.ui.paciente.AgregarPacienteFragment"
+        android:label="@string/menu_add_paciente"
+        tools:layout="@layout/fragment_add_paciente" />
 </navigation>
