@@ -45,7 +45,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/white"
-                    android:layout_weight="1"
                     android:text="@string/txtField_especie"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -63,7 +62,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/white"
-                    android:layout_weight="1"
                     android:text="@string/txtField_raza"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -124,6 +122,8 @@
 
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
+
 
 
     </LinearLayout>

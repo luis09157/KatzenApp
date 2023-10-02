@@ -24,5 +24,9 @@
             android:id="@+id/nav_add_paciente"
             android:icon="@drawable/ic_pet"
             android:title="@string/menu_add_paciente" />
+        <item
+            android:id="@+id/nav_store"
+            android:icon="@drawable/ic_pet"
+            android:title="@string/menu_store" />
     </group>
 </menu>

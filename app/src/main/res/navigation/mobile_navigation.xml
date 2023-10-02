@@ -34,4 +34,10 @@
         android:name="com.example.katzen.ui.paciente.AgregarPacienteFragment"
         android:label="@string/menu_add_paciente"
         tools:layout="@layout/fragment_add_paciente" />
+
+    <fragment
+        android:id="@+id/nav_store"
+        android:name="com.example.katzen.ui.store.StoreFragment"
+        android:label="@string/menu_store"
+        tools:layout="@layout/fragment_store" />
 </navigation>

@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
 import android.Manifest
+import android.content.Context
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration

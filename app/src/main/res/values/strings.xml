@@ -12,6 +12,7 @@
     <string name="menu_slideshow">Dosis</string>
     <string name="menu_responsivas">Responsivas</string>
     <string name="menu_add_paciente">Agregar Paciente</string>
+    <string name="menu_store">Tienda</string>
 
     <string name="menu_total">Total</string>
     <string name="menu_impuesto">Impuesto</string>
@@ -43,7 +44,10 @@
     <string name="txtField_edad">Edad</string>
     <string name="txtField_peso">Peso</string>
 
-
+    <string name="txtField_producto">Producto</string>
+    <string name="txtField_categoria">Categoria</string>
+    <string name="txtField_costo">Costo</string>
+    <string name="txtField_venta">Venta</string>
 
 
     <string name="txt_direccion">Calle Zinc 318, Los Cristales 1er Sector, Gpe, N.L.</string>

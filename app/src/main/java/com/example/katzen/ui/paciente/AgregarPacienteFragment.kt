@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.databinding.FragmentAddPacienteBinding
 
+
 class AgregarPacienteFragment : Fragment() {
-
     private var _binding: FragmentAddPacienteBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    var spinnerStates = ArrayList<String>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,6 +22,11 @@ class AgregarPacienteFragment : Fragment() {
 
         _binding = FragmentAddPacienteBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        spinnerStates.add("Seleccione una opción")
+        spinnerStates.add("Canino")
+        spinnerStates.add("Felino")
+
 
         return root
     }
