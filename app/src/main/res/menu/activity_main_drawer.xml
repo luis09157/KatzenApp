@@ -28,5 +28,10 @@
             android:id="@+id/nav_store"
             android:icon="@drawable/ic_pet"
             android:title="@string/menu_store" />
+
+        <item
+            android:id="@+id/nav_viajes"
+            android:icon="@drawable/baseline_directions_car_24"
+            android:title="@string/menu_viajes" />
     </group>
 </menu>

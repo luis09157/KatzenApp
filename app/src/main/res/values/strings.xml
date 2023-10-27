@@ -13,6 +13,8 @@
     <string name="menu_responsivas">Responsivas</string>
     <string name="menu_add_paciente">Agregar Paciente</string>
     <string name="menu_store">Tienda</string>
+    <string name="menu_viajes">Viajes</string>
+    <string name="menu_add_travel">Agregar Domicilio</string>
 
     <string name="menu_total">Total</string>
     <string name="menu_impuesto">Impuesto</string>
@@ -36,6 +38,13 @@
     <string name="btn_calc">Calc</string>
     <string name="btn_clen">Clean</string>
 
+    <string name="btn_save">Guardar</string>
+    <string name="btn_cancelar">Cancelar</string>
+
+
+    <string name="dialog_msg_title">Confirmar Domicilio</string>
+    <string name="dialog_msg_save">¿Quieres guardar el domicilio?</string>
+
 
     <string name="txtField_nombre">Nombre</string>
     <string name="txtField_especie">Especie</string>
@@ -48,6 +57,11 @@
     <string name="txtField_categoria">Categoria</string>
     <string name="txtField_costo">Costo</string>
     <string name="txtField_venta">Venta</string>
+
+
+    <string name="txtField_domicilio">Domicilio</string>
+    <string name="txtField_fecha">Fecha</string>
+    <string name="txtField_kilometros">Kilometros</string>
 
 
     <string name="txt_direccion">Calle Zinc 318, Los Cristales 1er Sector, Gpe, N.L.</string>

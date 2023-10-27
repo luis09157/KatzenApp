@@ -40,4 +40,10 @@
         android:name="com.example.katzen.ui.store.StoreFragment"
         android:label="@string/menu_store"
         tools:layout="@layout/fragment_store" />
+
+    <fragment
+        android:id="@+id/nav_viajes"
+        android:name="com.example.katzen.ui.viajes.ViajesFragment"
+        android:label="@string/menu_viajes"
+        tools:layout="@layout/fragment_viajes" />
 </navigation>
