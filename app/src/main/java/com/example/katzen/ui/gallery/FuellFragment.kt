@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.katzen.Config.Config
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentGalleryBinding
 import com.google.android.material.snackbar.Snackbar
@@ -53,29 +55,23 @@ class FuellFragment : Fragment() {
         df.roundingMode = RoundingMode.DOWN
         var kmV = 0.00
         var porcentaje = 0.0
+        var position = 0
 
         if(binding.rbSemana.isChecked){
-            kmV = km * 4
-            porcentaje = 1.66
+           position = 0
         }else if(binding.rbCampaA.isChecked){
-            kmV = km * 4
-            porcentaje = 1.32
+           position = 2
         }else if(binding.rbRuta.isChecked) {
-            kmV = km * 2
-            porcentaje = 1.31
+            position = 3
         }else if(binding.rbMoto.isChecked){
-            kmV = km * 2
-            porcentaje = 1.66
+            position = 4
         }
 
+        val (costoT,gananciaT,ventaT) = UtilHelper.calcular(km,Config.CATEGORIAS.get(position))
 
-
-        var costo = (kmV / 10) * 23
-        var venta = costo * porcentaje
-
-        binding.txtCosto.text = "$ " + df.format(costo)
-        binding.txtGanancia.text = "$ " + df.format((venta - costo))
-        binding.txtVenta.text = "$ " + df.format(venta)
+        binding.txtCosto.text = "$ ${costoT}"
+        binding.txtGanancia.text = "$ ${gananciaT}"
+        binding.txtVenta.text = "$ ${ventaT}"
     }
 
     fun clean(){

@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.VentaMesDetalleAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.example.katzen.Model.VentaMesDetalleModel
@@ -28,10 +30,12 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
+import kotlin.math.cos
 
 
 class ViajesDetalleFragment : Fragment() {
@@ -43,6 +47,7 @@ class ViajesDetalleFragment : Fragment() {
     private lateinit var database: DatabaseReference
     var myTopPostsQuery: DatabaseReference? = null
     var adapter: VentaMesDetalleAdapter? = null
+    var vMDM = VentaMesDetalleModel()
 
 
     override fun onCreateView(
@@ -69,8 +74,10 @@ class ViajesDetalleFragment : Fragment() {
             val view = layoutInflater.inflate(R.layout.vista_agregar_viajes_detalle,null)
 
 
+            val  txt_domicilio = view.findViewById<TextInputEditText>(R.id.text_domicilio)
             val  txt_categoria = view.findViewById<AutoCompleteTextView>(R.id.autoTextView)
             val  txt_fecha_detalle = view.findViewById<TextInputEditText>(R.id.text_fecha_detalle)
+            val  txt_kilometros = view.findViewById<TextInputEditText>(R.id.text_kilometros)
             val  btn_cancelar = view.findViewById<Button>(R.id.btn_cancelar)
             val  btn_guardar = view.findViewById<Button>(R.id.btn_guardar)
 
@@ -85,16 +92,12 @@ class ViajesDetalleFragment : Fragment() {
                 builder.hide()
             }
             btn_guardar.setOnClickListener {
-                var ventaMesDetalleModel = VentaMesDetalleModel()
-                ventaMesDetalleModel.fecha = txt_fecha_detalle.text.toString()
-                ventaMesDetalleModel.kilometros = "5"
-                ventaMesDetalleModel.ganancia = "100.00"
-                ventaMesDetalleModel.costo = "200.00"
-                ventaMesDetalleModel.venta = "300.00"
-                ventaMesDetalleModel.domicilio = "Zinc 318"
+                vMDM.fecha = txt_fecha_detalle.text.toString()
+                vMDM.kilometros = txt_kilometros.text.toString()
+                vMDM.categoria = txt_categoria.text.toString()
+                vMDM.domicilio = txt_domicilio.text.toString()
 
-                dialogConfirm(ventaMesDetalleModel)
-
+                dialogConfirm(builder)
             }
             txt_fecha_detalle.setOnClickListener {
                 view.hideKeyboard()
@@ -133,8 +136,16 @@ class ViajesDetalleFragment : Fragment() {
         binding.listViajesDetalle.divider = null
     }
 
-    fun newAdress(ventaMesDetalleModel: VentaMesDetalleModel){
-        myTopPostsQuery!!.child(getDateNow()).child(getIdFirebase()).setValue(ventaMesDetalleModel)
+    fun newAdress(alertDialog: AlertDialog) {
+        try {
+            myTopPostsQuery!!.child(getDateNow()).child(getIdFirebase()).setValue(vMDM)
+            Toast.makeText(requireContext(),"Direccion Guardada.",Toast.LENGTH_LONG).show()
+            alertDialog.hide()
+        }
+        catch (e: Exception) {
+            Toast.makeText(requireContext(),"Hubo una problema al guardar el domicilio, intenta nuevamente.",Toast.LENGTH_LONG).show()
+        }
+
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -168,22 +179,28 @@ class ViajesDetalleFragment : Fragment() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listVentaMesDetalle.clear()
 
-                for (postSnapshot in dataSnapshot.children) {
+                if(dataSnapshot.children.count() > 0){
+                    for (postSnapshot in dataSnapshot.children) {
 
-                    for (data in postSnapshot.children) {
-                        var ventaMesDetalleModel = VentaMesDetalleModel()
-                        ventaMesDetalleModel.venta = data.child("venta").value.toString()
-                        ventaMesDetalleModel.categoria = data.child("categoria").value.toString()
-                        ventaMesDetalleModel.costo = data.child("costo").value.toString()
-                        ventaMesDetalleModel.domicilio = data.child("domicilio").value.toString()
-                        ventaMesDetalleModel.fecha = data.child("fecha").value.toString()
-                        ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
-                        ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
+                        for (data in postSnapshot.children) {
+                            var ventaMesDetalleModel = VentaMesDetalleModel()
+                            ventaMesDetalleModel.venta = data.child("venta").value.toString()
+                            ventaMesDetalleModel.categoria = data.child("categoria").value.toString()
+                            ventaMesDetalleModel.costo = data.child("costo").value.toString()
+                            ventaMesDetalleModel.domicilio = data.child("domicilio").value.toString()
+                            ventaMesDetalleModel.fecha = data.child("fecha").value.toString()
+                            ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
+                            ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
 
-                        listVentaMesDetalle.add(ventaMesDetalleModel)
+                            listVentaMesDetalle.add(ventaMesDetalleModel)
+                        }
                     }
                     adapter!!.notifyDataSetChanged()
+                }else{
+                    Toast.makeText(requireContext(),"No hay domicilios agregados.",Toast.LENGTH_LONG).show()
                 }
+
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -203,7 +220,7 @@ class ViajesDetalleFragment : Fragment() {
         return dateFormatter.format(Date())
     }
 
-    fun dialogConfirm(ventaMesDetalleModel: VentaMesDetalleModel){
+    fun dialogConfirm(alertDialog: AlertDialog){
         MaterialAlertDialogBuilder(requireContext(),
             com.google.android.material.R.style.MaterialAlertDialog_Material3)
             .setTitle(resources.getString(R.string.dialog_msg_title))
@@ -212,9 +229,55 @@ class ViajesDetalleFragment : Fragment() {
                 // Respond to negative button press
             }
             .setPositiveButton(resources.getString(R.string.btn_save)) { dialog, which ->
-                newAdress(ventaMesDetalleModel)
+                val (message, flag) = validarFormulario()
+                if(flag){
+                    newAdress(alertDialog)
+                }else{
+                    Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
+                }
+
             }
             .show()
+    }
+
+    fun validarFormulario() :  Pair<String, Boolean>  {
+        var flag = true
+        var message = ""
+
+        if(!vMDM.kilometros.equals("")){
+            val km =  vMDM.kilometros.toFloat()
+            if(km < 1){
+                flag = false
+                message = "La cantidad de kilometros debe ser mayor a 0."
+            }
+        }else{
+            flag = false
+            message = "Debes escribir la cantidad de kilometros."
+        }
+
+        if(vMDM.categoria.equals("")){
+            flag = false
+            message = "Debes seleccionar una categoria."
+        }else{
+            val (costo,ganancia,venta) = UtilHelper.calcular(vMDM.kilometros.toDouble(),vMDM.categoria)
+            vMDM.ganancia = ganancia
+            vMDM.costo = costo
+            vMDM.venta = venta
+        }
+
+
+
+        if (vMDM.fecha.equals("")){
+            flag = false
+            message = "Debes seleccionar una fecha."
+        }else if(vMDM.venta.equals("")
+            || vMDM.costo.equals("")
+            || vMDM.ganancia.equals("")){
+            flag = false
+           // message = "Hubo un problema en el proceso intenta grabando el domicilio de nuevo."
+        }
+
+        return Pair(message, flag)
     }
 
 }
