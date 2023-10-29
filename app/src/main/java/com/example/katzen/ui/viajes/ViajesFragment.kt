@@ -66,23 +66,23 @@ class ViajesFragment : Fragment() {
 
         myTopPostsQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (postSnapshot in dataSnapshot.children) {
+                listVentaMes.clear()
+                if (dataSnapshot.children.count() > 0){
+                    for (postSnapshot in dataSnapshot.children) {
+                        var ventaMesModel = VentaMesModel()
 
-                    // TODO: handle the post
+                        ventaMesModel.mes = postSnapshot.child("mes").value.toString()
+                        ventaMesModel.costo = postSnapshot.child("costo").value.toString()
+                        ventaMesModel.ganancia = postSnapshot.child("ganancia").value.toString()
+                        ventaMesModel.venta = postSnapshot.child("venta").value.toString()
+                        ventaMesModel.anio = postSnapshot.child("anio").value.toString()
+                        ventaMesModel.fecha = postSnapshot.key.toString()
 
-                    var ventaMesModel = VentaMesModel()
-
-                    ventaMesModel.mes = postSnapshot.child("mes").value.toString()
-                    ventaMesModel.costo = postSnapshot.child("costo").value.toString()
-                    ventaMesModel.ganancia = postSnapshot.child("ganancia").value.toString()
-                    ventaMesModel.venta = postSnapshot.child("venta").value.toString()
-                    ventaMesModel.anio = postSnapshot.child("anio").value.toString()
-                    ventaMesModel.fecha = postSnapshot.key.toString()
-
-                    listVentaMes.add(ventaMesModel)
+                        listVentaMes.add(ventaMesModel)
+                    }
+                    val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
+                    binding.listViajes.adapter = adapter
                 }
-                 val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
-                 binding.listViajes.adapter = adapter
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

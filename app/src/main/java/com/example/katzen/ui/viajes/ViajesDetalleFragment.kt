@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.lang.Exception
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -46,6 +47,7 @@ class ViajesDetalleFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var database: DatabaseReference
     var myTopPostsQuery: DatabaseReference? = null
+    var queryRefreshCost: DatabaseReference? = null
     var adapter: VentaMesDetalleAdapter? = null
     var vMDM = VentaMesDetalleModel()
 
@@ -169,15 +171,18 @@ class ViajesDetalleFragment : Fragment() {
 
     fun initFirebase(){
         database = Firebase.database.reference
+        queryRefreshCost =  database.child("Katzen").child("Gasolina").child(Config.MES_DETALLE)
         myTopPostsQuery = database.child("Katzen").child("Gasolina").child(Config.MES_DETALLE).child("cargos")
     }
     private fun getGasolinaApi(){
-        Log.e(TAG,Config.MES_DETALLE)
         val query = myTopPostsQuery!!.orderByChild("starCount")
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 listVentaMesDetalle.clear()
+                Config.COSTO = 0.00
+                Config.GANANCIA = 0.00
+                Config.VENTA = 0.00
 
                 if(dataSnapshot.children.count() > 0){
                     for (postSnapshot in dataSnapshot.children) {
@@ -192,10 +197,17 @@ class ViajesDetalleFragment : Fragment() {
                             ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
                             ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
 
+
+                            Config.COSTO += ventaMesDetalleModel.costo.toDouble()
+                            Config.VENTA += ventaMesDetalleModel.venta.toDouble()
+                            Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
+
+
                             listVentaMesDetalle.add(ventaMesDetalleModel)
                         }
                     }
                     adapter!!.notifyDataSetChanged()
+                    refreshCosts()
                 }else{
                     Toast.makeText(requireContext(),"No hay domicilios agregados.",Toast.LENGTH_LONG).show()
                 }
@@ -278,6 +290,14 @@ class ViajesDetalleFragment : Fragment() {
         }
 
         return Pair(message, flag)
+    }
+
+    fun refreshCosts(){
+        val df = DecimalFormat("#.##")
+
+        queryRefreshCost!!.child("costo").setValue(df.format(Config.COSTO))
+        queryRefreshCost!!.child("ganancia").setValue(df.format(Config.GANANCIA))
+        queryRefreshCost!!.child("venta").setValue(df.format(Config.VENTA))
     }
 
 }
