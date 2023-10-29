@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -60,6 +61,7 @@ class ViajesDetalleFragment : Fragment() {
 
         _binding = FragmentViajesDetalleBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
 
         initFirebase()
         initUI()
@@ -132,6 +134,7 @@ class ViajesDetalleFragment : Fragment() {
 
         return root
     }
+
     fun initUI(){
         adapter = VentaMesDetalleAdapter(requireActivity(), listVentaMesDetalle)
         binding.listViajesDetalle.adapter = adapter
@@ -163,6 +166,7 @@ class ViajesDetalleFragment : Fragment() {
         requireView().requestFocus()
         requireView().setOnKeyListener { v, keyCode, event ->
             if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                database.onDisconnect()
                 UtilFragment.changeFragment(requireContext(),ViajesFragment(),TAG)
                 true
             } else false
