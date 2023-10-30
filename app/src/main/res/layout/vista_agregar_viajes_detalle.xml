@@ -75,8 +75,23 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_kilometros"
                         android:backgroundTint="@color/white"
-                        android:inputType="number"
-                        android:digits="0123456789"
+                        android:inputType="numberDecimal"
+                        android:digits="0123456789."
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    app:startIconDrawable="@drawable/ic_pet"
+                    android:enabled="true"
+                    android:hint="@string/txtField_maps">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/text_link_maps"
+                        android:backgroundTint="@color/white"
+                        android:inputType="text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>

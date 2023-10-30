@@ -7,5 +7,6 @@ data class  VentaMesDetalleModel (
     var fecha: String = "",
     var ganancia: String = "",
     var kilometros: String = "",
-    var venta: String = ""
+    var venta: String = "",
+    var linkMaps: String = ""
 )

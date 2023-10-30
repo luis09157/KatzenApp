@@ -42,7 +42,6 @@ class ViajesFragment : Fragment() {
 
         initUI()
         initFirebase()
-        initYearFirebase()
         getGasolinaApi()
 
         return root
@@ -68,10 +67,10 @@ class ViajesFragment : Fragment() {
     fun initUI(){
         binding.listViajes.divider = null
         binding.listViajes.setOnItemClickListener { adapterView, view, i, l ->
-
             Config.MES_DETALLE = listVentaMes.get(i).fecha
             database.onDisconnect()
             myTopPostsQuery!!.removeEventListener(postListener!!)
+            myTopPostsQuery!!.onDisconnect()
             UtilFragment.changeFragment(requireContext(),ViajesDetalleFragment(),TAG)
         }
     }
@@ -99,9 +98,9 @@ class ViajesFragment : Fragment() {
         }
     }
     fun getGasolinaApi(){
-
          postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                initYearFirebase(dataSnapshot)
                getData(dataSnapshot)
             }
 
@@ -112,36 +111,26 @@ class ViajesFragment : Fragment() {
         }
         myTopPostsQuery!!.addValueEventListener(postListener!!)
     }
-    fun initYearFirebase(){
-        myTopPostsQuery!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var listMonths = UtilHelper.getMontsThisYears()
-                var ventaMesModel = VentaMesModel()
+    fun initYearFirebase(dataSnapshot: DataSnapshot){
+        var listMonths = UtilHelper.getMontsThisYears()
+        var ventaMesModel = VentaMesModel()
 
 
 
-                if (dataSnapshot.children.count() != 12){
-                    for (postSnapshot in dataSnapshot.children) {
-                        listMonths.remove(postSnapshot.key.toString())
-                    }
-                    for(i in 0..listMonths.size - 1){
-                        ventaMesModel.venta = "0.00"
-                        ventaMesModel.costo = "0.00"
-                        ventaMesModel.ganancia = "0.00"
-                        ventaMesModel.anio = UtilHelper.getDateYear()
-                        ventaMesModel.mes = UtilHelper.getMonthYear(listMonths.get(i).split("-")[0].toInt())
-                        ventaMesModel.fecha = UtilHelper.getDate()
-
-                        myTopPostsQuery!!.child(listMonths.get(i)).setValue(ventaMesModel)
-                    }
-                }
+        if (dataSnapshot.children.count() != 12){
+            for (postSnapshot in dataSnapshot.children) {
+                listMonths.remove(postSnapshot.key.toString())
             }
+            for(i in 0..listMonths.size - 1){
+                ventaMesModel.venta = "0.00"
+                ventaMesModel.costo = "0.00"
+                ventaMesModel.ganancia = "0.00"
+                ventaMesModel.anio = UtilHelper.getDateYear()
+                ventaMesModel.mes = UtilHelper.getMonthYear(listMonths.get(i).split("-")[0].toInt())
+                ventaMesModel.fecha = UtilHelper.getDate()
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                // ...
+                myTopPostsQuery!!.child(listMonths.get(i)).setValue(ventaMesModel)
             }
-        })
+        }
     }
 }

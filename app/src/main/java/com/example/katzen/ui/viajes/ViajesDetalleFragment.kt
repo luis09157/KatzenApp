@@ -1,11 +1,12 @@
 package com.example.katzen.ui.viajes
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -31,13 +32,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.lang.Exception
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
-import kotlin.math.cos
 
 
 class ViajesDetalleFragment : Fragment() {
@@ -82,6 +81,7 @@ class ViajesDetalleFragment : Fragment() {
             val  txt_categoria = view.findViewById<AutoCompleteTextView>(R.id.autoTextView)
             val  txt_fecha_detalle = view.findViewById<TextInputEditText>(R.id.text_fecha_detalle)
             val  txt_kilometros = view.findViewById<TextInputEditText>(R.id.text_kilometros)
+            val  txt_link_maps = view.findViewById<TextInputEditText>(R.id.text_link_maps)
             val  btn_cancelar = view.findViewById<Button>(R.id.btn_cancelar)
             val  btn_guardar = view.findViewById<Button>(R.id.btn_guardar)
 
@@ -100,6 +100,7 @@ class ViajesDetalleFragment : Fragment() {
                 vMDM.kilometros = txt_kilometros.text.toString()
                 vMDM.categoria = txt_categoria.text.toString()
                 vMDM.domicilio = txt_domicilio.text.toString()
+                vMDM.linkMaps = txt_link_maps.text.toString()
 
                 dialogConfirm(builder)
             }
@@ -139,6 +140,19 @@ class ViajesDetalleFragment : Fragment() {
         adapter = VentaMesDetalleAdapter(requireActivity(), listVentaMesDetalle)
         binding.listViajesDetalle.adapter = adapter
         binding.listViajesDetalle.divider = null
+        binding.listViajesDetalle.setOnItemClickListener { adapterView, view, i, l ->
+            if(!listVentaMesDetalle.get(i).linkMaps.equals("")
+                && listVentaMesDetalle.get(i).linkMaps != null){
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(listVentaMesDetalle.get(i).linkMaps)
+                )
+                startActivity(intent)
+            }else{
+                Toast.makeText(requireContext(),"No se registro la direccion en google maps.",Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
     fun newAdress(alertDialog: AlertDialog) {
@@ -200,6 +214,7 @@ class ViajesDetalleFragment : Fragment() {
                             ventaMesDetalleModel.fecha = data.child("fecha").value.toString()
                             ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
                             ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
+                            ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
 
 
                             Config.COSTO += ventaMesDetalleModel.costo.toDouble()

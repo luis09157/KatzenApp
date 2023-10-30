@@ -62,6 +62,7 @@
     <string name="txtField_domicilio">Domicilio</string>
     <string name="txtField_fecha">Fecha</string>
     <string name="txtField_kilometros">Kilometros</string>
+    <string name="txtField_maps">Google Maps</string>
 
 
     <string name="txt_direccion">Calle Zinc 318, Los Cristales 1er Sector, Gpe, N.L.</string>
