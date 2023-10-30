@@ -6,11 +6,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.VentaMesAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.VentaMesModel
 import com.example.katzen.databinding.FragmentViajesBinding
 import com.google.firebase.database.DataSnapshot
@@ -19,7 +19,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
 
 
 class ViajesFragment : Fragment() {
@@ -28,6 +27,8 @@ class ViajesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var database: DatabaseReference
     var listVentaMes = arrayListOf<VentaMesModel>()
+    var myTopPostsQuery: DatabaseReference? = null
+    var postListener : ValueEventListener? = null
 
 
     override fun onCreateView(
@@ -41,6 +42,7 @@ class ViajesFragment : Fragment() {
 
         initUI()
         initFirebase()
+        initYearFirebase()
         getGasolinaApi()
 
         return root
@@ -69,34 +71,69 @@ class ViajesFragment : Fragment() {
 
             Config.MES_DETALLE = listVentaMes.get(i).fecha
             database.onDisconnect()
+            myTopPostsQuery!!.removeEventListener(postListener!!)
             UtilFragment.changeFragment(requireContext(),ViajesDetalleFragment(),TAG)
         }
     }
     fun initFirebase(){
         database = Firebase.database.reference
+        myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear())
     }
-    private fun getGasolinaApi(){
-        val myTopPostsQuery = database.child("Katzen").child("Gasolina")
-            .orderByChild("starCount")
+    fun getData(dataSnapshot: DataSnapshot){
+        listVentaMes.clear()
+        if (dataSnapshot.children.count() > 0){
+            for (postSnapshot in dataSnapshot.children) {
+                var ventaMesModel = VentaMesModel()
 
-        myTopPostsQuery.addValueEventListener(object : ValueEventListener {
+                ventaMesModel.mes = postSnapshot.child("mes").value.toString()
+                ventaMesModel.costo = postSnapshot.child("costo").value.toString()
+                ventaMesModel.ganancia = postSnapshot.child("ganancia").value.toString()
+                ventaMesModel.venta = postSnapshot.child("venta").value.toString()
+                ventaMesModel.anio = postSnapshot.child("anio").value.toString()
+                ventaMesModel.fecha = postSnapshot.key.toString()
+
+                listVentaMes.add(ventaMesModel)
+            }
+            val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
+            binding.listViajes.adapter = adapter
+        }
+    }
+    fun getGasolinaApi(){
+
+         postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listVentaMes.clear()
-                if (dataSnapshot.children.count() > 0){
+               getData(dataSnapshot)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting Post failed, log a message
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+            }
+        }
+        myTopPostsQuery!!.addValueEventListener(postListener!!)
+    }
+    fun initYearFirebase(){
+        myTopPostsQuery!!.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var listMonths = UtilHelper.getMontsThisYears()
+                var ventaMesModel = VentaMesModel()
+
+
+
+                if (dataSnapshot.children.count() != 12){
                     for (postSnapshot in dataSnapshot.children) {
-                        var ventaMesModel = VentaMesModel()
-
-                        ventaMesModel.mes = postSnapshot.child("mes").value.toString()
-                        ventaMesModel.costo = postSnapshot.child("costo").value.toString()
-                        ventaMesModel.ganancia = postSnapshot.child("ganancia").value.toString()
-                        ventaMesModel.venta = postSnapshot.child("venta").value.toString()
-                        ventaMesModel.anio = postSnapshot.child("anio").value.toString()
-                        ventaMesModel.fecha = postSnapshot.key.toString()
-
-                        listVentaMes.add(ventaMesModel)
+                        listMonths.remove(postSnapshot.key.toString())
                     }
-                    val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
-                    binding.listViajes.adapter = adapter
+                    for(i in 0..listMonths.size - 1){
+                        ventaMesModel.venta = "0.00"
+                        ventaMesModel.costo = "0.00"
+                        ventaMesModel.ganancia = "0.00"
+                        ventaMesModel.anio = UtilHelper.getDateYear()
+                        ventaMesModel.mes = UtilHelper.getMonthYear(listMonths.get(i).split("-")[0].toInt())
+                        ventaMesModel.fecha = UtilHelper.getDate()
+
+                        myTopPostsQuery!!.child(listMonths.get(i)).setValue(ventaMesModel)
+                    }
                 }
             }
 
@@ -107,6 +144,4 @@ class ViajesFragment : Fragment() {
             }
         })
     }
-
-
 }

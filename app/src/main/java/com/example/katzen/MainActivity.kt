@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
 import android.Manifest
-import android.content.Context
-import android.view.View
-import android.view.inputmethod.InputMethodManager
+import android.view.MenuItem
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -17,11 +15,17 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.PDF.ConvertPDF
 import com.example.katzen.databinding.ActivityMainBinding
+import com.example.katzen.ui.gasolina.FuellFragment
+import com.example.katzen.ui.card.PaymetCardFragment
+import com.example.katzen.ui.medical.MedicalFragment
+import com.example.katzen.ui.viajes.ViajesFragment
 
 class MainActivity : AppCompatActivity() {
-
+    val TAG = "MainActivity"
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
@@ -40,11 +44,40 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_fuel, R.id.nav_payment_card, R.id.nav_slideshow,R.id.nav_responsivas,R.id.nav_add_paciente,R.id.nav_viajes
+                R.id.nav_fuel, R.id.nav_payment_card, R.id.nav_slideshow,R.id.nav_viajes
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        navView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_fuel -> {
+                    UtilFragment.changeFragment(this, FuellFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_payment_card -> {
+                    UtilFragment.changeFragment(this, PaymetCardFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                    true
+                }
+                R.id.nav_slideshow -> {
+                    UtilFragment.changeFragment(this, MedicalFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                    true
+                }
+                R.id.nav_viajes -> {
+                    UtilFragment.changeFragment(this, ViajesFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -52,6 +85,16 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                Toast.makeText(applicationContext, "click on setting", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)

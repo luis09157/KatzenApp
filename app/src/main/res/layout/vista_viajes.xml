@@ -9,13 +9,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="125dp"
-        app:cardCornerRadius="35dp"
+        android:layout_height="100dp"
+        app:cardCornerRadius="20dp"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="10dp"
             android:orientation="horizontal" >
             <LinearLayout
                 android:orientation="vertical"
@@ -41,7 +42,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -50,12 +51,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textStyle="bold"
-                    android:layout_margin="10dp"
-                    android:textSize="18dp"
+                    android:textSize="16dp"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:layout_weight="1"
-                    android:text="Resumen"/>
+                    android:text="RESUMEN"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -74,27 +74,27 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:textSize="20dp"
+                            android:textSize="18dp"
                             android:textStyle="bold"
-                            android:text="@string/menu_total" />
+                            android:text="@string/menu_costo" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textSize="20dp"
+                            android:textSize="18dp"
                             android:textStyle="bold"
                             android:gravity="center"
-                            android:text="@string/menu_impuesto" />
+                            android:text="@string/menu_ganancia" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textSize="20dp"
+                            android:textSize="18dp"
                             android:textStyle="bold"
                             android:gravity="center"
-                            android:text="@string/menu_cobro" />
+                            android:text="@string/menu_venta" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"

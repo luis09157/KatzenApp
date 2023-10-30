@@ -92,13 +92,10 @@ class StoreFragment : Fragment() {
         val text_precio_compra = view.findViewById<TextInputEditText>(R.id.text_precio_compra)
         val text_precio_venta = view.findViewById<TextInputEditText>(R.id.text_precio_venta)
 
-        guardarVenta(VentaModel(UtilHelper.getID(),text_producto.text.toString(),text_categoria.text.toString()
-                    ,text_precio_compra.text.toString().toDouble(),text_precio_venta.text.toString().toDouble()
-                    ,UtilHelper.getDate()))
 
     }
     fun guardarVenta(ventaModel: VentaModel){
-        myRef.child(UtilHelper.getDateIdMonth()).child(ventaModel.id).setValue(ventaModel)
+        //myRef.child(UtilHelper.getDateIdMonth()).child(ventaModel.id).setValue(ventaModel)
     }
     override fun onDestroyView() {
         super.onDestroyView()

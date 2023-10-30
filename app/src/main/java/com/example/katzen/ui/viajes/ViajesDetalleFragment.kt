@@ -175,8 +175,8 @@ class ViajesDetalleFragment : Fragment() {
 
     fun initFirebase(){
         database = Firebase.database.reference
-        queryRefreshCost =  database.child("Katzen").child("Gasolina").child(Config.MES_DETALLE)
-        myTopPostsQuery = database.child("Katzen").child("Gasolina").child(Config.MES_DETALLE).child("cargos")
+        queryRefreshCost =  database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE)
+        myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE).child("cargos")
     }
     private fun getGasolinaApi(){
         val query = myTopPostsQuery!!.orderByChild("starCount")

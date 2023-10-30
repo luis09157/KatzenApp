@@ -1,4 +1,4 @@
-package com.example.katzen.ui.gallery
+package com.example.katzen.ui.gasolina
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -16,18 +16,6 @@
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_medical"
             android:title="@string/menu_slideshow" />
-        <item
-            android:id="@+id/nav_responsivas"
-            android:icon="@drawable/ic_pddf"
-            android:title="@string/menu_responsivas" />
-        <item
-            android:id="@+id/nav_add_paciente"
-            android:icon="@drawable/ic_pet"
-            android:title="@string/menu_add_paciente" />
-        <item
-            android:id="@+id/nav_store"
-            android:icon="@drawable/ic_pet"
-            android:title="@string/menu_store" />
 
         <item
             android:id="@+id/nav_viajes"

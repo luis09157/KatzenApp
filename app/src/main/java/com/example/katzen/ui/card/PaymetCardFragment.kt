@@ -1,4 +1,4 @@
-package com.example.katzen.ui.home
+package com.example.katzen.ui.card
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -32,6 +32,7 @@
                         android:id="@+id/text_domicilio"
                         android:backgroundTint="@color/white"
                         android:layout_width="match_parent"
+                        android:inputType="text"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
@@ -74,6 +75,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_kilometros"
                         android:backgroundTint="@color/white"
+                        android:inputType="number"
+                        android:digits="0123456789"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>

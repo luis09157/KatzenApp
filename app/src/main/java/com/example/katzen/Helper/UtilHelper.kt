@@ -7,6 +7,7 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Model.VentaMesModel
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -17,6 +18,12 @@ class UtilHelper {
         fun getDateIdMonth() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("MM-yyyy")
+
+            return formatter.format(time).toString()
+        }
+        fun getDateYear() : String {
+            val time = Calendar.getInstance().time
+            val formatter = SimpleDateFormat("yyyy")
 
             return formatter.format(time).toString()
         }
@@ -36,22 +43,47 @@ class UtilHelper {
             val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputManager.hideSoftInputFromWindow(windowToken, 0)
         }
-        fun getMonthYear() : ArrayList<String> {
-            var listVentaMes = arrayListOf<String>()
-            listVentaMes.add("ENE")
-            listVentaMes.add("FEB")
-            listVentaMes.add("MAR")
-            listVentaMes.add("ABR")
-            listVentaMes.add("MAY")
-            listVentaMes.add("JUN")
-            listVentaMes.add("JUL")
-            listVentaMes.add("AGO")
-            listVentaMes.add("SEP")
-            listVentaMes.add("OCT")
-            listVentaMes.add("NOV")
-            listVentaMes.add("DIC")
-
-            return listVentaMes
+        fun getMonthYear(position: Int) : String {
+            var mes = ""
+            when(position){
+                1 -> {
+                    mes = "ENE"
+                }
+                2 -> {
+                    mes = "FEB"
+                }
+                3 -> {
+                    mes = "MAR"
+                }
+                4 -> {
+                    mes = "ABR"
+                }
+                5 -> {
+                    mes = "MAY"
+                }
+                6 -> {
+                    mes = "JUN"
+                }
+                7 -> {
+                    mes = "JUL"
+                }
+                8 -> {
+                    mes = "AGO"
+                }
+                9 -> {
+                    mes = "SEP"
+                }
+                10 -> {
+                    mes = "OCT"
+                }
+                11 -> {
+                    mes = "NOV"
+                }
+                12 -> {
+                    mes = "DIC"
+                }
+            }
+            return mes
         }
         fun calcular(km : Double , categoria : String) :  Triple<String, String, String> {
             val df = DecimalFormat("#.##")
@@ -92,6 +124,24 @@ class UtilHelper {
             var venta = costo * porcentaje
 
             return Triple(df.format(costo), df.format((venta - costo)), df.format(venta))
+        }
+        fun getMontsThisYears() : ArrayList<String>{
+            var listMonts = arrayListOf<String>()
+
+            listMonts.add("01-${getDateYear()}")
+            listMonts.add("02-${getDateYear()}")
+            listMonts.add("03-${getDateYear()}")
+            listMonts.add("04-${getDateYear()}")
+            listMonts.add("05-${getDateYear()}")
+            listMonts.add("06-${getDateYear()}")
+            listMonts.add("07-${getDateYear()}")
+            listMonts.add("08-${getDateYear()}")
+            listMonts.add("09-${getDateYear()}")
+            listMonts.add("10-${getDateYear()}")
+            listMonts.add("11-${getDateYear()}")
+            listMonts.add("12-${getDateYear()}")
+
+            return listMonts
         }
     }
 }
