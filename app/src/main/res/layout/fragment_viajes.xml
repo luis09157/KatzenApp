@@ -11,13 +11,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
+        android:gravity="center"
         android:orientation="vertical">
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible" />
 
-        <ListView
-            android:id="@+id/list_viajes"
+        <LinearLayout
+            android:id="@+id/content_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"></ListView>
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/content_not_result"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/not_results"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:layout_margin="10dp"
+                    android:text="@string/no_results"/>
 
+            </LinearLayout>
+            <ListView
+                android:id="@+id/listViajes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></ListView>
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

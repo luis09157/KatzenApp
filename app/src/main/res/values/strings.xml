@@ -64,6 +64,7 @@
     <string name="txtField_kilometros">Kilometros</string>
     <string name="txtField_maps">Google Maps</string>
 
+    <string name="no_results">No hay domicilios.</string>
 
     <string name="txt_direccion">Calle Zinc 318, Los Cristales 1er Sector, Gpe, N.L.</string>
     <string name="txt_tel">Tel. 81 36 02 40 90</string>

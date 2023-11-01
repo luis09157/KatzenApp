@@ -1,6 +1,7 @@
 package com.example.katzen.ui.card
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,11 +59,23 @@ class PaymetCardFragment : Fragment() {
         binding.txtGanancia.text = "$ " + df.format(porcentaje)
         binding.txtVenta.text = "$ " + df.format(costo + porcentaje)
     }
-
     fun clean(){
         binding.txtCosto.text = getString(R.string.title_dinero)
         binding.txtGanancia.text = getString(R.string.title_dinero)
         binding.txtVenta.text = getString(R.string.title_dinero)
         binding.etCosto.text.clear()
+    }
+    override fun onResume() {
+        super.onResume()
+        if (view == null) {
+            return
+        }
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                true
+            } else false
+        }
     }
 }

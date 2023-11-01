@@ -23,11 +23,15 @@ import com.example.katzen.ui.gasolina.FuellFragment
 import com.example.katzen.ui.card.PaymetCardFragment
 import com.example.katzen.ui.medical.MedicalFragment
 import com.example.katzen.ui.viajes.ViajesFragment
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        firebaseAnalytics = Firebase.analytics
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -52,23 +57,27 @@ class MainActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_fuel -> {
+                    binding.appBarMain.toolbar.title = "Calcular gasolina"
                     UtilFragment.changeFragment(this, FuellFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 R.id.nav_payment_card -> {
+                    binding.appBarMain.toolbar.title = "Pago con tarjeta"
                     UtilFragment.changeFragment(this, PaymetCardFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
 
                     true
                 }
                 R.id.nav_slideshow -> {
+                    binding.appBarMain.toolbar.title = "Dosis"
                     UtilFragment.changeFragment(this, MedicalFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
 
                     true
                 }
                 R.id.nav_viajes -> {
+                    binding.appBarMain.toolbar.title = "Domicilios"
                     UtilFragment.changeFragment(this, ViajesFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
 

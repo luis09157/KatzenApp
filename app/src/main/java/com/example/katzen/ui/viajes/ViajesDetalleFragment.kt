@@ -50,7 +50,27 @@ class ViajesDetalleFragment : Fragment() {
     var queryRefreshCost: DatabaseReference? = null
     var adapter: VentaMesDetalleAdapter? = null
     var vMDM = VentaMesDetalleModel()
+    var postListener : ValueEventListener? = null
 
+    fun loading(){
+        binding.loading.visibility = View.VISIBLE
+        binding.contentList.visibility = View.GONE
+        binding.listViajesDetalle.visibility = View.VISIBLE
+        binding.btnAddTravel.visibility = View.VISIBLE
+        binding.contentNotResult.visibility = View.GONE
+    }
+    fun not_loading(){
+        binding.loading.visibility = View.GONE
+        binding.contentList.visibility = View.VISIBLE
+        binding.contentNotResult.visibility = View.GONE
+    }
+    fun not_loading_result(){
+        binding.loading.visibility = View.GONE
+        binding.contentList.visibility = View.VISIBLE
+        binding.listViajesDetalle.visibility = View.GONE
+        binding.btnAddTravel.visibility = View.VISIBLE
+        binding.contentNotResult.visibility = View.VISIBLE
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +81,7 @@ class ViajesDetalleFragment : Fragment() {
         _binding = FragmentViajesDetalleBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-
+        loading()
         initFirebase()
         initUI()
         getGasolinaApi()
@@ -162,15 +182,25 @@ class ViajesDetalleFragment : Fragment() {
             alertDialog.hide()
         }
         catch (e: Exception) {
+            not_loading_result()
             Toast.makeText(requireContext(),"Hubo una problema al guardar el domicilio, intenta nuevamente.",Toast.LENGTH_LONG).show()
         }
 
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        database.onDisconnect()
+        myTopPostsQuery!!.removeEventListener(postListener!!)
+        myTopPostsQuery!!.onDisconnect()
         _binding = null
     }
 
+    override fun onStop() {
+        super.onStop()
+        database.onDisconnect()
+        myTopPostsQuery!!.removeEventListener(postListener!!)
+        myTopPostsQuery!!.onDisconnect()
+    }
     override fun onResume() {
         super.onResume()
         if (view == null) {
@@ -192,54 +222,57 @@ class ViajesDetalleFragment : Fragment() {
         queryRefreshCost =  database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE)
         myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE).child("cargos")
     }
-    private fun getGasolinaApi(){
-        val query = myTopPostsQuery!!.orderByChild("starCount")
+    fun getData(dataSnapshot: DataSnapshot){
+        listVentaMesDetalle.clear()
+        Config.COSTO = 0.00
+        Config.GANANCIA = 0.00
+        Config.VENTA = 0.00
 
-        query.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                listVentaMesDetalle.clear()
-                Config.COSTO = 0.00
-                Config.GANANCIA = 0.00
-                Config.VENTA = 0.00
+        if(dataSnapshot.children.count() > 0){
+            for (postSnapshot in dataSnapshot.children) {
 
-                if(dataSnapshot.children.count() > 0){
-                    for (postSnapshot in dataSnapshot.children) {
-
-                        for (data in postSnapshot.children) {
-                            var ventaMesDetalleModel = VentaMesDetalleModel()
-                            ventaMesDetalleModel.venta = data.child("venta").value.toString()
-                            ventaMesDetalleModel.categoria = data.child("categoria").value.toString()
-                            ventaMesDetalleModel.costo = data.child("costo").value.toString()
-                            ventaMesDetalleModel.domicilio = data.child("domicilio").value.toString()
-                            ventaMesDetalleModel.fecha = data.child("fecha").value.toString()
-                            ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
-                            ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
-                            ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
+                for (data in postSnapshot.children) {
+                    var ventaMesDetalleModel = VentaMesDetalleModel()
+                    ventaMesDetalleModel.venta = data.child("venta").value.toString()
+                    ventaMesDetalleModel.categoria = data.child("categoria").value.toString()
+                    ventaMesDetalleModel.costo = data.child("costo").value.toString()
+                    ventaMesDetalleModel.domicilio = data.child("domicilio").value.toString()
+                    ventaMesDetalleModel.fecha = data.child("fecha").value.toString()
+                    ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
+                    ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
+                    ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
 
 
-                            Config.COSTO += ventaMesDetalleModel.costo.toDouble()
-                            Config.VENTA += ventaMesDetalleModel.venta.toDouble()
-                            Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
+                    Config.COSTO += ventaMesDetalleModel.costo.toDouble()
+                    Config.VENTA += ventaMesDetalleModel.venta.toDouble()
+                    Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
 
 
-                            listVentaMesDetalle.add(ventaMesDetalleModel)
-                        }
-                    }
-                    adapter!!.notifyDataSetChanged()
-                    refreshCosts()
-                }else{
-                    Toast.makeText(requireContext(),"No hay domicilios agregados.",Toast.LENGTH_LONG).show()
+                    listVentaMesDetalle.add(ventaMesDetalleModel)
                 }
+            }
+            adapter!!.notifyDataSetChanged()
+            refreshCosts()
+            not_loading()
+        }else{
+            not_loading_result()
+            Toast.makeText(requireContext(),"No hay domicilios agregados.",Toast.LENGTH_LONG).show()
+        }
+    }
+    private fun getGasolinaApi(){
 
-
+        postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                loading()
+                getData(dataSnapshot)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                // ...
             }
-        })
+        }
+        myTopPostsQuery!!.addValueEventListener(postListener!!)
     }
 
     fun getDateNow(): String{

@@ -35,4 +35,5 @@ class AgregarPacienteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

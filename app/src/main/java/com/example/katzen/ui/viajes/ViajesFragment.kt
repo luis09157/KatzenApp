@@ -30,6 +30,23 @@ class ViajesFragment : Fragment() {
     var myTopPostsQuery: DatabaseReference? = null
     var postListener : ValueEventListener? = null
 
+    fun loading(){
+        binding.loading.visibility = View.VISIBLE
+        binding.contentList.visibility = View.GONE
+        binding.listViajes.visibility = View.VISIBLE
+        binding.contentNotResult.visibility = View.GONE
+    }
+    fun not_loading(){
+        binding.loading.visibility = View.GONE
+        binding.contentList.visibility = View.VISIBLE
+        binding.contentNotResult.visibility = View.GONE
+    }
+    fun not_loading_result(){
+        binding.loading.visibility = View.GONE
+        binding.contentList.visibility = View.VISIBLE
+        binding.listViajes.visibility = View.GONE
+        binding.contentNotResult.visibility = View.VISIBLE
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +56,7 @@ class ViajesFragment : Fragment() {
 
         _binding = FragmentViajesBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
+        loading()
         initUI()
         initFirebase()
         getGasolinaApi()
@@ -48,6 +65,9 @@ class ViajesFragment : Fragment() {
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        database.onDisconnect()
+        myTopPostsQuery!!.removeEventListener(postListener!!)
+        myTopPostsQuery!!.onDisconnect()
         _binding = null
     }
     override fun onResume() {
@@ -62,6 +82,13 @@ class ViajesFragment : Fragment() {
                 true
             } else false
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        database.onDisconnect()
+        myTopPostsQuery!!.removeEventListener(postListener!!)
+        myTopPostsQuery!!.onDisconnect()
     }
 
     fun initUI(){
@@ -95,18 +122,23 @@ class ViajesFragment : Fragment() {
             }
             val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
             binding.listViajes.adapter = adapter
+            not_loading()
+        }else{
+            not_loading_result()
         }
+
     }
     fun getGasolinaApi(){
          postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 initYearFirebase(dataSnapshot)
-               getData(dataSnapshot)
+                getData(dataSnapshot)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
+                not_loading_result()
             }
         }
         myTopPostsQuery!!.addValueEventListener(postListener!!)
