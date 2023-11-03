@@ -1,6 +1,5 @@
 package com.example.katzen.ui.viajes
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,23 +8,16 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.VentaMesDetalleAdapter
 import com.example.katzen.Config.Config
+import com.example.katzen.Helper.DialogHelper.Companion.dialogAddDomicilio
+import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.MainActivity
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.R
 import com.example.katzen.databinding.FragmentViajesDetalleBinding
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -33,17 +25,14 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.TimeZone
 
 
 class ViajesDetalleFragment : Fragment() {
     val TAG = "ViajesDetalleFragment"
     private var _binding: FragmentViajesDetalleBinding? = null
     var listVentaMesDetalle = arrayListOf<VentaMesDetalleModel>()
-    val categorias = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
+
+
     private val binding get() = _binding!!
     private lateinit var database: DatabaseReference
     var myTopPostsQuery: DatabaseReference? = null
@@ -51,26 +40,10 @@ class ViajesDetalleFragment : Fragment() {
     var adapter: VentaMesDetalleAdapter? = null
     var vMDM = VentaMesDetalleModel()
     var postListener : ValueEventListener? = null
+    lateinit var loadingHelper : LoadingHelper
 
-    fun loading(){
-        binding.loading.visibility = View.VISIBLE
-        binding.contentList.visibility = View.GONE
-        binding.listViajesDetalle.visibility = View.VISIBLE
-        binding.btnAddTravel.visibility = View.VISIBLE
-        binding.contentNotResult.visibility = View.GONE
-    }
-    fun not_loading(){
-        binding.loading.visibility = View.GONE
-        binding.contentList.visibility = View.VISIBLE
-        binding.contentNotResult.visibility = View.GONE
-    }
-    fun not_loading_result(){
-        binding.loading.visibility = View.GONE
-        binding.contentList.visibility = View.VISIBLE
-        binding.listViajesDetalle.visibility = View.GONE
-        binding.btnAddTravel.visibility = View.VISIBLE
-        binding.contentNotResult.visibility = View.VISIBLE
-    }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,76 +54,16 @@ class ViajesDetalleFragment : Fragment() {
         _binding = FragmentViajesDetalleBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        loading()
+        loadingHelper = LoadingHelper(binding.loading,binding.contentList,binding.listViajesDetalle,
+            binding.btnAddTravel,binding.contentNotResult)
+
+        loadingHelper.loading()
         initFirebase()
         initUI()
         getGasolinaApi()
 
         binding.btnAddTravel.setOnClickListener {
-            val datePicker =
-                MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select date")
-                    .build()
-
-            val builder = AlertDialog.Builder(requireActivity(), R.style.CustomAlertDialog)
-                .create()
-            val view = layoutInflater.inflate(R.layout.vista_agregar_viajes_detalle,null)
-
-
-            val  txt_domicilio = view.findViewById<TextInputEditText>(R.id.text_domicilio)
-            val  txt_categoria = view.findViewById<AutoCompleteTextView>(R.id.autoTextView)
-            val  txt_fecha_detalle = view.findViewById<TextInputEditText>(R.id.text_fecha_detalle)
-            val  txt_kilometros = view.findViewById<TextInputEditText>(R.id.text_kilometros)
-            val  txt_link_maps = view.findViewById<TextInputEditText>(R.id.text_link_maps)
-            val  btn_cancelar = view.findViewById<Button>(R.id.btn_cancelar)
-            val  btn_guardar = view.findViewById<Button>(R.id.btn_guardar)
-
-            txt_fecha_detalle.setText(getDateNow())
-
-
-            txt_categoria.setOnClickListener {
-                view.hideKeyboard()
-            }
-
-            btn_cancelar.setOnClickListener {
-                builder.hide()
-            }
-            btn_guardar.setOnClickListener {
-                vMDM.fecha = txt_fecha_detalle.text.toString()
-                vMDM.kilometros = txt_kilometros.text.toString()
-                vMDM.categoria = txt_categoria.text.toString()
-                vMDM.domicilio = txt_domicilio.text.toString()
-                vMDM.linkMaps = txt_link_maps.text.toString()
-
-                dialogConfirm(builder)
-            }
-            txt_fecha_detalle.setOnClickListener {
-                view.hideKeyboard()
-                datePicker.show((requireActivity() as MainActivity).supportFragmentManager, TAG);
-            }
-            txt_fecha_detalle.setOnFocusChangeListener { view, b ->
-                if(b){
-                    view.hideKeyboard()
-                    datePicker.show((requireActivity() as MainActivity).supportFragmentManager, TAG);
-                }
-            }
-
-            datePicker.addOnPositiveButtonClickListener {
-                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                calendar.time = Date(it)
-                txt_fecha_detalle.setText("${calendar.get(Calendar.DAY_OF_MONTH)}-" +
-                        "${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}")
-            }
-
-            val adapter = ArrayAdapter(requireActivity(),
-                android.R.layout.simple_list_item_1,categorias)
-
-
-            txt_categoria.setAdapter(adapter)
-
-            builder.setView(view)
-            builder.setCanceledOnTouchOutside(false)
-            builder.show()
+          dialogAddDomicilio(requireActivity(),vMDM,myTopPostsQuery!!,loadingHelper)
         }
 
         return root
@@ -175,18 +88,7 @@ class ViajesDetalleFragment : Fragment() {
         }
     }
 
-    fun newAdress(alertDialog: AlertDialog) {
-        try {
-            myTopPostsQuery!!.child(getDateNow()).child(getIdFirebase()).setValue(vMDM)
-            Toast.makeText(requireContext(),"Direccion Guardada.",Toast.LENGTH_LONG).show()
-            alertDialog.hide()
-        }
-        catch (e: Exception) {
-            not_loading_result()
-            Toast.makeText(requireContext(),"Hubo una problema al guardar el domicilio, intenta nuevamente.",Toast.LENGTH_LONG).show()
-        }
 
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         database.onDisconnect()
@@ -253,9 +155,9 @@ class ViajesDetalleFragment : Fragment() {
             }
             adapter!!.notifyDataSetChanged()
             refreshCosts()
-            not_loading()
+            loadingHelper.not_loading()
         }else{
-            not_loading_result()
+            loadingHelper.not_loading_result()
             Toast.makeText(requireContext(),"No hay domicilios agregados.",Toast.LENGTH_LONG).show()
         }
     }
@@ -263,7 +165,7 @@ class ViajesDetalleFragment : Fragment() {
 
         postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                loading()
+                loadingHelper.loading()
                 getData(dataSnapshot)
             }
 
@@ -275,74 +177,12 @@ class ViajesDetalleFragment : Fragment() {
         myTopPostsQuery!!.addValueEventListener(postListener!!)
     }
 
-    fun getDateNow(): String{
-        val dateFormatter = SimpleDateFormat("dd-MM-yyyy")
-        return dateFormatter.format(Date())
-    }
-    fun getIdFirebase(): String{
-        val dateFormatter = SimpleDateFormat("ddMMyyyyHHMMSS")
-        return dateFormatter.format(Date())
-    }
-
-    fun dialogConfirm(alertDialog: AlertDialog){
-        MaterialAlertDialogBuilder(requireContext(),
-            com.google.android.material.R.style.MaterialAlertDialog_Material3)
-            .setTitle(resources.getString(R.string.dialog_msg_title))
-            .setMessage(resources.getString(R.string.dialog_msg_save))
-            .setNegativeButton(resources.getString(R.string.btn_cancelar)) { dialog, which ->
-                // Respond to negative button press
-            }
-            .setPositiveButton(resources.getString(R.string.btn_save)) { dialog, which ->
-                val (message, flag) = validarFormulario()
-                if(flag){
-                    newAdress(alertDialog)
-                }else{
-                    Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
-                }
-
-            }
-            .show()
-    }
-
-    fun validarFormulario() :  Pair<String, Boolean>  {
-        var flag = true
-        var message = ""
-
-        if(!vMDM.kilometros.equals("")){
-            val km =  vMDM.kilometros.toFloat()
-            if(km < 1){
-                flag = false
-                message = "La cantidad de kilometros debe ser mayor a 0."
-            }
-        }else{
-            flag = false
-            message = "Debes escribir la cantidad de kilometros."
-        }
-
-        if(vMDM.categoria.equals("")){
-            flag = false
-            message = "Debes seleccionar una categoria."
-        }else{
-            val (costo,ganancia,venta) = UtilHelper.calcular(vMDM.kilometros.toDouble(),vMDM.categoria)
-            vMDM.ganancia = ganancia
-            vMDM.costo = costo
-            vMDM.venta = venta
-        }
 
 
 
-        if (vMDM.fecha.equals("")){
-            flag = false
-            message = "Debes seleccionar una fecha."
-        }else if(vMDM.venta.equals("")
-            || vMDM.costo.equals("")
-            || vMDM.ganancia.equals("")){
-            flag = false
-           // message = "Hubo un problema en el proceso intenta grabando el domicilio de nuevo."
-        }
 
-        return Pair(message, flag)
-    }
+
+
 
     fun refreshCosts(){
         val df = DecimalFormat("#.##")

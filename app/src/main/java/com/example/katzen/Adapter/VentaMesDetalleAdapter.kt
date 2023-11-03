@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<VentaMesDetalleModel>) : BaseAdapter() {
@@ -43,6 +44,10 @@ class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<Venta
         viewHolder.txt_costo.text = "$ " +listVentaMes.get(position).costo
         viewHolder.txt_venta.text = "$ " +listVentaMes.get(position).venta
 
+        viewHolder.btn_edit.setOnClickListener {
+
+        }
+
 
         return rowView
     }
@@ -64,5 +69,7 @@ class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<Venta
         val txt_ganancia = view?.findViewById(R.id.txt_ganancia) as TextView
         val txt_costo = view?.findViewById(R.id.txt_costo) as TextView
         val txt_venta = view?.findViewById(R.id.txt_venta) as TextView
+
+        val btn_edit = view?.findViewById(R.id.btn_edit) as FloatingActionButton
     }
 }
