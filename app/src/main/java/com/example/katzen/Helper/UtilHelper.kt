@@ -1,5 +1,6 @@
 package com.example.katzen.Helper
 
+import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -18,13 +19,6 @@ import java.util.Calendar
 class UtilHelper {
 
     companion object{
-
-        fun getDateIdMonth() : String {
-            val time = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("MM-yyyy")
-
-            return formatter.format(time).toString()
-        }
         fun getDateYear() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("yyyy")
@@ -34,12 +28,6 @@ class UtilHelper {
         fun getDate() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-
-            return formatter.format(time).toString()
-        }
-        fun getID() : String {
-            val time = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("yyyyMMddHHmmss")
 
             return formatter.format(time).toString()
         }
@@ -89,46 +77,6 @@ class UtilHelper {
             }
             return mes
         }
-        fun calcular(km : Double , categoria : String) :  Triple<String, String, String> {
-            val df = DecimalFormat("#.##")
-            df.roundingMode = RoundingMode.DOWN
-            var kmV = 0.00
-            var porcentaje = 0.0
-
-            when(categoria){
-                Config.CATEGORIAS[0] -> {
-                    //SEMANA X4
-                    kmV = km * 4
-                    porcentaje = 1.66
-                }
-                Config.CATEGORIAS[1] -> {
-                    //SEMANA X2
-                    kmV = km * 2
-                    porcentaje = 1.66
-                }
-                Config.CATEGORIAS[2] -> {
-                    //CAMPAÑA
-                    kmV = km * 4
-                    porcentaje = 1.32
-                }
-                Config.CATEGORIAS[3] -> {
-                    //RUTA
-                    kmV = km * 2
-                    porcentaje = 1.31
-
-                }
-                Config.CATEGORIAS[4] -> {
-                    //MOTO
-                    kmV = km * 2
-                    porcentaje = 1.66
-                }
-            }
-
-            var costo = (kmV / 10) * 23
-            var venta = costo * porcentaje
-
-            return Triple(df.format(costo), df.format((venta - costo)), df.format(venta))
-        }
         fun getMontsThisYears() : ArrayList<String>{
             var listMonts = arrayListOf<String>()
 
@@ -147,6 +95,9 @@ class UtilHelper {
 
             return listMonts
         }
-
+        fun hideKeyBoardWorld(activity : Activity,view : View){
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+        }
     }
 }

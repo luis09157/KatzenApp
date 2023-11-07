@@ -8,5 +8,8 @@ data class  VentaMesDetalleModel (
     var ganancia: String = "",
     var kilometros: String = "",
     var venta: String = "",
-    var linkMaps: String = ""
+    var linkMaps: String = "",
+
+    var isEdit : Boolean  = false,
+    var key : String = ""
 )

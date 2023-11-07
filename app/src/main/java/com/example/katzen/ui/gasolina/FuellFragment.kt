@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
+import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentGalleryBinding
@@ -68,7 +69,7 @@ class FuellFragment : Fragment() {
             position = 4
         }
 
-        val (costoT,gananciaT,ventaT) = UtilHelper.calcular(km,Config.CATEGORIAS.get(position))
+        val (costoT,gananciaT,ventaT) = GasHelper.calcular(km,Config.CATEGORIAS.get(position))
 
         binding.txtCosto.text = "$ ${costoT}"
         binding.txtGanancia.text = "$ ${gananciaT}"

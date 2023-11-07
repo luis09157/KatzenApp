@@ -2,6 +2,7 @@ package com.example.katzen.Helper
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.util.Log
 import android.widget.Toast
 import com.example.katzen.Helper.DialogHelper.Companion.getDateNow
 import com.example.katzen.Model.VentaMesDetalleModel
@@ -18,8 +19,25 @@ class FirebaseHelper {
         fun newAdress(alertDialog: AlertDialog, vMDM : VentaMesDetalleModel,
                       activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
             try {
-                myTopPostsQuery!!.child(getDateNow()).child(getIdFirebase()).setValue(vMDM)
+                val key = getIdFirebase()
+                vMDM.key = key
+
+                myTopPostsQuery!!.child(getDateNow()).child(key).setValue(vMDM)
                 Toast.makeText(activity,"Direccion Guardada.", Toast.LENGTH_LONG).show()
+                alertDialog.hide()
+            }
+            catch (e: Exception) {
+                loadingHelper.not_loading_result()
+                Toast.makeText(activity,"Hubo una problema al guardar el domicilio, intenta nuevamente.",
+                    Toast.LENGTH_LONG).show()
+            }
+
+        }
+        fun editAdress(alertDialog: AlertDialog, vMDM : VentaMesDetalleModel,
+                      activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
+            try {
+                myTopPostsQuery!!.child(vMDM.fecha).child(vMDM.key).setValue(vMDM)
+                Toast.makeText(activity,"Direccion editada.", Toast.LENGTH_LONG).show()
                 alertDialog.hide()
             }
             catch (e: Exception) {

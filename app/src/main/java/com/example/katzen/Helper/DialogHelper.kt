@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Toast
+import com.example.katzen.Helper.FirebaseHelper.Companion.editAdress
 import com.example.katzen.Helper.FirebaseHelper.Companion.newAdress
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Helper.ValidateFormulario.Companion.validarFormulario
@@ -66,6 +67,79 @@ class DialogHelper {
                 vMDM.categoria = txt_categoria.text.toString()
                 vMDM.domicilio = txt_domicilio.text.toString()
                 vMDM.linkMaps = txt_link_maps.text.toString()
+                vMDM.isEdit = false
+                dialogConfirm(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
+            }
+            txt_fecha_detalle.setOnClickListener {
+                view.hideKeyboard()
+                datePicker.show((activity as MainActivity).supportFragmentManager, TAG);
+            }
+            txt_fecha_detalle.setOnFocusChangeListener { view, b ->
+                if(b){
+                    view.hideKeyboard()
+                    datePicker.show((activity as MainActivity).supportFragmentManager, TAG);
+                }
+            }
+
+            datePicker.addOnPositiveButtonClickListener {
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                calendar.time = Date(it)
+                txt_fecha_detalle.setText("${calendar.get(Calendar.DAY_OF_MONTH)}-" +
+                        "${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}")
+            }
+
+            val adapter = ArrayAdapter(activity,
+                android.R.layout.simple_list_item_1,categorias)
+
+
+            txt_categoria.setAdapter(adapter)
+
+            builder.setView(view)
+            builder.setCanceledOnTouchOutside(false)
+            builder.show()
+        }
+        fun dialogEditDomicilio(activity: Activity, vMDM : VentaMesDetalleModel,
+                               myTopPostsQuery: DatabaseReference, loadingHelper: LoadingHelper){
+            val datePicker =
+                MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select date")
+                    .build()
+            val builder = AlertDialog.Builder(activity, R.style.CustomAlertDialog)
+                .create()
+            val view = activity.layoutInflater.inflate(R.layout.vista_agregar_viajes_detalle_edit,null)
+
+
+            val  txt_domicilio = view.findViewById<TextInputEditText>(R.id.text_domicilio)
+            val  txt_categoria = view.findViewById<AutoCompleteTextView>(R.id.autoTextView)
+            val  txt_fecha_detalle = view.findViewById<TextInputEditText>(R.id.text_fecha_detalle)
+            val  txt_kilometros = view.findViewById<TextInputEditText>(R.id.text_kilometros)
+            val  text_precio_venta = view.findViewById<TextInputEditText>(R.id.text_precio_venta)
+            val  txt_link_maps = view.findViewById<TextInputEditText>(R.id.text_link_maps)
+            val  btn_cancelar = view.findViewById<Button>(R.id.btn_cancelar)
+            val  btn_guardar = view.findViewById<Button>(R.id.btn_guardar)
+
+            txt_fecha_detalle.setText(vMDM.fecha)
+            txt_categoria.setText(vMDM.categoria)
+            txt_kilometros.setText(vMDM.kilometros)
+            txt_link_maps.setText(vMDM.linkMaps)
+            txt_domicilio.setText(vMDM.domicilio)
+            text_precio_venta.setText(vMDM.venta)
+
+            txt_categoria.setOnClickListener {
+                view.hideKeyboard()
+            }
+
+            btn_cancelar.setOnClickListener {
+                builder.hide()
+            }
+            btn_guardar.setOnClickListener {
+                vMDM.fecha = txt_fecha_detalle.text.toString()
+                vMDM.kilometros = txt_kilometros.text.toString()
+                vMDM.categoria = txt_categoria.text.toString()
+                vMDM.domicilio = txt_domicilio.text.toString()
+                vMDM.linkMaps = txt_link_maps.text.toString()
+                vMDM.venta = text_precio_venta.text.toString()
+                vMDM.isEdit = true
                 dialogConfirm(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
             }
             txt_fecha_detalle.setOnClickListener {
@@ -109,7 +183,12 @@ class DialogHelper {
                 .setPositiveButton(activity.resources.getString(R.string.btn_save)) { dialog, which ->
                     val (message, flag) = validarFormulario(vMDM)
                     if(flag){
-                        newAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
+
+                        if (vMDM.isEdit){
+                            editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
+                        }else{
+                            newAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
+                        }
                     }else{
                         Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
                     }

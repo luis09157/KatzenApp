@@ -1,19 +1,30 @@
 package com.example.katzen.Adapter
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import com.example.katzen.Helper.DialogHelper
+import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.DatabaseReference
 
 
-class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<VentaMesDetalleModel>) : BaseAdapter() {
-    private val layoutInflater = LayoutInflater.from(context)
-    private val context = context
+class VentaMesDetalleAdapter(activity: Activity, val listVentaMes: ArrayList<VentaMesDetalleModel>,
+                             myTopPostsQuery: DatabaseReference, loadingHelper: LoadingHelper) : BaseAdapter() {
+    private val layoutInflater = LayoutInflater.from(activity)
+    private val activity = activity
+    private val myTopPostsQuery = myTopPostsQuery
+    private val loadingHelper = loadingHelper
     private val TAG = "VentaMesDetalleAdapter"
 
     override fun getCount(): Int {
@@ -45,7 +56,20 @@ class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<Venta
         viewHolder.txt_venta.text = "$ " +listVentaMes.get(position).venta
 
         viewHolder.btn_edit.setOnClickListener {
+          DialogHelper.dialogEditDomicilio(activity,listVentaMes.get(position),myTopPostsQuery,loadingHelper )
+        }
 
+        viewHolder.card_cont.setOnClickListener {
+            if(!listVentaMes.get(position).linkMaps.equals("")
+                && listVentaMes.get(position).linkMaps != null){
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(listVentaMes.get(position).linkMaps)
+                )
+                activity.startActivity(intent)
+            }else{
+                Toast.makeText(activity,"No se registro la direccion en google maps.",Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -61,6 +85,8 @@ class VentaMesDetalleAdapter(context: Context, val listVentaMes: ArrayList<Venta
     }
 
     private class ViewHolder(view: View?) {
+        val card_cont = view?.findViewById(R.id.card_cont) as CardView
+
         val txt_fecha = view?.findViewById(R.id.txt_fecha) as TextView
         val txt_categoria = view?.findViewById(R.id.txt_categoria) as TextView
         val txt_domicilio = view?.findViewById(R.id.txt_domicilio) as TextView

@@ -70,22 +70,9 @@ class ViajesDetalleFragment : Fragment() {
     }
 
     fun initUI(){
-        adapter = VentaMesDetalleAdapter(requireActivity(), listVentaMesDetalle)
+        adapter = VentaMesDetalleAdapter(requireActivity(), listVentaMesDetalle, myTopPostsQuery!!,loadingHelper)
         binding.listViajesDetalle.adapter = adapter
         binding.listViajesDetalle.divider = null
-        binding.listViajesDetalle.setOnItemClickListener { adapterView, view, i, l ->
-            if(!listVentaMesDetalle.get(i).linkMaps.equals("")
-                && listVentaMesDetalle.get(i).linkMaps != null){
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(listVentaMesDetalle.get(i).linkMaps)
-                )
-                startActivity(intent)
-            }else{
-                Toast.makeText(requireContext(),"No se registro la direccion en google maps.",Toast.LENGTH_SHORT).show()
-            }
-
-        }
     }
 
 
@@ -143,6 +130,7 @@ class ViajesDetalleFragment : Fragment() {
                     ventaMesDetalleModel.ganancia = data.child("ganancia").value.toString()
                     ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
                     ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
+                    ventaMesDetalleModel.key = data.child("key").value.toString()
 
 
                     Config.COSTO += ventaMesDetalleModel.costo.toDouble()

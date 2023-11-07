@@ -11,6 +11,7 @@ import com.example.katzen.Adapter.VentaMesAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.VentaMesModel
 import com.example.katzen.databinding.FragmentViajesBinding
 import com.google.firebase.database.DataSnapshot
@@ -56,11 +57,12 @@ class ViajesFragment : Fragment() {
 
         _binding = FragmentViajesBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
         loading()
         initUI()
         initFirebase()
         getGasolinaApi()
-
+        UtilHelper.hideKeyBoardWorld(requireActivity(),root)
         return root
     }
     override fun onDestroyView() {
