@@ -33,7 +33,7 @@ class NotificacionesHelper(activity: Activity) {
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(activity, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("FCM Message")
+            .setContentTitle(activity.getString(R.string.title_notification))
             .setContentText(messageBody)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
