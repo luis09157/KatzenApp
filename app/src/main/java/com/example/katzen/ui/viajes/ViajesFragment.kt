@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.VentaMesAdapter
 import com.example.katzen.Config.Config
+import com.example.katzen.Helper.NotificacionesHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
@@ -63,6 +64,7 @@ class ViajesFragment : Fragment() {
         initFirebase()
         getGasolinaApi()
         UtilHelper.hideKeyBoardWorld(requireActivity(),root)
+
         return root
     }
     override fun onDestroyView() {

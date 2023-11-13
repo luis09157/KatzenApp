@@ -29,4 +29,9 @@
         android:name="com.example.katzen.ui.viajes.ViajesFragment"
         android:label="@string/menu_viajes"
         tools:layout="@layout/fragment_viajes" />
+    <fragment
+        android:id="@+id/nav_example"
+        android:name="com.example.katzen.ui.example.ExampleFragment"
+        android:label="@string/menu_example"
+        tools:layout="@layout/example_fragment" />
 </navigation>

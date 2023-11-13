@@ -14,6 +14,7 @@
     <string name="menu_add_paciente">Agregar Paciente</string>
     <string name="menu_store">Tienda</string>
     <string name="menu_viajes">Viajes</string>
+    <string name="menu_example">Example</string>
     <string name="menu_add_travel">Agregar Domicilio</string>
 
     <string name="menu_total">Total</string>
@@ -39,11 +40,13 @@
     <string name="btn_clen">Clean</string>
 
     <string name="btn_save">Guardar</string>
+    <string name="btn_edit">Editar</string>
     <string name="btn_cancelar">Cancelar</string>
 
 
     <string name="dialog_msg_title">Confirmar Domicilio</string>
     <string name="dialog_msg_save">¿Quieres guardar el domicilio?</string>
+    <string name="dialog_msg_edit">¿Quieres editar el domicilio?</string>
 
 
     <string name="txtField_nombre">Nombre</string>
@@ -123,4 +126,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+
+    <string name="default_notification_channel_id">1010</string>
 </resources>

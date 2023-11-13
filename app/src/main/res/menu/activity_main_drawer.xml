@@ -21,5 +21,10 @@
             android:id="@+id/nav_viajes"
             android:icon="@drawable/baseline_directions_car_24"
             android:title="@string/menu_viajes" />
+
+        <item
+            android:id="@+id/nav_example"
+            android:icon="@drawable/baseline_directions_car_24"
+            android:title="@string/menu_example" />
     </group>
 </menu>

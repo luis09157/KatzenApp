@@ -140,7 +140,7 @@ class DialogHelper {
                 vMDM.linkMaps = txt_link_maps.text.toString()
                 vMDM.venta = text_precio_venta.text.toString()
                 vMDM.isEdit = true
-                dialogConfirm(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
+                dialogConfirmEdit(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
             }
             txt_fecha_detalle.setOnClickListener {
                 view.hideKeyboard()
@@ -188,6 +188,28 @@ class DialogHelper {
                             editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
                         }else{
                             newAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
+                        }
+                    }else{
+                        Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+                .show()
+        }
+        fun dialogConfirmEdit(alertDialog: AlertDialog, activity: Activity,
+                          vMDM: VentaMesDetalleModel, myTopPostsQuery: DatabaseReference, loadingHelper: LoadingHelper){
+            MaterialAlertDialogBuilder(activity,
+                com.google.android.material.R.style.MaterialAlertDialog_Material3)
+                .setTitle(activity.resources.getString(R.string.dialog_msg_title))
+                .setMessage(activity.resources.getString(R.string.dialog_msg_edit))
+                .setNegativeButton(activity.resources.getString(R.string.btn_cancelar)) { dialog, which ->
+                    // Respond to negative button press
+                }
+                .setPositiveButton(activity.resources.getString(R.string.btn_edit)) { dialog, which ->
+                    val (message, flag) = validarFormulario(vMDM)
+                    if(flag){
+                        if (vMDM.isEdit){
+                            editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
                         }
                     }else{
                         Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
