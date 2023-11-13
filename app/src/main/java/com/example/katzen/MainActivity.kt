@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -138,29 +137,11 @@ class MainActivity : AppCompatActivity() {
         CheckForPermissions(android.Manifest.permission.POST_NOTIFICATIONS,"Notification",code_notification)
 
         logRegToken()
-        sendUpstream()
 
-        try{
-            val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
-            startForegroundService(serviceIntent)
-        }catch(e: Exception){
-            Log.e(TAG,e.message.toString())
+        val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startService(serviceIntent)
         }
-
-    }
-    fun sendUpstream() {
-        val SENDER_ID = "katzen-a0e3e"
-        val messageId = 10 // Increment for each
-        // [START fcm_send_upstream]
-        val fm = Firebase.messaging
-        fm.send(
-            remoteMessage("$SENDER_ID@fcm.googleapis.com") {
-                setMessageId(messageId.toString())
-                addData("my_message", "Hello World")
-                addData("my_action", "SAY_HELLO")
-            },
-        )
-        // [END fcm_send_upstream]
     }
     fun logRegToken() {
         // [START log_reg_token]
@@ -176,7 +157,7 @@ class MainActivity : AppCompatActivity() {
             // Log and toast
             val msg = "FCM Registration token: $token"
             Log.d(TAG, msg)
-            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
         }
         // [END log_reg_token]
     }
@@ -203,7 +184,6 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.e(TAG, "gola requestcode: " + requestCode.toString())
         when (requestCode) {
             ConvertPDF.REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] ==

@@ -36,7 +36,7 @@ class FirebaseHelper {
         fun editAdress(alertDialog: AlertDialog, vMDM : VentaMesDetalleModel,
                       activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
             try {
-                myTopPostsQuery!!.child(vMDM.fecha).child(vMDM.key).setValue(vMDM)
+                myTopPostsQuery!!.child(vMDM.key_date).child(vMDM.key).setValue(vMDM)
                 Toast.makeText(activity,"Direccion editada.", Toast.LENGTH_LONG).show()
                 alertDialog.hide()
             }

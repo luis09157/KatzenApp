@@ -10,7 +10,7 @@ class ValidateFormulario {
 
             if(!vMDM.kilometros.equals("")){
                 val km =  vMDM.kilometros.toFloat()
-                if(km < 1){
+                if(km < 0){
                     flag = false
                     message = "La cantidad de kilometros debe ser mayor a 0."
                 }

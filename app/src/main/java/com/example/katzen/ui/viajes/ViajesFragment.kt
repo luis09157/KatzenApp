@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.VentaMesAdapter
 import com.example.katzen.Config.Config
-import com.example.katzen.Helper.NotificacionesHelper
+import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.VentaMesModel
 import com.example.katzen.databinding.FragmentViajesBinding
 import com.google.firebase.database.DataSnapshot
@@ -24,31 +23,17 @@ import com.google.firebase.ktx.Firebase
 
 
 class ViajesFragment : Fragment() {
-    val TAG = "ViajesFragment"
+    val TAG = "ViajesFragmentLog"
     private var _binding: FragmentViajesBinding? = null
     private val binding get() = _binding!!
     private lateinit var database: DatabaseReference
     var listVentaMes = arrayListOf<VentaMesModel>()
     var myTopPostsQuery: DatabaseReference? = null
+    var QueryGas: DatabaseReference? = null
     var postListener : ValueEventListener? = null
+    var adapter: VentaMesAdapter? = null
+    lateinit var loadingHelper : LoadingHelper
 
-    fun loading(){
-        binding.loading.visibility = View.VISIBLE
-        binding.contentList.visibility = View.GONE
-        binding.listViajes.visibility = View.VISIBLE
-        binding.contentNotResult.visibility = View.GONE
-    }
-    fun not_loading(){
-        binding.loading.visibility = View.GONE
-        binding.contentList.visibility = View.VISIBLE
-        binding.contentNotResult.visibility = View.GONE
-    }
-    fun not_loading_result(){
-        binding.loading.visibility = View.GONE
-        binding.contentList.visibility = View.VISIBLE
-        binding.listViajes.visibility = View.GONE
-        binding.contentNotResult.visibility = View.VISIBLE
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +44,9 @@ class ViajesFragment : Fragment() {
         _binding = FragmentViajesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        loading()
+        loadingHelper = LoadingHelper(binding.loading,binding.contentList,binding.listViajes,null,binding.contentNotResult)
+
+        loadingHelper.loading()
         initUI()
         initFirebase()
         getGasolinaApi()
@@ -67,11 +54,17 @@ class ViajesFragment : Fragment() {
 
         return root
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
+
+    fun desconectedQuery(){
         database.onDisconnect()
         myTopPostsQuery!!.removeEventListener(postListener!!)
+        QueryGas!!.removeEventListener(postListener!!)
         myTopPostsQuery!!.onDisconnect()
+        QueryGas!!.onDisconnect()
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        desconectedQuery()
         _binding = null
     }
     override fun onResume() {
@@ -90,13 +83,14 @@ class ViajesFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        database.onDisconnect()
-        myTopPostsQuery!!.removeEventListener(postListener!!)
-        myTopPostsQuery!!.onDisconnect()
+        desconectedQuery()
     }
 
     fun initUI(){
+        adapter = VentaMesAdapter(requireActivity(), listVentaMes)
+        binding.listViajes.adapter = adapter
         binding.listViajes.divider = null
+
         binding.listViajes.setOnItemClickListener { adapterView, view, i, l ->
             Config.MES_DETALLE = listVentaMes.get(i).fecha
             database.onDisconnect()
@@ -108,6 +102,7 @@ class ViajesFragment : Fragment() {
     fun initFirebase(){
         database = Firebase.database.reference
         myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear())
+        QueryGas = database.child("Katzen")
     }
     fun getData(dataSnapshot: DataSnapshot){
         listVentaMes.clear()
@@ -124,17 +119,19 @@ class ViajesFragment : Fragment() {
 
                 listVentaMes.add(ventaMesModel)
             }
-            val adapter = VentaMesAdapter(requireActivity(), listVentaMes)
-            binding.listViajes.adapter = adapter
-            not_loading()
+            Log.e("vemostodoporaqui","estamos fuera getdata")
+            Log.e("vemostodoporaqui",listVentaMes.size.toString())
+            adapter!!.notifyDataSetChanged()
+            loadingHelper.not_loading()
         }else{
-            not_loading_result()
+            loadingHelper.not_loading_result()
         }
 
     }
     fun getGasolinaApi(){
          postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.e("vemostodoporaqui","estamos en la venta de los meses")
                 initYearFirebase(dataSnapshot)
                 getData(dataSnapshot)
             }
@@ -142,7 +139,7 @@ class ViajesFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
-                not_loading_result()
+                loadingHelper.not_loading_result()
             }
         }
         myTopPostsQuery!!.addValueEventListener(postListener!!)
@@ -150,8 +147,6 @@ class ViajesFragment : Fragment() {
     fun initYearFirebase(dataSnapshot: DataSnapshot){
         var listMonths = UtilHelper.getMontsThisYears()
         var ventaMesModel = VentaMesModel()
-
-
 
         if (dataSnapshot.children.count() != 12){
             for (postSnapshot in dataSnapshot.children) {

@@ -11,5 +11,6 @@ data class  VentaMesDetalleModel (
     var linkMaps: String = "",
 
     var isEdit : Boolean  = false,
-    var key : String = ""
+    var key : String = "",
+    var key_date : String = ""
 )

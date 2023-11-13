@@ -75,7 +75,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_kilometros"
                         android:backgroundTint="@color/white"
-                        android:inputType="numberDecimal"
+                        android:inputType="number|numberDecimal"
                         android:digits="0123456789."
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -106,8 +106,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_precio_venta"
                         android:backgroundTint="@color/white"
-                        android:inputType="text"
+                        android:inputType="number|numberDecimal"
                         android:layout_width="match_parent"
+                        android:digits="0123456789."
                         android:layout_height="wrap_content" />
                 </com.google.android.material.textfield.TextInputLayout>
 

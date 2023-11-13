@@ -1,7 +1,5 @@
 package com.example.katzen.ui.viajes
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -112,13 +110,18 @@ class ViajesDetalleFragment : Fragment() {
         myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE).child("cargos")
     }
     fun getData(dataSnapshot: DataSnapshot){
+        var key_date = ""
         listVentaMesDetalle.clear()
         Config.COSTO = 0.00
         Config.GANANCIA = 0.00
         Config.VENTA = 0.00
 
         if(dataSnapshot.children.count() > 0){
+
             for (postSnapshot in dataSnapshot.children) {
+                key_date = ""
+                key_date = postSnapshot.key.toString()
+                Log.e("vemostodoporaqui", postSnapshot.key.toString())
 
                 for (data in postSnapshot.children) {
                     var ventaMesDetalleModel = VentaMesDetalleModel()
@@ -131,6 +134,7 @@ class ViajesDetalleFragment : Fragment() {
                     ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
                     ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
                     ventaMesDetalleModel.key = data.child("key").value.toString()
+                    ventaMesDetalleModel.key_date = key_date
 
 
                     Config.COSTO += ventaMesDetalleModel.costo.toDouble()
@@ -154,11 +158,13 @@ class ViajesDetalleFragment : Fragment() {
         postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 loadingHelper.loading()
+                Log.e("vemostodoporaqui", "entramo de nuevo despues de agregar")
                 getData(dataSnapshot)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Getting Post failed, log a message
+                loadingHelper.not_loading_result()
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
