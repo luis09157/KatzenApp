@@ -22,6 +22,7 @@ class FirebaseHelper {
                 val key = getIdFirebase()
                 vMDM.key = key
 
+                vMDM.key_fecha_hora = UtilHelper.getDate()
                 myTopPostsQuery!!.child(getDateNow()).child(key).setValue(vMDM)
                 Toast.makeText(activity,"Direccion Guardada.", Toast.LENGTH_LONG).show()
                 alertDialog.hide()

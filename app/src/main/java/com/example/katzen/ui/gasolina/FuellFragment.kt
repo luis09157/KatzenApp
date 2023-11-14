@@ -8,13 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.GasHelper
-import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentGalleryBinding
 import com.google.android.material.snackbar.Snackbar
-import java.math.RoundingMode
-import java.text.DecimalFormat
-
 class FuellFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
@@ -53,10 +49,6 @@ class FuellFragment : Fragment() {
     }
 
     fun calcular(km : Double){
-        val df = DecimalFormat("#.##")
-        df.roundingMode = RoundingMode.DOWN
-        var kmV = 0.00
-        var porcentaje = 0.0
         var position = 0
 
         if(binding.rbSemana.isChecked){
@@ -90,9 +82,7 @@ class FuellFragment : Fragment() {
         requireView().isFocusableInTouchMode = true
         requireView().requestFocus()
         requireView().setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                true
-            } else false
+            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
         }
     }
 }

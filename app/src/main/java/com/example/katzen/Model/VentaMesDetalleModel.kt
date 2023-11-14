@@ -12,5 +12,6 @@ data class  VentaMesDetalleModel (
 
     var isEdit : Boolean  = false,
     var key : String = "",
-    var key_date : String = ""
+    var key_date : String = "",
+    var key_fecha_hora : String = ""
 )

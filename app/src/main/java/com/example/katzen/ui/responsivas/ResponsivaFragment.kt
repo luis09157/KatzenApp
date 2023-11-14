@@ -1,13 +1,12 @@
 package com.example.katzen.ui.responsivas
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.PDF.ConvertPDF
-import com.example.katzen.PacienteModel
+import com.example.katzen.Model.PacienteModel
 import com.example.katzen.databinding.FragmentResponsivasBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database

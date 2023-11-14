@@ -106,8 +106,11 @@ class ViajesDetalleFragment : Fragment() {
 
     fun initFirebase(){
         database = Firebase.database.reference
-        queryRefreshCost =  database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE)
-        myTopPostsQuery = database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear()).child(Config.MES_DETALLE).child("cargos")
+        queryRefreshCost =  database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear())
+                            .child(Config.MES_DETALLE)
+        myTopPostsQuery = database.child("Katzen").child("Gasolina")
+                            .child(UtilHelper.getDateYear()).child(Config.MES_DETALLE).child("cargos")
+
     }
     fun getData(dataSnapshot: DataSnapshot){
         var key_date = ""
@@ -134,7 +137,12 @@ class ViajesDetalleFragment : Fragment() {
                     ventaMesDetalleModel.kilometros = data.child("kilometros").value.toString()
                     ventaMesDetalleModel.linkMaps = data.child("linkMaps").value.toString()
                     ventaMesDetalleModel.key = data.child("key").value.toString()
-                    ventaMesDetalleModel.key_date = key_date
+                    ventaMesDetalleModel.key_fecha_hora = data.child("key_fecha_hora").value.toString()
+                    ventaMesDetalleModel.key_date = data.child("key_date").value.toString()
+                    if(ventaMesDetalleModel.key_date.equals("")){
+                        ventaMesDetalleModel.key_date = key_date
+                    }
+
 
 
                     Config.COSTO += ventaMesDetalleModel.costo.toDouble()

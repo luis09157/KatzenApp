@@ -1,4 +1,4 @@
-package com.example.katzen
+package com.example.katzen.Model
 
 data class PacienteModel (
     val nombre: String? = "",

@@ -1,5 +1,6 @@
 package com.example.katzen.Helper
 
+import com.example.katzen.Config.Config
 import com.example.katzen.Model.VentaMesDetalleModel
 
 class ValidateFormulario {
@@ -28,8 +29,15 @@ class ValidateFormulario {
                     vMDM.ganancia = vMDM.ganancia
                     vMDM.costo = vMDM.costo
                     vMDM.venta = vMDM.venta
+
+                    if(Config.CATEGORIAS[4] != vMDM.categoria){
+                        if(vMDM.venta.toDouble() < 50.00 ){
+                            vMDM.venta = "50.00"
+                        }
+                    }
+
                 }else{
-                    val (costo,ganancia,venta) = GasHelper.calcular(vMDM.kilometros.toDouble(),vMDM.categoria)
+                    val (costo,ganancia,venta) = GasHelper.calcularDomicilios(vMDM.kilometros.toDouble(),vMDM.categoria)
                     vMDM.ganancia = ganancia
                     vMDM.costo = costo
                     vMDM.venta = venta
