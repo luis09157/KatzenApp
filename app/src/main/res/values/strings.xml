@@ -39,6 +39,9 @@
     <string name="btn_calc">Calc</string>
     <string name="btn_clen">Clean</string>
 
+    <string name="btn_calcular">Calcular</string>
+    <string name="btn_limpiar">Limpiar</string>
+
     <string name="btn_save">Guardar</string>
     <string name="btn_edit">Editar</string>
     <string name="btn_cancelar">Cancelar</string>

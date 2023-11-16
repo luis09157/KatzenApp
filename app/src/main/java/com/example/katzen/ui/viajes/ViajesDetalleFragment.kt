@@ -162,7 +162,6 @@ class ViajesDetalleFragment : Fragment() {
         }
     }
     private fun getGasolinaApi(){
-
         postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 loadingHelper.loading()
@@ -176,16 +175,8 @@ class ViajesDetalleFragment : Fragment() {
                 Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
-        myTopPostsQuery!!.addValueEventListener(postListener!!)
+        myTopPostsQuery!!.orderByChild("key_fecha_hora")!!.addValueEventListener(postListener!!)
     }
-
-
-
-
-
-
-
-
     fun refreshCosts(){
         val df = DecimalFormat("#.##")
 

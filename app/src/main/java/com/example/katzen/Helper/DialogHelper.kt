@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Toast
+import com.example.katzen.Config.Config
 import com.example.katzen.Helper.FirebaseHelper.Companion.editAdress
 import com.example.katzen.Helper.FirebaseHelper.Companion.newAdress
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
@@ -26,7 +27,6 @@ class DialogHelper {
 
     companion object{
         val TAG = "DialogHelper"
-        val categorias = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
 
         fun getDateNow(): String{
             val dateFormatter = SimpleDateFormat("dd-MM-yyyy")
@@ -89,7 +89,7 @@ class DialogHelper {
             }
 
             val adapter = ArrayAdapter(activity,
-                android.R.layout.simple_list_item_1,categorias)
+                android.R.layout.simple_list_item_1,Config.CATEGORIAS)
 
 
             txt_categoria.setAdapter(adapter)
@@ -161,7 +161,7 @@ class DialogHelper {
             }
 
             val adapter = ArrayAdapter(activity,
-                android.R.layout.simple_list_item_1,categorias)
+                android.R.layout.simple_list_item_1,Config.CATEGORIAS)
 
 
             txt_categoria.setAdapter(adapter)

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="katzen_verde">#0A969B</color>
+    <color name="katzen_verde_fuerte">#065D60</color>
+    <color name="katzen_verde_claro">#09C1CD</color>
+
+    <color name="katzen_rosa">#AD067E</color>
+    <color name="katzen_rosa_fuerte">#7D055B</color>
+
+    <color name="katzen_statusbar">#04E896</color>
+
+
     <color name="purple">#9A1CB6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -279,10 +289,9 @@
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
 
-
     <!-- Colors for the app -->
-    <color name="primary">@color/indigo_500</color>
-    <color name="primary_dark">@color/indigo_700</color>
+    <color name="primary">@color/katzen_verde</color>
+    <color name="primary_dark">@color/katzen_verde</color>
     <color name="accent">@color/pink_A200</color>
 
     <!--Light Background Dark Text-->

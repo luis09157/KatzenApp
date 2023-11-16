@@ -138,10 +138,10 @@ class MainActivity : AppCompatActivity() {
 
         logRegToken()
 
-        val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
+       /* val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startService(serviceIntent)
-        }
+        }*/
     }
     fun logRegToken() {
         // [START log_reg_token]

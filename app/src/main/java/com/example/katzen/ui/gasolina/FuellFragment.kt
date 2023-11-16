@@ -5,9 +5,12 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.GasHelper
+import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentGalleryBinding
 import com.google.android.material.snackbar.Snackbar
@@ -33,12 +36,30 @@ class FuellFragment : Fragment() {
                     .setAction("Action", null).show()
                 return@setOnClickListener
             }
-            calcular(binding.etCosto.text.toString().toDouble())
-        }
+            if(binding.spCategorias.text.toString().trim().isEmpty()){
+                Snackbar.make(it, "Selecciona una categoria para calcular.", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+                return@setOnClickListener
+            }
+            val (costo,ganancia,venta) =  GasHelper.calcular(binding.etCosto.text.toString().toDouble(),binding.spCategorias.text.toString())
 
+            binding.txtGanancia.text = ganancia
+            binding.txtCosto.text = costo
+            binding.txtVenta.text = venta
+
+        }
         binding.btnClean.setOnClickListener {
             clean()
         }
+        binding.spCategorias.setOnClickListener {
+            UtilHelper.hideKeyBoardWorld(requireActivity(),it)
+        }
+
+        val adapter = ArrayAdapter(requireActivity(),
+            android.R.layout.simple_list_item_1,Config.CATEGORIAS)
+
+
+        binding.spCategorias.setAdapter(adapter)
 
         return root
     }
@@ -48,31 +69,11 @@ class FuellFragment : Fragment() {
         _binding = null
     }
 
-    fun calcular(km : Double){
-        var position = 0
-
-        if(binding.rbSemana.isChecked){
-           position = 0
-        }else if(binding.rbCampaA.isChecked){
-           position = 2
-        }else if(binding.rbRuta.isChecked) {
-            position = 3
-        }else if(binding.rbMoto.isChecked){
-            position = 4
-        }
-
-        val (costoT,gananciaT,ventaT) = GasHelper.calcular(km,Config.CATEGORIAS.get(position))
-
-        binding.txtCosto.text = "$ ${costoT}"
-        binding.txtGanancia.text = "$ ${gananciaT}"
-        binding.txtVenta.text = "$ ${ventaT}"
-    }
-
     fun clean(){
         binding.txtCosto.text = getString(R.string.title_dinero)
         binding.txtGanancia.text = getString(R.string.title_dinero)
         binding.txtVenta.text = getString(R.string.title_dinero)
-        binding.etCosto.text.clear()
+        binding.etCosto.text?.clear()
     }
     override fun onResume() {
         super.onResume()
