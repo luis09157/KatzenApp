@@ -8,6 +8,7 @@ data class  MascotaModel (
     var sexo: String = "",
     var especie: String = "",
     var raza: String = "",
+    var color: String = "",
     var id_usuario: String = "",
     var fecha: String = ""
 

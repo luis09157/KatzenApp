@@ -33,12 +33,10 @@ class MascotaAdapter(context: Context, val listMascota: ArrayList<MascotaModel>)
             rowView = view
             viewHolder = rowView.tag as ViewHolder
         }
-        val df = DecimalFormat("#.##")
 
-        /*viewHolder.txt_mes.text = listVentaMes.get(position).mes
-        viewHolder.txt_ganancia.text = "$ " +listVentaMes.get(position).ganancia
-        viewHolder.txt_costo.text = "$ " +listVentaMes.get(position).costo
-        viewHolder.txt_venta.text = "$ " +listVentaMes.get(position).venta*/
+        viewHolder.txt_nombre.text = listMascota.get(position).nombre
+        viewHolder.txt_especie.text = listMascota.get(position).especie
+        viewHolder.txt_sexo.text = listMascota.get(position).sexo
 
 
         return rowView
@@ -53,9 +51,8 @@ class MascotaAdapter(context: Context, val listMascota: ArrayList<MascotaModel>)
     }
 
     private class ViewHolder(view: View?) {
-        /*val txt_mes = view?.findViewById(R.id.txt_mes) as TextView
-        val txt_costo = view?.findViewById(R.id.txt_costo) as TextView
-        val txt_ganancia = view?.findViewById(R.id.txt_ganancia) as TextView
-        val txt_venta = view?.findViewById(R.id.txt_venta) as TextView*/
+        val txt_nombre = view?.findViewById(R.id.txt_nombre) as TextView
+        val txt_especie = view?.findViewById(R.id.txt_especie) as TextView
+        val txt_sexo = view?.findViewById(R.id.txt_sexo) as TextView
     }
 }

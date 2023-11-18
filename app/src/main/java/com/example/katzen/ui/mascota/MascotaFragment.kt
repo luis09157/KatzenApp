@@ -2,6 +2,7 @@ package com.example.katzen.ui.mascota
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import com.example.katzen.Adapter.MascotaAdapter
 import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.FirebaseHelper
 import com.example.katzen.Helper.LoadingHelper
+import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.MascotaModel
 import com.example.katzen.databinding.FragmentMascotaBinding
 import com.google.firebase.database.DataSnapshot
@@ -56,26 +59,25 @@ class MascotaFragment : Fragment() {
         adapter = MascotaAdapter(requireContext(),listMascotas)
         binding.listMascotas.adapter = adapter
         binding.listMascotas.divider = null
+        binding.listMascotas.setOnItemClickListener { _, _, i, _ ->
+            UtilFragment.changeFragment(requireContext(),MascotaDetalleFragment(listMascotas[i]),"MascotaDetalleFragment")
+        }
     }
     private fun getMascotasAPI(){
         postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 loadingHelper.loading()
-                Log.e("vemostodoporaqui", "entramo de nuevo despues de agregar")
                 getData(dataSnapshot)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting Post failed, log a message
                 loadingHelper.not_loading_result()
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException())
             }
         }
         queryMascota!!.orderByChild("fecha")!!.addValueEventListener(postListener!!)
     }
     fun getData(dataSnapshot: DataSnapshot){
         listMascotas.clear()
-
         if(dataSnapshot.children.count() > 0){
 
             for (postSnapshot in dataSnapshot.children) {
@@ -90,6 +92,8 @@ class MascotaFragment : Fragment() {
                     mascotaModel.edad = data.child("edad").value.toString()
                     mascotaModel.raza = data.child("raza").value.toString()
 
+                    Log.e("checateesto",mascotaModel.nombre)
+
                     listMascotas.add(mascotaModel)
                 }
             }
@@ -100,9 +104,16 @@ class MascotaFragment : Fragment() {
             Toast.makeText(requireContext(),"No hay domicilios agregados.", Toast.LENGTH_LONG).show()
         }
     }
-    override fun onResume() {
+    override fun onResume() { 
         super.onResume()
-        loadingHelper.not_loading_result()
+        if (view == null) {
+            return
+        }
+        requireView().isFocusableInTouchMode = true
+        requireView().requestFocus()
+        requireView().setOnKeyListener { v, keyCode, event ->
+            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
+        }
     }
 
     override fun onDestroyView() {

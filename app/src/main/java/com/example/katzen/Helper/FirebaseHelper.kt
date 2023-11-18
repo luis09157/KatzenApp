@@ -59,7 +59,7 @@ class FirebaseHelper {
                 mM.id = key
                 mM.fecha = UtilHelper.getDate()
 
-                queryMascota!!.child(getDateNow()).child(key).setValue(mM)
+                queryMascota!!.child(key).setValue(mM)
                 Toast.makeText(activity,activity.getString(R.string.dialog_msg_add_mascota_exito), Toast.LENGTH_LONG).show()
                 alertDialog.hide()
             }
