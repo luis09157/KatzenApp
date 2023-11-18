@@ -7,17 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.R
-import com.example.katzen.databinding.FragmentHomeBinding
+import com.example.katzen.databinding.FragmentCardBinding
 import com.google.android.material.snackbar.Snackbar
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
 class PaymetCardFragment : Fragment() {
-
-    private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -25,7 +21,7 @@ class PaymetCardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentCardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.btnCalcula.setOnClickListener {
@@ -63,7 +59,7 @@ class PaymetCardFragment : Fragment() {
         binding.txtCosto.text = getString(R.string.title_dinero)
         binding.txtGanancia.text = getString(R.string.title_dinero)
         binding.txtVenta.text = getString(R.string.title_dinero)
-        binding.etCosto.text.clear()
+        binding.etCosto.text?.clear()
     }
     override fun onResume() {
         super.onResume()
@@ -73,9 +69,7 @@ class PaymetCardFragment : Fragment() {
         requireView().isFocusableInTouchMode = true
         requireView().requestFocus()
         requireView().setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                true
-            } else false
+            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
         }
     }
 }

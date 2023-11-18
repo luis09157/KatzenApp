@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".ui.card.PaymetCardFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Tarjeta"
+                android:textColor="@color/black"
+                android:textSize="26dp"
+                android:fontFamily="@font/varela"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="330dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="30dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        app:hintTextColor="@color/black"
+                        app:startIconDrawable="@drawable/ic_dinero"
+                        android:enabled="true"
+                        android:textColorHint="@color/black"
+                        android:hint="@string/txtField_dinero">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_costo"
+                            android:backgroundTint="@color/white"
+                            android:inputType="number|numberDecimal"
+                            android:digits="0123456789."
+                            android:imeOptions="actionDone"
+                            android:fontFamily="@font/varela"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        app:cardCornerRadius="25dp"
+                        android:backgroundTint="@color/background_color">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="1dp"
+                            app:cardCornerRadius="25dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+                                    <ImageView
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
+                                        android:layout_margin="20dp"
+                                        android:src="@drawable/ic_costo"/>
+                                    <TextView
+                                        android:id="@+id/txt_costo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/title_dinero"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="22dp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"/>
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Monto"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="15dp"
+                                        android:textStyle="normal"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+                                    <ImageView
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
+                                        android:layout_margin="20dp"
+                                        android:src="@drawable/ic_impuesto"/>
+                                    <TextView
+                                        android:id="@+id/txt_ganancia"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/title_dinero"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="22dp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"/>
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Impuesto"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="15dp"
+                                        android:textStyle="normal"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+                                    <ImageView
+                                        android:layout_width="40dp"
+                                        android:layout_height="40dp"
+                                        android:layout_margin="20dp"
+                                        android:src="@drawable/ic_ganancia"/>
+                                    <TextView
+                                        android:id="@+id/txt_venta"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/title_dinero"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="22dp"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"/>
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Venta"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/varela"
+                                        android:textSize="15dp"
+                                        android:textStyle="normal"
+                                        android:textColor="@color/black"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+                    </androidx.cardview.widget.CardView>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btn_clean"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/katzen_rosa_fuerte"
+                            android:fontFamily="@font/varela"
+                            android:text="@string/btn_limpiar"
+                            android:textSize="18dp" />
+
+                        <Button
+                            android:id="@+id/btn_calcula"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+
+                            android:fontFamily="@font/varela"
+                            android:textSize="18dp"
+                            android:backgroundTint="@color/katzen_rosa_fuerte"
+                            android:layout_margin="5dp"
+                            android:text="@string/btn_calcular" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

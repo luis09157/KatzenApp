@@ -25,6 +25,12 @@ class UtilHelper {
 
             return formatter.format(time).toString()
         }
+        fun getDateMonth() : String {
+            val time = Calendar.getInstance().time
+            val formatter = SimpleDateFormat("MM/yyyy")
+
+            return formatter.format(time).toString()
+        }
         fun getDate() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")

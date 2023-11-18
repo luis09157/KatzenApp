@@ -29,6 +29,7 @@ import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.ui.card.PaymetCardFragment
 import com.example.katzen.ui.example.ExampleFragment
 import com.example.katzen.ui.gasolina.FuellFragment
+import com.example.katzen.ui.mascota.MascotaFragment
 import com.example.katzen.ui.medical.MedicalFragment
 import com.example.katzen.ui.viajes.ViajesFragment
 import com.google.android.material.navigation.NavigationView
@@ -125,6 +126,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_example -> {
                     binding.appBarMain.toolbar.title = "Example"
                     UtilFragment.changeFragment(this, ExampleFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                    true
+                }
+                R.id.nav_mascota -> {
+                    binding.appBarMain.toolbar.title = "Agregar Mascota"
+                    UtilFragment.changeFragment(this, MascotaFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
 
                     true

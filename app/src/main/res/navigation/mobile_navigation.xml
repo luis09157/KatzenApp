@@ -9,13 +9,13 @@
         android:id="@+id/nav_fuel"
         android:name="com.example.katzen.ui.gasolina.FuellFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gasolina" />
 
     <fragment
         android:id="@+id/nav_payment_card"
         android:name="com.example.katzen.ui.card.PaymetCardFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_card" />
 
     <fragment
         android:id="@+id/nav_slideshow"
@@ -34,4 +34,10 @@
         android:name="com.example.katzen.ui.example.ExampleFragment"
         android:label="@string/menu_example"
         tools:layout="@layout/example_fragment" />
+
+    <fragment
+        android:id="@+id/nav_mascota"
+        android:name="com.example.katzen.ui.mascota.MascotaFragment"
+        android:label="@string/menu_add_mascota"
+        tools:layout="@layout/fragment_mascota" />
 </navigation>

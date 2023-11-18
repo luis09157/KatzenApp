@@ -14,8 +14,12 @@
     <string name="menu_add_paciente">Agregar Paciente</string>
     <string name="menu_store">Tienda</string>
     <string name="menu_viajes">Viajes</string>
+    <string name="menu_mascota">Mascota</string>
     <string name="menu_example">Example</string>
     <string name="menu_add_travel">Agregar Domicilio</string>
+
+
+    <string name="menu_add_mascota">Agregar Mascota</string>
 
     <string name="menu_total">Total</string>
     <string name="menu_impuesto">Impuesto</string>
@@ -34,7 +38,7 @@
     <string name="title_semana">Semana</string>
     <string name="title_campaña">Campaña</string>
     <string name="title_ruta">Ruta</string>
-    <string name="title_dinero">$ 0.00</string>
+    <string name="title_dinero">$0.00</string>
 
     <string name="btn_calc">Calc</string>
     <string name="btn_clen">Clean</string>
@@ -48,8 +52,13 @@
 
 
     <string name="dialog_msg_title">Confirmar Domicilio</string>
+    <string name="dialog_msg_title_mascota">Confirmar Datos Mascota</string>
     <string name="dialog_msg_save">¿Quieres guardar el domicilio?</string>
+    <string name="dialog_msg_save_mascota">¿Quieres guardar los datos de la mascota?</string>
     <string name="dialog_msg_edit">¿Quieres editar el domicilio?</string>
+
+
+    <string name="dialog_msg_add_mascota_exito">Se registro con exito a la mascota.</string>
 
 
     <string name="txtField_nombre">Nombre</string>
@@ -68,7 +77,12 @@
     <string name="txtField_domicilio">Domicilio</string>
     <string name="txtField_fecha">Fecha</string>
     <string name="txtField_kilometros">Kilometros</string>
+    <string name="txtField_dinero">Dinero</string>
     <string name="txtField_maps">Google Maps</string>
+
+
+    <string name="txtField_mascota">Nombre Mascota</string>
+    <string name="txtField_sexo">Sexo</string>
 
     <string name="no_results">No hay domicilios.</string>
 

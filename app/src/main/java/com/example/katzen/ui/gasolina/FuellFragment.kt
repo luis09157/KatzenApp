@@ -10,13 +10,12 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.R
-import com.example.katzen.databinding.FragmentGalleryBinding
+import com.example.katzen.databinding.FragmentGasolinaBinding
 import com.google.android.material.snackbar.Snackbar
 class FuellFragment : Fragment() {
 
-    private var _binding: FragmentGalleryBinding? = null
+    private var _binding: FragmentGasolinaBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -27,7 +26,7 @@ class FuellFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        _binding = FragmentGasolinaBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.btnCalcula.setOnClickListener {
