@@ -9,11 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MascotaAdapter
-import com.example.katzen.Helper.DialogHelper
+import com.example.katzen.Fragment.AddMascotaFragment
 import com.example.katzen.Helper.FirebaseHelper
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.MascotaModel
 import com.example.katzen.databinding.FragmentMascotaBinding
 import com.google.firebase.database.DataSnapshot
@@ -50,8 +49,9 @@ class MascotaFragment : Fragment() {
         getMascotasAPI()
 
         binding.btnAddMascota.setOnClickListener {
-            DialogHelper.dialogAddMascota(requireActivity(),loadingHelper)
+            UtilFragment.changeFragment(requireActivity(), AddMascotaFragment(),TAG)
         }
+
 
         return root
     }
@@ -120,5 +120,6 @@ class MascotaFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 
 }

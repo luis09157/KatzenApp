@@ -1,5 +1,6 @@
 package com.example.katzen.Helper
 
+import KatzenDataBase
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.ArrayAdapter
@@ -207,14 +208,18 @@ class DialogHelper {
                 .setPositiveButton(activity.resources.getString(R.string.btn_save)) { dialog, which ->
                     val (message, flag) = validarFormulario(mM)
                     if(flag){
+                        try {
+                            val katzenDataBase = KatzenDataBase()
+                            katzenDataBase.agregarMascota(mM)
 
-                        FirebaseHelper.newMascota(alertDialog,mM,activity,loadingHelper)
-
-                        /*if (vMDM.isEdit){
-                            editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
-                        }else{
-                            newAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
-                        }*/
+                            Toast.makeText(activity,activity.getString(R.string.dialog_msg_add_mascota_exito), Toast.LENGTH_LONG).show()
+                            alertDialog.hide()
+                        }
+                        catch (e: Exception) {
+                            loadingHelper.not_loading_result()
+                            Toast.makeText(activity,"Hubo una problema al guardar el domicilio, intenta nuevamente.",
+                                Toast.LENGTH_LONG).show()
+                        }
                     }else{
                         Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
                     }
@@ -243,66 +248,6 @@ class DialogHelper {
 
                 }
                 .show()
-        }
-        fun dialogAddMascota(activity: Activity, loadingHelper: LoadingHelper){
-            var mM = MascotaModel()
-            val builder = AlertDialog.Builder(activity, R.style.CustomAlertDialog)
-                .create()
-            val view = activity.layoutInflater.inflate(R.layout.vista_agregar_mascota,null)
-
-
-            val  txt_nombre = view.findViewById<TextInputEditText>(R.id.text_nombre)
-            val  sp_especie = view.findViewById<AutoCompleteTextView>(R.id.sp_especie)
-            val  sp_raza = view.findViewById<AutoCompleteTextView>(R.id.sp_raza)
-            val  sp_sexo = view.findViewById<AutoCompleteTextView>(R.id.sp_sexo)
-
-            val  txt_peso = view.findViewById<TextInputEditText>(R.id.text_peso)
-            val  txt_edad = view.findViewById<TextInputEditText>(R.id.text_edad)
-
-
-            val  btn_cancelar = view.findViewById<Button>(R.id.btn_cancelar)
-            val  btn_guardar = view.findViewById<Button>(R.id.btn_guardar)
-
-
-            sp_raza.setOnClickListener {
-                view.hideKeyboard()
-            }
-            sp_especie.setOnClickListener {
-                view.hideKeyboard()
-            }
-            sp_sexo.setOnClickListener {
-                view.hideKeyboard()
-            }
-
-            btn_cancelar.setOnClickListener {
-                view.hideKeyboard()
-                builder.hide()
-            }
-            btn_guardar.setOnClickListener {
-                view.hideKeyboard()
-
-                mM.nombre  = txt_nombre.text.toString()
-                mM.especie = sp_especie.text.toString()
-                mM.raza = sp_raza.text.toString()
-                mM.sexo = sp_sexo.text.toString()
-
-                mM.peso = txt_peso.text.toString()
-                mM.edad = txt_edad.text.toString()
-
-                dialogConfirm(builder,activity,mM,loadingHelper)
-            }
-
-            val adapterSEXO = ArrayAdapter(activity,
-                android.R.layout.simple_list_item_1,Config.SEXO)
-            sp_sexo.setAdapter(adapterSEXO)
-            val adapterESPECIE = ArrayAdapter(activity,
-                android.R.layout.simple_list_item_1,Config.ESPECIE)
-            sp_especie.setAdapter(adapterESPECIE)
-
-
-            builder.setView(view)
-            builder.setCanceledOnTouchOutside(false)
-            builder.show()
         }
     }
 }

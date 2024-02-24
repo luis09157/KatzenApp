@@ -50,26 +50,6 @@ class FirebaseHelper {
             }
 
         }
-        fun newMascota(alertDialog: AlertDialog, mM : MascotaModel,
-                      activity: Activity,loadingHelper: LoadingHelper) {
-            try {
-                getRefFirebaseMascotaAdd()
-
-                val key = getIdFirebase()
-                mM.id = key
-                mM.fecha = UtilHelper.getDate()
-
-                queryMascota!!.child(key).setValue(mM)
-                Toast.makeText(activity,activity.getString(R.string.dialog_msg_add_mascota_exito), Toast.LENGTH_LONG).show()
-                alertDialog.hide()
-            }
-            catch (e: Exception) {
-                loadingHelper.not_loading_result()
-                Toast.makeText(activity,"Hubo una problema al guardar el domicilio, intenta nuevamente.",
-                    Toast.LENGTH_LONG).show()
-            }
-
-        }
         fun editAdress(alertDialog: AlertDialog, vMDM : VentaMesDetalleModel,
                       activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
             try {

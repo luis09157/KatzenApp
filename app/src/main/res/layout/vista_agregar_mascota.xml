@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -9,142 +10,155 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_margin="25dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/foto_mascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp" />
+
+                <Button
+                    android:id="@+id/btn_subir_imagen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Foto" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
                     android:enabled="true"
-                    android:hint="@string/txtField_nombre">
+                    android:hint="@string/txtField_nombre"
+                    app:startIconDrawable="@drawable/ic_pet">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_nombre"
-                        android:backgroundTint="@color/white"
                         android:layout_width="match_parent"
-                        android:inputType="text"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_margin="5dp"
+                    android:background="@color/white"
                     app:startIconDrawable="@drawable/ic_pet">
 
                     <AutoCompleteTextView
                         android:id="@+id/sp_sexo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/txtField_sexo"/>
+                        android:hint="@string/txtField_sexo" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_margin="5dp"
+                    android:background="@color/white"
                     app:startIconDrawable="@drawable/ic_pet">
 
                     <AutoCompleteTextView
                         android:id="@+id/sp_especie"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/txtField_especie"/>
+                        android:hint="@string/txtField_especie" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_margin="5dp"
+                    android:background="@color/white"
                     app:startIconDrawable="@drawable/ic_pet">
 
                     <AutoCompleteTextView
                         android:id="@+id/sp_raza"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:hint="@string/txtField_raza"/>
+                        android:hint="@string/txtField_raza" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
                     android:enabled="true"
-                    android:hint="@string/txtField_peso">
+                    android:hint="@string/txtField_peso"
+                    app:startIconDrawable="@drawable/ic_pet">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_peso"
-                        android:backgroundTint="@color/white"
-                        android:inputType="numberDecimal"
-                        android:digits="0123456789."
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:digits="0123456789."
+                        android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
                     android:enabled="true"
-                    android:hint="@string/txtField_edad">
+                    android:hint="@string/txtField_edad"
+                    app:startIconDrawable="@drawable/ic_pet">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/text_edad"
-                        android:backgroundTint="@color/white"
-                        android:inputType="text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-
-
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_cancelar"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
-                    android:text="Cancelar"/>
+                    android:layout_weight="1"
+                    android:text="Cancelar" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_guardar"
-                    android:layout_weight="1"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:text="Guardar"/>
+                    android:layout_weight="1"
+                    android:text="Guardar" />
 
             </LinearLayout>
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
