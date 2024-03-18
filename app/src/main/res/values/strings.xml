@@ -122,4 +122,19 @@
     <string name="error_password_mismatch">Las contraseñas no coinciden</string>
     <string name="error_invalid_phone">Ingrese un número de teléfono válido</string>
     <!-- Puedes agregar más mensajes según tus necesidades -->
+
+
+    <!-- VALIDADOR PRODUCTO -->
+    <string name="error_empty_fields">Todos los campos son obligatorios</string>
+    <string name="error_invalid_date">Formato de fecha inválido</string>
+    <string name="error_invalid_number">Los campos Precio de Venta y Costo deben ser números válidos</string>
+    <string name="error_future_date">La fecha ingresada no puede ser en el futuro.</string>
+    <string name="error_no_image_selected">Por favor, seleccione una imagen para el producto.</string>
+    <string name="dialog_product_name_exists">El nombre del producto ya está registrado.</string>
+    <string name="dialog_product_saved_success">Producto guardado exitosamente en la base de datos.</string>
+    <string name="dialog_error_saving_product">Error al guardar el producto en la base de datos: %s</string>
+    <string name="dialog_error_uploading_image">Error al subir la imagen del producto: %s</string>
+    <string name="dialog_database_query_error">Error al realizar la consulta en la base de datos: %s</string>
+    <!-- VALIDADOR PRODUCTO -->
+
 </resources>

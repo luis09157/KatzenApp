@@ -1,57 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_color"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:padding="16dp">
 
-    <!-- Nombre del Producto -->
-    <EditText
-        android:id="@+id/editTextNombre"
+    <include
+        android:id="@+id/fragment_no_data"
+        layout="@layout/fragment_no_data"
+        android:visibility="gone"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nombre del Producto"
-        android:inputType="text"/>
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/background_color"
+        app:lottie_autoPlay="true"
+        android:background="@color/white"
+        app:lottie_loop="true"
+        android:visibility="gone" />
 
-    <!-- Precio de Venta -->
-    <EditText
-        android:id="@+id/editTextPrecioVenta"
+    <LinearLayout
+        android:id="@+id/cont_add_producto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Precio de Venta"
-        android:inputType="numberDecimal"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- Costo del Producto -->
-    <EditText
-        android:id="@+id/editTextCosto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Costo del Producto"
-        android:inputType="numberDecimal"/>
 
-    <!-- Fecha de Agregado -->
-    <EditText
-        android:id="@+id/editTextFecha"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Fecha de Agregado"
-        android:inputType="date"/>
+        <!-- Nombre del Producto -->
+        <EditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del Producto"
+            android:inputType="text"/>
 
-    <!-- Método de Pago -->
-    <EditText
-        android:id="@+id/editTextMetodoPago"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Método de Pago"
-        android:inputType="text"/>
+        <!-- Precio de Venta -->
+        <EditText
+            android:id="@+id/editTextPrecioVenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Precio de Venta"
+            android:inputType="numberDecimal"/>
 
-    <!-- Botón para guardar -->
-    <Button
-        android:id="@+id/btnGuardar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Guardar"/>
+        <!-- Costo del Producto -->
+        <EditText
+            android:id="@+id/editTextCosto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Costo del Producto"
+            android:inputType="numberDecimal"/>
 
-</LinearLayout>
+        <!-- Fecha de Agregado -->
+        <EditText
+            android:id="@+id/editTextFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha de Agregado"
+            android:inputType="date"/>
+
+        <!-- ImageView para mostrar la imagen seleccionada -->
+        <ImageView
+            android:id="@+id/imageViewProducto"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:src="@drawable/img_gato_perfil"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
+
+        <!-- Botón para seleccionar la foto -->
+        <Button
+            android:id="@+id/btnSeleccionarFoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar Foto"/>
+
+        <!-- Botón para guardar -->
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>
