@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:background="@color/background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/editTextArticulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Articulo"
+            android:layout_marginTop="16dp"
+            android:inputType="text"/>
+
+        <!-- Campo de entrada para Venta -->
+        <EditText
+            android:id="@+id/editTextVenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Venta"
+            android:layout_marginTop="16dp"
+            android:inputType="numberDecimal"/>
+
+        <!-- Campo de entrada para Costo -->
+        <EditText
+            android:id="@+id/editTextCosto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Costo"
+            android:layout_marginTop="16dp"
+            android:inputType="numberDecimal"/>
+
+        <!-- Campo de entrada para Ganancia -->
+        <EditText
+            android:id="@+id/editTextGanancia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ganancia"
+            android:enabled="false"
+            android:layout_marginTop="16dp"
+            android:inputType="numberDecimal"/>
+
+        <!-- Campo de entrada para Fecha -->
+        <EditText
+            android:id="@+id/editTextFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha"
+            android:layout_marginTop="16dp"
+            android:inputType="text"/>
+
+        <!-- Campo de entrada para Método de Pago -->
+        <Spinner
+            android:id="@+id/editTextMetodoPago"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Método de Pago"
+            android:layout_marginTop="16dp"
+            android:inputType="text"/>
+
+    </LinearLayout>
+    <!-- Campo de entrada para Articulo -->
+
+
+    <!-- Botón para guardar -->
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar"/>
+
+</LinearLayout>

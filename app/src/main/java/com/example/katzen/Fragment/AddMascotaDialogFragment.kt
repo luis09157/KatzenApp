@@ -96,7 +96,7 @@ class AddMascotaFragment : Fragment() {
 
     private fun dialogConfirm(mascota: MascotaModel) {
         try {
-            KatzenDataBase().agregarMascota(mascota, URI_IMG_SELECTED)
+            KatzenDataBase(requireActivity()).agregarMascota(mascota, URI_IMG_SELECTED)
         } catch (e: Exception) {
             // Handle the exception here, you can log it or show a Toast message
             Log.e(TAG, "Error adding Mascota to database: ${e.message}")

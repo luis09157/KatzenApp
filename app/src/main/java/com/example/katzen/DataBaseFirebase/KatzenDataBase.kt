@@ -1,12 +1,14 @@
+import android.app.Activity
 import android.net.Uri
 import android.util.Log
+import com.afollestad.materialdialogs.MaterialDialog
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.MascotaModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 
-class KatzenDataBase {
-
+class KatzenDataBase(activity: Activity) {
+    val activity = activity
     private val TAG = "KatzenDataBase"
 
     // Referencia a la base de datos
@@ -38,6 +40,14 @@ class KatzenDataBase {
             nuevoPacienteRef.setValue(mascota.toMap())
             Log.d(TAG, "Mascota y paciente agregados correctamente.")
         }
+        
+        MaterialDialog(activity)
+            .title(text = "Tarea completada!")
+            .message(text = "¡Has completado la tarea con éxito!")
+            .positiveButton(text = "¡Entendido!") {
+                // Acción a realizar al hacer clic en el botón de confirmación
+            }
+            .show()
     }
 
     private fun subirImagenAFirebaseStorage(uriImagen: Uri, onComplete: (String) -> Unit) {

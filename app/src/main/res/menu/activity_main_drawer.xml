@@ -31,5 +31,10 @@
             android:id="@+id/nav_mascota"
             android:icon="@drawable/ic_pet"
             android:title="@string/menu_mascota" />
+
+        <item
+            android:id="@+id/nav_ventas"
+            android:icon="@drawable/ic_venta"
+            android:title="@string/menu_venta" />
     </group>
 </menu>

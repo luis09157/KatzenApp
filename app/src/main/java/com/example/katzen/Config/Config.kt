@@ -5,6 +5,7 @@ class Config {
 
         val CATEGORIAS = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
         val SEXO = listOf("Macho","Hembra")
+        val METODOS_PAGO = listOf("Efectivo","Tarjeta","Transferencia")
         val ESPECIE = listOf("Canino","Felino")
         var MES_DETALLE = ""
 

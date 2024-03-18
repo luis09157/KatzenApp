@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <!-- Nombre del Producto -->
+    <EditText
+        android:id="@+id/editTextNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del Producto"
+        android:inputType="text"/>
+
+    <!-- Precio de Venta -->
+    <EditText
+        android:id="@+id/editTextPrecioVenta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Precio de Venta"
+        android:inputType="numberDecimal"/>
+
+    <!-- Costo del Producto -->
+    <EditText
+        android:id="@+id/editTextCosto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Costo del Producto"
+        android:inputType="numberDecimal"/>
+
+    <!-- Fecha de Agregado -->
+    <EditText
+        android:id="@+id/editTextFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fecha de Agregado"
+        android:inputType="date"/>
+
+    <!-- Método de Pago -->
+    <EditText
+        android:id="@+id/editTextMetodoPago"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Método de Pago"
+        android:inputType="text"/>
+
+    <!-- Botón para guardar -->
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar"/>
+
+</LinearLayout>

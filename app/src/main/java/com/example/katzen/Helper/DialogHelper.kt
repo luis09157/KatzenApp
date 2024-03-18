@@ -209,7 +209,7 @@ class DialogHelper {
                     val (message, flag) = validarFormulario(mM)
                     if(flag){
                         try {
-                            val katzenDataBase = KatzenDataBase()
+                            val katzenDataBase = KatzenDataBase(activity)
                             katzenDataBase.agregarMascota(mM)
 
                             Toast.makeText(activity,activity.getString(R.string.dialog_msg_add_mascota_exito), Toast.LENGTH_LONG).show()

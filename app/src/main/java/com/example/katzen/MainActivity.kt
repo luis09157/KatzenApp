@@ -23,6 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.katzen.Fragment.VentasFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.PDF.ConvertPDF
 import com.example.katzen.Service.DomiciliosPendientesService
@@ -135,6 +136,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_mascota -> {
                     binding.appBarMain.toolbar.title = "Agregar Mascota"
                     UtilFragment.changeFragment(this, MascotaFragment(),TAG)
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                    true
+                }
+                R.id.nav_ventas -> {
+                    binding.appBarMain.toolbar.title = "Ventas"
+                    UtilFragment.changeFragment(this, VentasFragment(),TAG)
                     drawerLayout.closeDrawer(GravityCompat.START)
 
                     true

@@ -40,4 +40,10 @@
         android:name="com.example.katzen.ui.mascota.MascotaFragment"
         android:label="@string/menu_add_mascota"
         tools:layout="@layout/fragment_mascota" />
+
+    <fragment
+        android:id="@+id/nav_ventas"
+        android:name="com.example.katzen.ui.mascota.MascotaFragment"
+        android:label="@string/menu_venta"
+        tools:layout="@layout/ventas_fragment" />
 </navigation>
