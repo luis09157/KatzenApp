@@ -57,7 +57,9 @@ class AddProductoFragment : Fragment() {
                 binding.editTextPrecioVenta,
                 binding.editTextCosto,
                 binding.editTextFecha,
+                binding.editTextDescripcion,
                 imagenUri
+
             )
 
             if (producto != null) {

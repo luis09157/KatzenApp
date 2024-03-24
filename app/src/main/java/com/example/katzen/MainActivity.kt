@@ -23,10 +23,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.katzen.Fragment.MenuFragment
 import com.example.katzen.Fragment.VentasFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.PDF.ConvertPDF
-import com.example.katzen.Service.DomiciliosPendientesService
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.ui.card.PaymetCardFragment
 import com.example.katzen.ui.example.ExampleFragment
@@ -155,6 +155,7 @@ class MainActivity : AppCompatActivity() {
         CheckForPermissions(android.Manifest.permission.POST_NOTIFICATIONS,"Notification",code_notification)
 
         logRegToken()
+        UtilFragment.changeFragment(this, MenuFragment(),TAG)
 
        /* val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -4,14 +4,10 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Model.Producto
 import com.example.katzen.R
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import java.util.*
+import java.util.UUID
 
 class FirebaseProductoUtil {
     companion object {
@@ -73,6 +69,13 @@ class FirebaseProductoUtil {
                     ConfigLoading.hideLoadingAnimation()
                 }
             })
+        }
+
+        @JvmStatic
+        fun obtenerListaProductos(listener: ValueEventListener) {
+            val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
+            referenciaProductos.addValueEventListener(listener)
         }
     }
 }

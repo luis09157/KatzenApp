@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.VentasFragmentBinding
 
-class VentasFragment : Fragment() {
-    val TAG : String  = "VentasFragment"
+class ProductoFragment : Fragment() {
+    val TAG : String  = "ProductoFragment"
 
     private var _binding: VentasFragmentBinding? = null
     private val binding get() = _binding!!
@@ -22,15 +21,6 @@ class VentasFragment : Fragment() {
         _binding = VentasFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-
-        binding.btnAddVenta.setOnClickListener{
-            UtilFragment.changeFragment(requireActivity(), AddVentaFragment(),TAG)
-        }
-        binding.btnAddProducto.setOnClickListener {
-            //UtilFragment.changeFragment(requireActivity(), AddProductoFragment(),TAG)
-            UtilFragment.changeFragment(requireActivity(), MenuFragment(),TAG)
-
-        }
 
         return root
     }

@@ -10,11 +10,20 @@ import java.util.*
 class ValidadorProducto {
 
     companion object {
-        fun validarYCrearProducto(context: Context, editTextNombre: EditText, editTextPrecioVenta: EditText, editTextCosto: EditText, editTextFecha: EditText, imagenUri: Uri?): Producto? {
+        fun validarYCrearProducto(
+            context: Context,
+            editTextNombre: EditText,
+            editTextPrecioVenta: EditText,
+            editTextCosto: EditText,
+            editTextFecha: EditText,
+            editTextDescripcion: EditText, // Nuevo campo para la descripción
+            imagenUri: Uri?
+        ): Producto? {
             val nombre = editTextNombre.text.toString()
             val precioVentaString = editTextPrecioVenta.text.toString()
             val costoString = editTextCosto.text.toString()
             val fechaString = editTextFecha.text.toString()
+            val descripcion = editTextDescripcion.text.toString() // Obtener el texto de la descripción
 
             // Validar que los campos no estén vacíos
             if (nombre.isEmpty() || precioVentaString.isEmpty() || costoString.isEmpty() || fechaString.isEmpty()) {
@@ -52,8 +61,16 @@ class ValidadorProducto {
                 return null
             }
 
-            // Crear y devolver el objeto Producto
-            return Producto(nombre = nombre, precioVenta = precioVenta, costo = costo, ganancia = precioVenta - costo, fecha = fecha, rutaImagen = rutaImagen)
+            // Crear y devolver el objeto Producto con la descripción incluida
+            return Producto(
+                nombre = nombre,
+                precioVenta = precioVenta,
+                costo = costo,
+                ganancia = precioVenta - costo,
+                fecha = fecha,
+                rutaImagen = rutaImagen,
+                descripcion = descripcion // Agregar la descripción al objeto Producto
+            )
         }
 
         private fun mostrarError(context: Context, mensajeResId: Int) {

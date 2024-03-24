@@ -36,6 +36,15 @@
             android:hint="Nombre del Producto"
             android:inputType="text"/>
 
+        <EditText
+            android:id="@+id/editTextDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descripción del Producto"
+            android:inputType="textMultiLine"
+            android:lines="4" />
+
+
         <!-- Precio de Venta -->
         <EditText
             android:id="@+id/editTextPrecioVenta"

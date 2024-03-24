@@ -1,0 +1,98 @@
+<!-- product_item.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/katzen_verde"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:padding="10dp"
+        app:cardCornerRadius="25dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="15dp">
+
+                    <ImageView
+                        android:id="@+id/imagen"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"></ImageView>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textViewNombre"
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/varela"
+                    android:textStyle="bold"
+                    android:text="Nombre del producto" />
+
+                <TextView
+                    android:id="@+id/textViewPrecio"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/varela"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Precio de venta: $0.00" />
+
+                <TextView
+                    android:id="@+id/textViewCosto"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/varela"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Costo: $0.00" />
+
+                <TextView
+                    android:id="@+id/textViewGanancia"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/varela"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Ganancia: $0.00" />
+
+                <TextView
+                    android:id="@+id/textViewFecha"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/varela"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="Fecha: dd/mm/aaaa" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
