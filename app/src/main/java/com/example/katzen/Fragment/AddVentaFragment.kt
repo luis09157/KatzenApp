@@ -1,20 +1,17 @@
 package com.example.katzen.Fragment
 
 import android.R
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.databinding.AddVentaFragmentBinding
-import java.util.Calendar
 
 class AddVentaFragment : Fragment() {
 
@@ -36,12 +33,12 @@ class AddVentaFragment : Fragment() {
         }
 
         binding.editTextFecha.setOnClickListener {
-            CalendarioUtil.mostrarCalendario(requireContext(), binding.editTextFecha)
+            //CalendarioUtil.mostrarCalendario(requireContext(), binding.editTextFecha)
 
         }
         binding.editTextFecha.setOnFocusChangeListener { view, isFocus ->
             if(isFocus){
-                CalendarioUtil.mostrarCalendario(requireContext(), binding.editTextFecha)
+               // CalendarioUtil.mostrarCalendario(requireContext(), binding.editTextFecha)
 
             }
         }

@@ -1,99 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/background_color"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <include
-        android:id="@+id/fragment_no_data"
-        layout="@layout/fragment_no_data"
-        android:visibility="gone"/>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieAnimationView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/background_color"
-        app:lottie_autoPlay="true"
-        android:background="@color/white"
-        app:lottie_loop="true"
-        android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/cont_add_producto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        <include
+            android:id="@+id/fragment_no_data"
+            layout="@layout/fragment_no_data"
+            android:visibility="gone"/>
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_autoPlay="true"
+            android:background="@color/white"
+            app:lottie_loop="true"
+            android:visibility="gone" />
 
-        <!-- Nombre del Producto -->
-        <EditText
-            android:id="@+id/editTextNombre"
+        <LinearLayout
+            android:id="@+id/cont_add_producto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre del Producto"
-            android:inputType="text"/>
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editTextDescripcion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Descripción del Producto"
-            android:inputType="textMultiLine"
-            android:lines="4" />
+            <!-- ImageView para mostrar la imagen seleccionada -->
 
+            <androidx.cardview.widget.CardView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="50dp">
+                <ImageView
+                    android:id="@+id/imageViewProducto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_imagen"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"/>
 
-        <!-- Precio de Venta -->
-        <EditText
-            android:id="@+id/editTextPrecioVenta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Precio de Venta"
-            android:inputType="numberDecimal"/>
+                <!-- Botón para seleccionar la foto -->
+                <Button
+                    android:id="@+id/btnSeleccionarFoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:drawableLeft="@drawable/ic_camara_24"
+                    android:text="Subir Foto"/>
+            </androidx.cardview.widget.CardView>
 
-        <!-- Costo del Producto -->
-        <EditText
-            android:id="@+id/editTextCosto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Costo del Producto"
-            android:inputType="numberDecimal"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_nombre_producto"
+                android:backgroundTint="@color/white"
+                app:startIconDrawable="@drawable/ic_pet">
 
-        <!-- Fecha de Agregado -->
-        <EditText
-            android:id="@+id/editTextFecha"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Fecha de Agregado"
-            android:inputType="date"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"/>
 
-        <!-- ImageView para mostrar la imagen seleccionada -->
-        <ImageView
-            android:id="@+id/imageViewProducto"
-            android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:src="@drawable/img_gato_perfil"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
-
-        <!-- Botón para seleccionar la foto -->
-        <Button
-            android:id="@+id/btnSeleccionarFoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Seleccionar Foto"/>
-
-        <!-- Botón para guardar -->
-        <Button
-            android:id="@+id/btnGuardar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guardar"/>
-
-    </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/descriptionTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_descripcion_producto"
+                app:hintEnabled="true"
+                app:boxBackgroundMode="outline"
+                android:backgroundTint="@color/white"
+                app:startIconDrawable="@drawable/ic_descripcion_verde">
 
-</FrameLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:backgroundTint="@color/white"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextPrecioVenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_precio_venta"
+                android:inputType="numberDecimal"
+                android:backgroundTint="@color/white"
+                app:startIconDrawable="@drawable/ic_dinero">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:backgroundTint="@color/white"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextCosto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_costo_producto"
+                android:inputType="numberDecimal"
+                android:backgroundTint="@color/white"
+                app:startIconDrawable="@drawable/ic_dinero">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:backgroundTint="@color/white"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:id="@+id/editTextUnidadMedida"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                app:startIconDrawable="@drawable/ic_unidad_medidad">
+
+                <AutoCompleteTextView
+                    android:id="@+id/spUnidadMedida"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:hint="@string/txt_unidad_medida_producto"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextCantidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/txt_cantidad_producto"
+                android:backgroundTint="@color/white"
+                app:startIconDrawable="@drawable/ic_cantidad_producto">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:backgroundTint="@color/white"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/editTextFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:hint="@string/txt_fecha"
+                android:inputType="date"
+                app:startIconDrawable="@drawable/ic_calendar">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextFecha2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Resto de tus TextInputLayouts -->
+
+            <!-- Botón para guardar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGuardar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:text="Guardar" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_weight="1"
+                    android:text="Editar" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>

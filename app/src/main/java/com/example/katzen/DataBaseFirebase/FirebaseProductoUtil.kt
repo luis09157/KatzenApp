@@ -1,5 +1,6 @@
 import android.content.Context
 import android.net.Uri
+import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Model.Producto
@@ -27,7 +28,7 @@ class FirebaseProductoUtil {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // El nombre del producto ya está registrado
-                        DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_product_name_exists))
+                        DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_name_exists))
                         ConfigLoading.hideLoadingAnimation()
                     } else {
                         // El nombre del producto no está registrado, guardar la imagen en Firebase Storage
@@ -46,7 +47,7 @@ class FirebaseProductoUtil {
                                 referenciaProductos.child(productoId).setValue(producto)
                                     .addOnSuccessListener {
                                         // Operación exitosa
-                                        DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_product_saved_success))
+                                        DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_saved_success))
                                         ConfigLoading.hideLoadingAnimation()
                                     }
                                     .addOnFailureListener { exception ->
@@ -70,12 +71,71 @@ class FirebaseProductoUtil {
                 }
             })
         }
-
         @JvmStatic
         fun obtenerListaProductos(listener: ValueEventListener) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
             referenciaProductos.addValueEventListener(listener)
         }
+        @JvmStatic
+        fun obtenerProducto(productoId: String, listener: ValueEventListener) {
+            val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            val referenciaProducto: DatabaseReference = database.getReference("$PRODUCTOS_PATH/$productoId")
+            referenciaProducto.addListenerForSingleValueEvent(listener)
+        }
+        @JvmStatic
+        fun editarProducto(context: Context, producto: Producto, imagenUri: Uri?) {
+            val database = FirebaseDatabase.getInstance()
+            val referenciaProductos = database.getReference(PRODUCTOS_PATH)
+            producto.id = Config.PRODUCTO_EDIT.id
+
+            if (Config.IMG_CHANGE) {
+                val storage = FirebaseStorage.getInstance()
+                val storageRef = storage.reference.child(PRODUCTOS_IMAGES_PATH)
+
+                // Guardar la imagen en Firebase Storage
+                val imagenRef = storageRef.child(UUID.randomUUID().toString()) // Generar un nombre único para la imagen
+                val uploadTask = imagenRef.putFile(imagenUri!!)
+
+                // Manejar el resultado de la subida de la imagen
+                uploadTask.addOnSuccessListener { _ ->
+                    // Obtener la URL de descarga de la imagen
+                    imagenRef.downloadUrl.addOnSuccessListener { uri ->
+                        val imageUrl = uri.toString()
+                        producto.rutaImagen = imageUrl // Asignar la URL de la imagen al producto
+                        actualizarProductoEnBaseDatos(context, producto, referenciaProductos)
+                    }.addOnFailureListener { exception ->
+                        manejarErrorSubidaImagen(context, exception)
+                    }
+                }.addOnFailureListener { exception ->
+                    manejarErrorSubidaImagen(context, exception)
+                }
+            } else {
+                // Si no hay cambio de imagen, simplemente actualizar el producto sin subir nueva imagen
+                producto.rutaImagen = Config.PRODUCTO_EDIT.rutaImagen
+                actualizarProductoEnBaseDatos(context, producto, referenciaProductos)
+            }
+        }
+
+        private fun actualizarProductoEnBaseDatos(context: Context, producto: Producto, referenciaProductos: DatabaseReference) {
+            referenciaProductos.child(producto.id).setValue(producto)
+                .addOnSuccessListener {
+                    // Operación exitosa
+                    DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_updated_success))
+                    ConfigLoading.hideLoadingAnimation()
+                }
+                .addOnFailureListener { exception ->
+                    // Manejar errores
+                    DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_updating_product, exception))
+                    ConfigLoading.hideLoadingAnimation()
+                }
+        }
+
+        private fun manejarErrorSubidaImagen(context: Context, exception: Exception) {
+            // Manejar errores de la subida de la imagen
+            DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_uploading_image, exception))
+            ConfigLoading.hideLoadingAnimation()
+        }
+
     }
 }

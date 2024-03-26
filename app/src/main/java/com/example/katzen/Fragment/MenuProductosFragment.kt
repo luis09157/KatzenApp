@@ -3,6 +3,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.katzen.Fragment.AddProductoFragment
+import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.Producto
 import com.example.katzen.databinding.MenuProductosFragmnetBinding
 import com.google.firebase.database.DataSnapshot
@@ -10,6 +12,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class MenuProductosFragment : Fragment() {
+    val TAG : String  = "MenuProductosFragment"
     private var _binding: MenuProductosFragmnetBinding? = null
     private val binding get() = _binding!!
 
@@ -29,6 +32,36 @@ class MenuProductosFragment : Fragment() {
         productosAdapter = ProductosAdapter(requireContext(), productosList)
         binding.lisMenuProductos.adapter = productosAdapter
         binding.lisMenuProductos.divider = null
+
+        binding.lisMenuProductos.setOnItemClickListener { adapterView, view, position, id ->
+            // Obtener el producto seleccionado de la lista
+            val productoSeleccionado = productosList[position]
+
+            // Obtener información específica del producto desde Firebase
+            FirebaseProductoUtil.obtenerProducto(productoSeleccionado.id, object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Verificar si existen datos
+                    if (snapshot.exists()) {
+                        // Obtener el producto específico de la base de datos
+                        val producto = snapshot.getValue(Producto::class.java)
+                        var addProductoFragment = AddProductoFragment()
+                        addProductoFragment.setProducto(producto!!)
+                        UtilFragment.changeFragment(requireContext(),addProductoFragment,TAG)
+
+
+                        // Aquí puedes manejar los datos del producto como desees
+                    } else {
+                        // No se encontraron datos para el producto seleccionado
+                        // Manejar el caso según sea necesario
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Manejar errores de la consulta a la base de datos
+                    // Por ejemplo, mostrar un mensaje de error
+                }
+            })
+        }
 
         // Obtener la lista de productos desde Firebase
         FirebaseProductoUtil.obtenerListaProductos(object : ValueEventListener {

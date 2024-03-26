@@ -137,4 +137,22 @@
     <string name="dialog_database_query_error">Error al realizar la consulta en la base de datos: %s</string>
     <!-- VALIDADOR PRODUCTO -->
 
+    <!-- UPDATE PRODUCTO -->
+    <string name="dialog_product_updated_success">¡Producto actualizado exitosamente!</string>
+    <string name="dialog_error_updating_product">Error al actualizar el producto: %1$s</string>
+    <string name="error_getting_image_uri">Error al obtener la URI de la imagen.</string>
+    <string name="error_editing_product">No se pudo editar el producto. Por favor, inténtalo de nuevo más tarde.</string>
+
+    <!-- UPDATE PRODUCTO -->
+
+    <!-- ADD PRODUCTO -->
+    <string name="txt_nombre_producto">Nombre del Producto</string>
+    <string name="txt_precio_venta">Precio de Venta</string>
+    <string name="txt_costo_producto">Costo Producto</string>
+    <string name="txt_cantidad_producto">Cantidad Producto</string>
+    <string name="txt_fecha">Fecha de Agregado</string>
+    <string name="txt_descripcion_producto">Descripción del Producto</string>
+    <string name="txt_unidad_medida_producto">Unidad de Medida</string>
+    <!-- ADD PRODUCTO -->
+
 </resources>

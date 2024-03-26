@@ -22,9 +22,7 @@ class ProductosAdapter(context: Context, private val productList: List<Producto>
             holder.imageView = itemView.findViewById(R.id.imagen)
             holder.nombreTextView = itemView.findViewById(R.id.textViewNombre)
             holder.precioTextView = itemView.findViewById(R.id.textViewPrecio)
-            holder.costoTextView = itemView.findViewById(R.id.textViewCosto)
-            holder.gananciaTextView = itemView.findViewById(R.id.textViewGanancia)
-            holder.fechaTextView = itemView.findViewById(R.id.textViewFecha)
+            holder.descripcionTextView = itemView.findViewById(R.id.textViewDescripcion)
             itemView.tag = holder
         } else {
             holder = itemView.tag as ViewHolder
@@ -34,17 +32,13 @@ class ProductosAdapter(context: Context, private val productList: List<Producto>
 
         holder.nombreTextView?.text = ""
         holder.precioTextView?.text = ""
-        holder.costoTextView?.text = ""
-        holder.gananciaTextView?.text = ""
-        holder.fechaTextView?.text = ""
+        holder.descripcionTextView?.text = ""
         holder.imageView?.setImageResource(R.drawable.img_venta)
 
         // Asigna los valores del producto a las vistas correspondientes
         holder.nombreTextView?.text = producto.nombre
         holder.precioTextView?.text = "Precio de venta: $${producto.precioVenta}"
-        holder.costoTextView?.text = "Costo: $${producto.costo}"
-        holder.gananciaTextView?.text = "Ganancia: $${producto.ganancia}"
-        holder.fechaTextView?.text = "Fecha: ${producto.fecha}"
+        holder.descripcionTextView?.text = producto.descripcion
 
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
@@ -52,7 +46,7 @@ class ProductosAdapter(context: Context, private val productList: List<Producto>
             Picasso.get().load(producto.rutaImagen).into(holder.imageView)
         } else {
             // Si no hay una URL de imagen, cargar desde el recurso drawable
-            holder.imageView?.setImageResource(R.drawable.img_venta)
+            holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)
         }
 
         return itemView!!
@@ -62,8 +56,6 @@ class ProductosAdapter(context: Context, private val productList: List<Producto>
         var imageView: ImageView? = null
         var nombreTextView: TextView? = null
         var precioTextView: TextView? = null
-        var costoTextView: TextView? = null
-        var gananciaTextView: TextView? = null
-        var fechaTextView: TextView? = null
+        var descripcionTextView: TextView? = null
     }
 }
