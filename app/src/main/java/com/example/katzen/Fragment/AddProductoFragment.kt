@@ -6,11 +6,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
@@ -92,15 +95,24 @@ class AddProductoFragment : Fragment() {
         }
 
         binding.btnGuardar.setOnClickListener {
+            it.hideKeyboard()
             ConfigLoading.showLoadingAnimation()
-            btnGuardar(validarProducto())
+            try {
+                btnGuardar(validarProducto())
+            }catch (e : Exception){
+                ConfigLoading.hideLoadingAnimation()
+                 Log.e(TAG,e.message.toString())
+            }
         }
         binding.btnEditar.setOnClickListener {
-            ConfigLoading.showLoadingAnimation()
-            btnEditar(validarProducto())
-        }
-        binding.spUnidadMedida.setOnClickListener {
             it.hideKeyboard()
+            ConfigLoading.showLoadingAnimation()
+            try {
+                btnEditar(validarProducto())
+            }catch (e : Exception){
+                ConfigLoading.hideLoadingAnimation()
+                Log.e(TAG,e.message.toString())
+            }
         }
 
         if (Config.PRODUCTO_EDIT.nombre != "") {
@@ -147,6 +159,7 @@ class AddProductoFragment : Fragment() {
         } else {
             ConfigLoading.hideLoadingAnimation()
         }
+        cleanInputs()
     }
 
     fun initLoading(){
@@ -156,11 +169,13 @@ class AddProductoFragment : Fragment() {
     }
 
     private fun init() {
-        val adapter = ArrayAdapter(requireActivity(),
+        /*val adapter = ArrayAdapter(requireActivity(),
             android.R.layout.simple_list_item_1,Config.UNIDAD_MEDIDA)
-        binding.spUnidadMedida.setAdapter(adapter)
+        binding.spUnidadMedida.setAdapter(adapter)*/
         Config.IMG_CHANGE = false
         binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
+        convertirAMayusculas(binding.editTextNombre.editText!!)
+        convertirAMayusculas(binding.editTextDescripcion)
     }
 
     private fun seleccionarFoto() {
@@ -180,6 +195,37 @@ class AddProductoFragment : Fragment() {
             }
             binding.imageViewProducto.setImageURI(imagenUri)
         }
+    }
+
+    fun cleanInputs(){
+        binding.imageViewProducto.setImageResource(R.drawable.ic_imagen)
+        binding.editTextNombre.editText!!.setText("")
+        binding.editTextCosto.editText!!.setText("")
+        binding.editTextDescripcion!!.setText("")
+        binding.editTextPrecioVenta.editText!!.setText("")
+        binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
+    }
+    fun convertirAMayusculas(editText: EditText) {
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No es necesario implementar esta función
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // No es necesario implementar esta función
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Convierte el texto a mayúsculas y lo establece en el EditText
+                s?.let {
+                    val newText = it.toString().toUpperCase()
+                    if (newText != it.toString()) {
+                        editText.setText(newText)
+                        editText.setSelection(newText.length)
+                    }
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
