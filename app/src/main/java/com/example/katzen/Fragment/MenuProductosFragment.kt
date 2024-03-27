@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Fragment.AddProductoFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Model.Producto
+import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuProductosFragmnetBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -17,7 +17,7 @@ class MenuProductosFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var productosAdapter: ProductosAdapter
-    private lateinit var productosList: MutableList<Producto>
+    private lateinit var productosList: MutableList<ProductoModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +43,7 @@ class MenuProductosFragment : Fragment() {
                     // Verificar si existen datos
                     if (snapshot.exists()) {
                         // Obtener el producto específico de la base de datos
-                        val producto = snapshot.getValue(Producto::class.java)
+                        val producto = snapshot.getValue(ProductoModel::class.java)
                         var addProductoFragment = AddProductoFragment()
                         addProductoFragment.setProducto(producto!!)
                         UtilFragment.changeFragment(requireContext(),addProductoFragment,TAG)
@@ -71,7 +71,7 @@ class MenuProductosFragment : Fragment() {
 
                 // Recorrer los datos obtenidos y agregarlos a la lista de productos
                 for (productoSnapshot in snapshot.children) {
-                    val producto = productoSnapshot.getValue(Producto::class.java)
+                    val producto = productoSnapshot.getValue(ProductoModel::class.java)
                     producto?.let { productosList.add(it) }
                 }
 

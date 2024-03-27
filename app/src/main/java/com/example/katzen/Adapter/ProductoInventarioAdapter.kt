@@ -1,3 +1,5 @@
+package com.example.katzen.Adapter
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,7 @@ import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
 
-class ProductosAdapter(context: Context, private val productList: List<ProductoModel>) :
+class ProductoInventarioAdapter (context: Context, private val productList: List<ProductoModel>) :
     ArrayAdapter<ProductoModel>(context, R.layout.producto_item_view, productList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -17,12 +19,11 @@ class ProductosAdapter(context: Context, private val productList: List<ProductoM
         val holder: ViewHolder
 
         if (itemView == null) {
-            itemView = LayoutInflater.from(context).inflate(R.layout.producto_item_view, parent, false)
+            itemView = LayoutInflater.from(context).inflate(R.layout.item_menu_inventario, parent, false)
             holder = ViewHolder()
             holder.imageView = itemView.findViewById(R.id.imagen)
             holder.nombreTextView = itemView.findViewById(R.id.textViewNombre)
-            holder.precioTextView = itemView.findViewById(R.id.textViewPrecio)
-            holder.descripcionTextView = itemView.findViewById(R.id.textViewDescripcion)
+            holder.cantidadTextView = itemView.findViewById(R.id.textViewCantidad)
             itemView.tag = holder
         } else {
             holder = itemView.tag as ViewHolder
@@ -31,14 +32,12 @@ class ProductosAdapter(context: Context, private val productList: List<ProductoM
         val producto = productList[position]
 
         holder.nombreTextView?.text = ""
-        holder.precioTextView?.text = ""
-        holder.descripcionTextView?.text = ""
+       // holder.precioTextView?.text = ""
         holder.imageView?.setImageResource(R.drawable.img_venta)
 
         // Asigna los valores del producto a las vistas correspondientes
         holder.nombreTextView?.text = producto.nombre
-        holder.precioTextView?.text = "Precio de venta: $${producto.precioVenta}"
-        holder.descripcionTextView?.text = producto.descripcion
+        //holder.precioTextView?.text = "Precio de venta: $${producto.precioVenta}"
 
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
@@ -55,7 +54,6 @@ class ProductosAdapter(context: Context, private val productList: List<ProductoM
     private class ViewHolder {
         var imageView: ImageView? = null
         var nombreTextView: TextView? = null
-        var precioTextView: TextView? = null
-        var descripcionTextView: TextView? = null
+        var cantidadTextView: TextView? = null
     }
 }

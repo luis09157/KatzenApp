@@ -156,4 +156,9 @@
     <string name="error_invalid_quantity_or_unit">La cantidad o la unidad de medida son inválidas.</string>
     <!-- ADD PRODUCTO -->
 
+    <!-- INVENTARIO PRODUCTO -->
+    <string name="error_loading_product_data">Error al cargar los datos del producto. Inténtalo de nuevo.</string>
+    <!-- INVENTARIO PRODUCTO -->
+
+
 </resources>

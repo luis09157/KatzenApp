@@ -1,6 +1,6 @@
 package com.example.katzen.Config
 
-import com.example.katzen.Model.Producto
+import com.example.katzen.Model.ProductoModel
 
 class Config {
     companion object{
@@ -16,7 +16,7 @@ class Config {
         var VENTA : Double = 0.00
         var GANANCIA : Double = 0.00
 
-        var PRODUCTO_EDIT : Producto = Producto()
+        var PRODUCTO_EDIT : ProductoModel = ProductoModel()
         var IMG_CHANGE : Boolean = false
     }
 }

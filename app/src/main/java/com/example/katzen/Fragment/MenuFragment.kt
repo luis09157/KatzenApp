@@ -21,7 +21,8 @@ class MenuFragment : Fragment() {
         MenuModel("Venta", R.drawable.img_venta),
         MenuModel("Producto", R.drawable.img_producto),
         MenuModel("Lista Productos", R.drawable.img_lista_productos),
-        MenuModel("Balance General", R.drawable.img_balance_general)
+        MenuModel("Balance General", R.drawable.img_balance_general),
+        MenuModel("Inventario", R.drawable.img_inventario)
     )
 
 
@@ -51,6 +52,9 @@ class MenuFragment : Fragment() {
                 }
                 "Lista Productos" -> {
                     UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
+                }
+                "Inventario" -> {
+                    UtilFragment.changeFragment(requireActivity(), InventarioFragment(),TAG)
                 }
             }
         }

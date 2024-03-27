@@ -22,7 +22,7 @@ import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyBoardWorld
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.Model.Producto
+import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.example.katzen.databinding.AddProductoFragmentBinding
 import com.squareup.picasso.Picasso
@@ -37,7 +37,7 @@ class AddProductoFragment : Fragment() {
     private var imagenUri: Uri? = null
 
 
-    fun setProducto(producto: Producto){
+    fun setProducto(producto: ProductoModel){
         Config.PRODUCTO_EDIT = producto
     }
     fun enableBtnEditar(){
@@ -122,7 +122,7 @@ class AddProductoFragment : Fragment() {
         return root
     }
 
-    fun validarProducto() : Producto {
+    fun validarProducto() : ProductoModel {
         val producto = ValidadorProducto.validarYCrearProducto(
             requireContext(),
             binding.editTextNombre,
@@ -135,7 +135,7 @@ class AddProductoFragment : Fragment() {
 
         return producto!!
     }
-    fun btnEditar(producto : Producto){
+    fun btnEditar(producto : ProductoModel){
 
         if (producto != null) {
             try {
@@ -152,7 +152,7 @@ class AddProductoFragment : Fragment() {
             ConfigLoading.hideLoadingAnimation()
         }
     }
-    fun btnGuardar(producto: Producto){
+    fun btnGuardar(producto: ProductoModel){
         if (producto != null) {
             producto.rutaImagen = imagenUri.toString()
             FirebaseProductoUtil.guardarProducto(requireContext(), producto, imagenUri!!)
@@ -169,9 +169,6 @@ class AddProductoFragment : Fragment() {
     }
 
     private fun init() {
-        /*val adapter = ArrayAdapter(requireActivity(),
-            android.R.layout.simple_list_item_1,Config.UNIDAD_MEDIDA)
-        binding.spUnidadMedida.setAdapter(adapter)*/
         Config.IMG_CHANGE = false
         binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
         convertirAMayusculas(binding.editTextNombre.editText!!)

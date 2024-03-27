@@ -1,10 +1,9 @@
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import com.example.katzen.Config.Config
-import com.example.katzen.Model.Producto
+import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
@@ -21,7 +20,7 @@ class ValidadorProducto {
             editTextFecha: TextInputLayout,
             editTextDescripcion: EditText, // Nuevo campo para la descripción
             imagenUri: Uri?
-        ): Producto? {
+        ): ProductoModel? {
             val nombre = editTextNombre.editText!!.text.toString()
             val precioVentaString = editTextPrecioVenta.editText!!.text.toString()
             val costoString = editTextCosto.editText!!.text.toString()
@@ -68,7 +67,7 @@ class ValidadorProducto {
             }
 
             // Crear y devolver el objeto Producto con la descripción incluida
-            return Producto(
+            return ProductoModel(
                 nombre = nombre,
                 precioVenta = precioVenta,
                 costo = costo,

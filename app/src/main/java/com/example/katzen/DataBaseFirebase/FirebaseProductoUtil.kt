@@ -3,7 +3,7 @@ import android.net.Uri
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Model.Producto
+import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -16,7 +16,7 @@ class FirebaseProductoUtil {
         private const val PRODUCTOS_IMAGES_PATH = "Productos" // Carpeta en Firebase Storage para guardar las imágenes de los productos
 
         @JvmStatic
-        fun guardarProducto(context: Context, producto: Producto, imagenUri: Uri) {
+        fun guardarProducto(context: Context, producto: ProductoModel, imagenUri: Uri) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
             val storage: FirebaseStorage = FirebaseStorage.getInstance()
@@ -84,7 +84,7 @@ class FirebaseProductoUtil {
             referenciaProducto.addListenerForSingleValueEvent(listener)
         }
         @JvmStatic
-        fun editarProducto(context: Context, producto: Producto, imagenUri: Uri?) {
+        fun editarProducto(context: Context, producto: ProductoModel, imagenUri: Uri?) {
             val database = FirebaseDatabase.getInstance()
             val referenciaProductos = database.getReference(PRODUCTOS_PATH)
             producto.id = Config.PRODUCTO_EDIT.id
@@ -117,7 +117,7 @@ class FirebaseProductoUtil {
             }
         }
 
-        private fun actualizarProductoEnBaseDatos(context: Context, producto: Producto, referenciaProductos: DatabaseReference) {
+        private fun actualizarProductoEnBaseDatos(context: Context, producto: ProductoModel, referenciaProductos: DatabaseReference) {
             referenciaProductos.child(producto.id).setValue(producto)
                 .addOnSuccessListener {
                     // Operación exitosa
