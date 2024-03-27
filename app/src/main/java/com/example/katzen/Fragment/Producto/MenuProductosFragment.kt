@@ -1,9 +1,12 @@
+package com.example.katzen.Fragment.Producto
+
+import FirebaseProductoUtil
+import ProductosAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.katzen.Fragment.AddProductoFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuProductosFragmnetBinding
@@ -12,7 +15,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class MenuProductosFragment : Fragment() {
-    val TAG : String  = "MenuProductosFragment"
+    val TAG : String  = "com.example.katzen.Fragment.Producto.MenuProductosFragment"
     private var _binding: MenuProductosFragmnetBinding? = null
     private val binding get() = _binding!!
 
@@ -38,29 +41,31 @@ class MenuProductosFragment : Fragment() {
             val productoSeleccionado = productosList[position]
 
             // Obtener información específica del producto desde Firebase
-            FirebaseProductoUtil.obtenerProducto(productoSeleccionado.id, object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    // Verificar si existen datos
-                    if (snapshot.exists()) {
-                        // Obtener el producto específico de la base de datos
-                        val producto = snapshot.getValue(ProductoModel::class.java)
-                        var addProductoFragment = AddProductoFragment()
-                        addProductoFragment.setProducto(producto!!)
-                        UtilFragment.changeFragment(requireContext(),addProductoFragment,TAG)
+            FirebaseProductoUtil.obtenerProducto(
+                productoSeleccionado.id,
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        // Verificar si existen datos
+                        if (snapshot.exists()) {
+                            // Obtener el producto específico de la base de datos
+                            val producto = snapshot.getValue(ProductoModel::class.java)
+                            var addProductoFragment = AddProductoFragment()
+                            addProductoFragment.setProducto(producto!!)
+                            UtilFragment.changeFragment(requireContext(), addProductoFragment, TAG)
 
 
-                        // Aquí puedes manejar los datos del producto como desees
-                    } else {
-                        // No se encontraron datos para el producto seleccionado
-                        // Manejar el caso según sea necesario
+                            // Aquí puedes manejar los datos del producto como desees
+                        } else {
+                            // No se encontraron datos para el producto seleccionado
+                            // Manejar el caso según sea necesario
+                        }
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Manejar errores de la consulta a la base de datos
-                    // Por ejemplo, mostrar un mensaje de error
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        // Manejar errores de la consulta a la base de datos
+                        // Por ejemplo, mostrar un mensaje de error
+                    }
+                })
         }
 
         // Obtener la lista de productos desde Firebase

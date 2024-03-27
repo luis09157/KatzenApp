@@ -1,7 +1,6 @@
 package com.example.katzen
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -9,9 +8,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import android.widget.Toolbar
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,7 +20,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.katzen.Fragment.MenuFragment
-import com.example.katzen.Fragment.VentasFragment
+import com.example.katzen.Fragment.Venta.VentasFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.PDF.ConvertPDF
 import com.example.katzen.databinding.ActivityMainBinding
@@ -39,8 +35,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
-import com.google.firebase.messaging.ktx.remoteMessage
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"

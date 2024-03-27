@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MascotaAdapter
-import com.example.katzen.Fragment.AddMascotaFragment
+import com.example.katzen.Fragment.Mascota.AddMascotaFragment
 import com.example.katzen.Helper.FirebaseHelper
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment

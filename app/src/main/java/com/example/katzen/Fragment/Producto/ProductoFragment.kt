@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment
+package com.example.katzen.Fragment.Producto
 
 import android.os.Bundle
 import android.view.LayoutInflater

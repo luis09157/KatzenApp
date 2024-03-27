@@ -1,10 +1,11 @@
-package com.example.katzen.Fragment
+package com.example.katzen.Fragment.Venta
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.katzen.Fragment.MenuFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.VentasFragmentBinding
 

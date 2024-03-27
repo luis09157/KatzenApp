@@ -1,12 +1,15 @@
 package com.example.katzen.Fragment
 
-import MenuProductosFragment
+import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
+import com.example.katzen.Fragment.Inventario.InventarioFragment
+import com.example.katzen.Fragment.Producto.AddProductoFragment
+import com.example.katzen.Fragment.Venta.AddVentaFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.R
