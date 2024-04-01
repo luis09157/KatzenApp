@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.squareup.picasso.Picasso

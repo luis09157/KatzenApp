@@ -1,7 +1,6 @@
 package com.example.katzen.Fragment.Inventario
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,8 +55,6 @@ class AddProductoInventarioFragment : Fragment() {
             view.hideKeyboard()
         }
         binding.btnAgregar.setOnClickListener {
-            // Obtener los datos del producto desde los campos de entrada
-            val nombreProducto = binding.editTextNombre.editText?.text.toString()
             val cantidadProducto = binding.editTextCantidad.editText?.text.toString().toDoubleOrNull() ?: 0.0
             val unidadMedidaProducto = binding.spUnidadMedida.text.toString()
             val fechaProducto = binding.editTextFecha2.text.toString()
@@ -91,4 +88,11 @@ class AddProductoInventarioFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    fun limpiar() {
+        binding.editTextCantidad.editText?.setText("")
+        binding.spUnidadMedida.setText("")
+        binding.editTextFecha2.setText("")
+    }
+
 }

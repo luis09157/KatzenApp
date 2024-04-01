@@ -46,7 +46,7 @@
                 android:id="@+id/textViewCantidad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="18 piezas"
+                android:text="0 piezas"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:textColor="@color/white"

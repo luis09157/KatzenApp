@@ -12,5 +12,6 @@ data class ProductoModel(
     var fecha: String = "",
     var rutaImagen: String = "",
     var categoria: String = "",
-    var proveedor: String = ""
+    var proveedor: String = "",
+    var cantidadInventario: Double = 0.00
 )

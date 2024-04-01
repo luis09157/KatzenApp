@@ -12,7 +12,7 @@ import com.example.katzen.R
 import com.squareup.picasso.Picasso
 
 class ProductoInventarioAdapter (context: Context, private val productList: List<ProductoModel>) :
-    ArrayAdapter<ProductoModel>(context, R.layout.producto_item_view, productList) {
+    ArrayAdapter<ProductoModel>(context, R.layout.item_menu_inventario, productList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
@@ -32,12 +32,12 @@ class ProductoInventarioAdapter (context: Context, private val productList: List
         val producto = productList[position]
 
         holder.nombreTextView?.text = ""
-       // holder.precioTextView?.text = ""
+        holder.cantidadTextView?.text = ""
         holder.imageView?.setImageResource(R.drawable.img_venta)
 
         // Asigna los valores del producto a las vistas correspondientes
         holder.nombreTextView?.text = producto.nombre
-        //holder.precioTextView?.text = "Precio de venta: $${producto.precioVenta}"
+        holder.cantidadTextView?.text = "${producto.cantidadInventario} Piezas"
 
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {

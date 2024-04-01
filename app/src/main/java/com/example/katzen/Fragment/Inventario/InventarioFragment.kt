@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ProductoInventarioAdapter
+import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.InventarioFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class InventarioFragment : Fragment() {
@@ -30,7 +33,7 @@ class InventarioFragment : Fragment() {
         val root: View = binding.root
 
         init()
-        obtenerProductos()
+
         binding.menuListProductoInventario.setOnItemClickListener { adapterView, view, i, l ->
             var addProductoInventarioFragment = AddProductoInventarioFragment()
             addProductoInventarioFragment.setProducto(productosList.get(i))
@@ -44,7 +47,24 @@ class InventarioFragment : Fragment() {
         productosList = mutableListOf()
         productosAdapter = ProductoInventarioAdapter(requireContext(), productosList)
         binding.menuListProductoInventario.adapter = productosAdapter
+        obtenerProductos()
+
     }
+
+    fun obtenerInventario(productoModel: ProductoModel, onComplete: (ProductoModel) -> Unit) {
+        FirebaseInventarioUtil.obtenerInventarioPorProducto(productoModel.id) { inventarioList ->
+            // Actualizar el productoModel con la cantidad de inventario
+            for (inventario in inventarioList) {
+                println("Cantidad: ${inventario.cantidad}, Fecha: ${inventario.fecha}, Unidad de Medida: ${inventario.unidadMedida}")
+                productoModel.cantidadInventario += inventario.cantidad
+            }
+            // Llamar al onComplete con el productoModel actualizado
+            onComplete(productoModel)
+        }
+    }
+
+
+
     fun obtenerProductos(){
         FirebaseProductoUtil.obtenerListaProductos(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -53,12 +73,15 @@ class InventarioFragment : Fragment() {
 
                 // Recorrer los datos obtenidos y agregarlos a la lista de productos
                 for (productoSnapshot in snapshot.children) {
-                    val producto = productoSnapshot.getValue(ProductoModel::class.java)
-                    producto?.let { productosList.add(it) }
-                }
+                    var producto = productoSnapshot.getValue(ProductoModel::class.java)
 
-                // Notificar al adaptador que los datos han cambiado
-                productosAdapter.notifyDataSetChanged()
+                    obtenerInventario(producto!!) { productoActualizado ->
+                        // Aquí puedes trabajar con el producto actualizado, como agregarlo a la lista de productos
+                        productosList.add(productoActualizado)
+                        // Asegúrate de notificar al adaptador después de agregar el producto a la lista
+                        productosAdapter.notifyDataSetChanged()
+                    }
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -67,7 +90,6 @@ class InventarioFragment : Fragment() {
             }
         })
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

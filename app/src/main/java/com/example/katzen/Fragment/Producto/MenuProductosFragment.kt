@@ -8,19 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuProductosFragmnetBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class MenuProductosFragment : Fragment() {
-    val TAG : String  = "com.example.katzen.Fragment.Producto.MenuProductosFragment"
+    val TAG : String  = "MenuProductosFragment"
     private var _binding: MenuProductosFragmnetBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var productosAdapter: ProductosAdapter
     private lateinit var productosList: MutableList<ProductoModel>
+    private lateinit var inventarioList: MutableList<InventarioModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +38,8 @@ class MenuProductosFragment : Fragment() {
         productosAdapter = ProductosAdapter(requireContext(), productosList)
         binding.lisMenuProductos.adapter = productosAdapter
         binding.lisMenuProductos.divider = null
+
+        obtenerProductos()
 
         binding.lisMenuProductos.setOnItemClickListener { adapterView, view, position, id ->
             // Obtener el producto seleccionado de la lista
@@ -68,7 +73,10 @@ class MenuProductosFragment : Fragment() {
                 })
         }
 
-        // Obtener la lista de productos desde Firebase
+        return root
+    }
+
+    fun obtenerProductos(){
         FirebaseProductoUtil.obtenerListaProductos(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // Limpiar la lista antes de agregar los nuevos datos
@@ -89,10 +97,7 @@ class MenuProductosFragment : Fragment() {
                 // Por ejemplo, mostrar un mensaje de error
             }
         })
-
-        return root
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
