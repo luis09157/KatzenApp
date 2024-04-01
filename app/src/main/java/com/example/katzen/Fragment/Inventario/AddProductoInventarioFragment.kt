@@ -35,8 +35,10 @@ class AddProductoInventarioFragment : Fragment() {
         _binding = AddPiezaProductoFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        limpiar()
         init()
         setupListeners()
+
 
         return root
     }
@@ -77,6 +79,11 @@ class AddProductoInventarioFragment : Fragment() {
 
             binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
 
+            obtenerInventarioI(productoModel!!) { inventarioActualizado ->
+                binding.editTextUnidadMedida.editText!!.setText(inventarioActualizado.unidadMedida)
+                binding.editTextCantidad.editText!!.setText(inventarioActualizado.cantidad.toString())
+            }
+
         } catch (e: Exception) {
             DialogMaterialHelper.mostrarErrorDialog(requireContext(), getString(R.string.error_loading_product_data))
         }
@@ -87,6 +94,20 @@ class AddProductoInventarioFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun obtenerInventarioI(productoModel: ProductoModel, onComplete: (InventarioModel) -> Unit) {
+        FirebaseInventarioUtil.obtenerInventarioPorProducto(productoModel.id) { inventarioList ->
+            var inventarioG  =  InventarioModel()
+            // Actualizar el productoModel con la cantidad de inventario
+            for (inventario in inventarioList) {
+                inventarioG.cantidad += inventario.cantidad
+                inventarioG.fecha = inventario.fecha
+                inventarioG.unidadMedida = inventario.unidadMedida
+            }
+            // Llamar al onComplete con el productoModel actualizado
+            onComplete(inventarioG)
+        }
     }
 
     fun limpiar() {

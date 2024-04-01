@@ -33,7 +33,7 @@ class ProductoInventarioAdapter (context: Context, private val productList: List
 
         holder.nombreTextView?.text = ""
         holder.cantidadTextView?.text = ""
-        holder.imageView?.setImageResource(R.drawable.img_venta)
+        holder.imageView?.setImageResource(R.drawable.ic_loading_michi)
 
         // Asigna los valores del producto a las vistas correspondientes
         holder.nombreTextView?.text = producto.nombre
@@ -42,7 +42,7 @@ class ProductoInventarioAdapter (context: Context, private val productList: List
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
             // Si hay una URL de imagen disponible, cargar desde la URL
-            Picasso.get().load(producto.rutaImagen).into(holder.imageView)
+            Picasso.get().load(producto.rutaImagen).placeholder(R.drawable.ic_loading_michi).into(holder.imageView)
         } else {
             // Si no hay una URL de imagen, cargar desde el recurso drawable
             holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)

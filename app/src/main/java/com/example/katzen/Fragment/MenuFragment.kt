@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
+import com.example.katzen.Config.Config
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Producto.AddProductoFragment
 import com.example.katzen.Fragment.Venta.AddVentaFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
+import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.example.katzen.databinding.MenuFragmentBinding
 
@@ -49,6 +51,7 @@ class MenuFragment : Fragment() {
                     UtilFragment.changeFragment(requireActivity(), AddVentaFragment(),TAG)
                 }
                 "Producto" -> {
+                    Config.PRODUCTO_EDIT = ProductoModel()
                     UtilFragment.changeFragment(requireActivity(), AddProductoFragment(),TAG)
                 }
                 "Balance General" -> {

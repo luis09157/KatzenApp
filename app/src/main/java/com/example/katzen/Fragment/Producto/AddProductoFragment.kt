@@ -168,6 +168,7 @@ class AddProductoFragment : Fragment() {
     }
 
     private fun init() {
+        limpiarEditTexts()
         Config.IMG_CHANGE = false
         binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
         convertirAMayusculas(binding.editTextNombre.editText!!)
@@ -223,6 +224,15 @@ class AddProductoFragment : Fragment() {
             }
         })
     }
+
+    fun limpiarEditTexts() {
+        binding.editTextNombre.editText?.setText("")
+        binding.editTextDescripcion.setText("")
+        binding.editTextPrecioVenta.editText?.setText("")
+        binding.editTextCosto.editText?.setText("")
+        binding.editTextFecha2.setText(CalendarioUtil.obtenerFechaHoraActual())
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
