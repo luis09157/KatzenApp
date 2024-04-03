@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ProductoInventarioAdapter
+import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.InventarioModel
@@ -32,7 +33,9 @@ class InventarioFragment : Fragment() {
         _binding = InventarioFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        initLoading()
         init()
+
 
         binding.menuListProductoInventario.setOnItemClickListener { adapterView, view, i, l ->
             var addProductoInventarioFragment = AddProductoInventarioFragment()
@@ -43,7 +46,13 @@ class InventarioFragment : Fragment() {
         return root
     }
 
+    fun initLoading(){
+        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    }
     fun init(){
+        ConfigLoading.showLoadingAnimation()
         productosList = mutableListOf()
         productosAdapter = ProductoInventarioAdapter(requireContext(), productosList)
         binding.menuListProductoInventario.adapter = productosAdapter
@@ -77,6 +86,7 @@ class InventarioFragment : Fragment() {
                         productosList.add(productoActualizado)
                         // Asegúrate de notificar al adaptador después de agregar el producto a la lista
                         productosAdapter.notifyDataSetChanged()
+                        ConfigLoading.hideLoadingAnimation()
                     }
                 }
             }
@@ -84,6 +94,7 @@ class InventarioFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
+                ConfigLoading.showNodata()
             }
         })
     }

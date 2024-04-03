@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
+import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
@@ -37,6 +38,7 @@ class AddProductoInventarioFragment : Fragment() {
         _binding = AddPiezaProductoFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        initLoading()
         limpiar()
         init()
         setupListeners()
@@ -45,6 +47,11 @@ class AddProductoInventarioFragment : Fragment() {
         return root
     }
 
+    fun initLoading(){
+        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    }
     fun setupListeners(){
         binding.spUnidadMedida.setOnClickListener { it.hideKeyboard() }
         binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
@@ -59,6 +66,7 @@ class AddProductoInventarioFragment : Fragment() {
             view.hideKeyboard()
         }
         binding.btnAgregar.setOnClickListener {
+            it.hideKeyboard()
             // Obtener la cantidad del EditText y convertirla a Double
             val cantidadProducto = binding.editTextCantidad.editText?.text.toString().toDoubleOrNull() ?: 0.0
 
@@ -79,26 +87,46 @@ class AddProductoInventarioFragment : Fragment() {
             // Crear un objeto InventarioModel con los datos del producto
             val productoInventario = InventarioModel(fechaProducto, cantidadAjustada, unidadMedidaProducto)
 
-            // Llamar a la función para agregar el registro de inventario
-            FirebaseInventarioUtil.agregarRegistroInventario(requireContext(), this.productoModel.id, productoInventario, object :
-                FirebaseInventarioUtil.RegistroInventarioCallback {
-                override fun onRegistroAgregadoExitosamente() {
-                    limpiar()
-                    init()
-                    DialogMaterialHelper.mostrarSuccessDialog(requireContext(), "Producto agregado correctamente")
-                }
+            // Validar el inventario antes de agregar el registro
+            val validationResult = InventarioModel.validarInventario(productoInventario)
+            if (validationResult.isValid) {
+                // Mostrar animación de carga mientras se realiza la petición
+                ConfigLoading.showLoadingAnimation()
 
-                override fun onRegistroError(mensaje: String) {
-                    // Hubo un problema al agregar el registro
-                    DialogMaterialHelper.mostrarErrorDialog(requireContext(), mensaje)
-                }
-            })
+                // Llamar a la función para agregar el registro de inventario
+                FirebaseInventarioUtil.agregarRegistroInventario(requireContext(), this.productoModel.id, productoInventario, object :
+                    FirebaseInventarioUtil.RegistroInventarioCallback {
+                    override fun onRegistroAgregadoExitosamente() {
+                        // Ocultar animación de carga cuando la petición se completa con éxito
+
+
+                        limpiar()
+                        init()
+                        ConfigLoading.hideLoadingAnimation()
+                        DialogMaterialHelper.mostrarSuccessDialog(requireContext(), "Producto agregado correctamente")
+                    }
+
+                    override fun onRegistroError(mensaje: String) {
+                        // Ocultar animación de carga cuando hay un error en la petición
+                        ConfigLoading.hideLoadingAnimation()
+
+                        // Hubo un problema al agregar el registro
+                        DialogMaterialHelper.mostrarErrorDialog(requireContext(), mensaje)
+                    }
+                })
+            } else {
+                // Mostrar un mensaje de error indicando la razón por la que el inventario no es válido
+                limpiar()
+                init()
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
+            }
         }
-
-
     }
+
     fun init(){
         try {
+            ConfigLoading.showLoadingAnimation()
             Picasso.get().load(productoModel.rutaImagen).into(binding.imageViewProducto)
             binding.editTextNombre.editText!!.setText(productoModel.nombre)
 
@@ -109,22 +137,22 @@ class AddProductoInventarioFragment : Fragment() {
             binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
 
             obtenerInventarioI(productoModel!!) { inventarioActualizado ->
-                Log.e("errorluisiana",inventarioActualizado.cantidad.toString())
-                if (inventarioActualizado.cantidad <= 0.0) {
+                if (inventarioActualizado.cantidad > 0.0) {
                     binding.spUnidadMedida.isEnabled = false
                     binding.editTextUnidadMedida.isEnabled = false
                     binding.editTextUnidadMedida.requestFocus()
+                    binding.spUnidadMedida.requestFocus()
                 }
 
                 binding.editTextUnidadMedida.editText!!.setText(inventarioActualizado.unidadMedida)
                 binding.editTextCantidad.placeholderText = inventarioActualizado.cantidad.toString()
+                ConfigLoading.hideLoadingAnimation()
             }
 
         } catch (e: Exception) {
             DialogMaterialHelper.mostrarErrorDialog(requireContext(), getString(R.string.error_loading_product_data))
+            ConfigLoading.showNodata()
         }
-
-
     }
 
     override fun onDestroyView() {
@@ -151,5 +179,4 @@ class AddProductoInventarioFragment : Fragment() {
         binding.spUnidadMedida.setText("")
         binding.editTextFecha2.setText("")
     }
-
 }

@@ -7,7 +7,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="16dp"
         android:background="@color/white">
 
@@ -28,149 +28,156 @@
         <LinearLayout
             android:id="@+id/cont_add_producto"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="visible"
             android:orientation="vertical">
-
-            <!-- ImageView para mostrar la imagen seleccionada -->
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="40dp"
-                android:layout_marginLeft="40dp"
-                android:layout_gravity="center"
-                app:cardCornerRadius="50dp">
-                <ImageView
-                    android:id="@+id/imageViewProducto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_imagen"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerInside"/>
-
-            </androidx.cardview.widget.CardView>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextNombre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/txt_nombre_producto"
-                android:backgroundTint="@color/white"
-                app:startIconDrawable="@drawable/ic_pet">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:enabled="false"
-                    android:backgroundTint="@color/white"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:id="@+id/editTextUnidadMedida"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:startIconDrawable="@drawable/ic_unidad_medidad">
-
-                <AutoCompleteTextView
-                    android:id="@+id/spUnidadMedida"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:backgroundTint="@color/white"
-                    android:hint="@string/txt_unidad_medida_producto"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <RadioGroup
+                <!-- ImageView para mostrar la imagen seleccionada -->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="50dp">
+                    <ImageView
+                        android:id="@+id/imageViewProducto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_imagen"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editTextNombre"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/txt_nombre_producto"
+                    android:backgroundTint="@color/white"
+                    app:startIconDrawable="@drawable/ic_pet">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:backgroundTint="@color/white"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:id="@+id/editTextUnidadMedida"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    app:startIconDrawable="@drawable/ic_unidad_medidad">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spUnidadMedida"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/white"
+                        android:hint="@string/txt_unidad_medida_producto"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <RadioButton
-                        android:id="@+id/radioSumar"
+
+                    <RadioGroup
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="Sumar"/>
-                    <RadioButton
-                        android:id="@+id/radioRestar"
+                        android:orientation="horizontal">
+                        <RadioButton
+                            android:id="@+id/radioSumar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="Sumar"/>
+                        <RadioButton
+                            android:id="@+id/radioRestar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Restar"/>
+                    </RadioGroup>
+
+                </LinearLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editTextCantidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/txt_cantidad_producto"
+                    android:backgroundTint="@color/white"
+                    app:startIconDrawable="@drawable/ic_cantidad_producto">
+
+                    <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="Restar"/>
-                </RadioGroup>
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:backgroundTint="@color/white"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/editTextFecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:hint="@string/txt_fecha"
+                    android:inputType="date"
+                    app:startIconDrawable="@drawable/ic_calendar">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextFecha2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- Resto de tus TextInputLayouts -->
+
+
 
             </LinearLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextCantidad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/txt_cantidad_producto"
-                android:backgroundTint="@color/white"
-                app:startIconDrawable="@drawable/ic_cantidad_producto">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:backgroundTint="@color/white"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextFecha"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:hint="@string/txt_fecha"
-                android:inputType="date"
-                app:startIconDrawable="@drawable/ic_calendar">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextFecha2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <!-- Resto de tus TextInputLayouts -->
-
-            <!-- Botón para guardar -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAgregar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="bottom"
-                    android:layout_weight="1"
                     android:text="Agregar" />
 
             </LinearLayout>
-
         </LinearLayout>
+
 
     </FrameLayout>
 
