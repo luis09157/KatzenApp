@@ -1,10 +1,12 @@
 package com.example.katzen.Fragment.Inventario
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
@@ -57,16 +59,43 @@ class AddProductoInventarioFragment : Fragment() {
             view.hideKeyboard()
         }
         binding.btnAgregar.setOnClickListener {
+            // Obtener la cantidad del EditText y convertirla a Double
             val cantidadProducto = binding.editTextCantidad.editText?.text.toString().toDoubleOrNull() ?: 0.0
+
+            // Verificar qué radio button está seleccionado
+            val isSumarSeleccionado = binding.radioSumar.isChecked
+
+            // Ajustar la cantidad según la selección del radio button
+            val cantidadAjustada = if (isSumarSeleccionado) {
+                cantidadProducto  // Mantener la cantidad tal como está para la suma
+            } else {
+                -cantidadProducto  // Convertir la cantidad en negativa para la resta
+            }
+
+            // Obtener la unidad de medida y la fecha
             val unidadMedidaProducto = binding.spUnidadMedida.text.toString()
             val fechaProducto = binding.editTextFecha2.text.toString()
 
             // Crear un objeto InventarioModel con los datos del producto
-            val productoInventario = InventarioModel(fechaProducto, cantidadProducto, unidadMedidaProducto)
+            val productoInventario = InventarioModel(fechaProducto, cantidadAjustada, unidadMedidaProducto)
 
-            // Llamar al método para agregar el producto al inventario en Firebase
-            FirebaseInventarioUtil.agregarRegistroInventario(requireContext(),this.productoModel.id ,productoInventario)
+            // Llamar a la función para agregar el registro de inventario
+            FirebaseInventarioUtil.agregarRegistroInventario(requireContext(), this.productoModel.id, productoInventario, object :
+                FirebaseInventarioUtil.RegistroInventarioCallback {
+                override fun onRegistroAgregadoExitosamente() {
+                    limpiar()
+                    init()
+                    DialogMaterialHelper.mostrarSuccessDialog(requireContext(), "Producto agregado correctamente")
+                }
+
+                override fun onRegistroError(mensaje: String) {
+                    // Hubo un problema al agregar el registro
+                    DialogMaterialHelper.mostrarErrorDialog(requireContext(), mensaje)
+                }
+            })
         }
+
+
     }
     fun init(){
         try {
@@ -80,8 +109,15 @@ class AddProductoInventarioFragment : Fragment() {
             binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
 
             obtenerInventarioI(productoModel!!) { inventarioActualizado ->
+                Log.e("errorluisiana",inventarioActualizado.cantidad.toString())
+                if (inventarioActualizado.cantidad <= 0.0) {
+                    binding.spUnidadMedida.isEnabled = false
+                    binding.editTextUnidadMedida.isEnabled = false
+                    binding.editTextUnidadMedida.requestFocus()
+                }
+
                 binding.editTextUnidadMedida.editText!!.setText(inventarioActualizado.unidadMedida)
-                binding.editTextCantidad.editText!!.setText(inventarioActualizado.cantidad.toString())
+                binding.editTextCantidad.placeholderText = inventarioActualizado.cantidad.toString()
             }
 
         } catch (e: Exception) {

@@ -12,19 +12,26 @@ object FirebaseInventarioUtil {
 
     private val database: FirebaseDatabase by lazy { FirebaseDatabase.getInstance() }
 
-    fun agregarRegistroInventario(context: Context, idProducto: String, inventario: InventarioModel) {
+    interface RegistroInventarioCallback {
+        fun onRegistroAgregadoExitosamente()
+        fun onRegistroError(mensaje: String)
+    }
+
+    fun agregarRegistroInventario(context: Context, idProducto: String, inventario: InventarioModel, callback: RegistroInventarioCallback) {
         val referenciaInventario = database.getReference("$INVENTARIO_PATH/$idProducto")
 
         val nuevoRegistroKey = referenciaInventario.push().key
 
-        referenciaInventario.child(nuevoRegistroKey!!).setValue(inventario)
+        referenciaInventario.child(nuevoRegistroKey!!)
+            .setValue(inventario)
             .addOnSuccessListener {
-                DialogMaterialHelper.mostrarSuccessDialog(context, "Registro de inventario agregado exitosamente.")
+                callback.onRegistroAgregadoExitosamente()
             }
             .addOnFailureListener { exception ->
-                DialogMaterialHelper.mostrarErrorDialog(context, "Error al agregar registro de inventario: ${exception.message}")
+                callback.onRegistroError("Error al agregar registro de inventario: ${exception.message}")
             }
     }
+
 
     fun obtenerInventarioPorProducto(productoId: String, onComplete: (List<InventarioModel>) -> Unit) {
         val referenciaInventario = database.getReference(INVENTARIO_PATH).child(productoId)

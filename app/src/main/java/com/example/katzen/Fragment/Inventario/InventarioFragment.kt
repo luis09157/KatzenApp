@@ -62,9 +62,6 @@ class InventarioFragment : Fragment() {
             onComplete(productoModel)
         }
     }
-
-
-
     fun obtenerProductos(){
         FirebaseProductoUtil.obtenerListaProductos(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
