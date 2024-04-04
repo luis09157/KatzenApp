@@ -147,12 +147,14 @@
 
     <!-- ADD PRODUCTO -->
     <string name="txt_nombre_producto">Nombre del Producto</string>
+    <string name="txt_proveedor">Proveedor</string>
     <string name="txt_precio_venta">Precio de Venta</string>
     <string name="txt_costo_producto">Costo Producto</string>
     <string name="txt_cantidad_producto">Cantidad Producto</string>
     <string name="txt_fecha">Fecha de Agregado</string>
     <string name="txt_descripcion_producto">Descripción del Producto</string>
     <string name="txt_unidad_medida_producto">Unidad de Medida</string>
+    <string name="txt_categoria_producto">Categoria</string>
     <string name="error_invalid_quantity_or_unit">La cantidad o la unidad de medida son inválidas.</string>
     <!-- ADD PRODUCTO -->
 

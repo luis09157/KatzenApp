@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.ConditionVariable
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -22,6 +24,7 @@ import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyBoardWorld
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ProductoModel
+import com.example.katzen.Model.ValidationResult
 import com.example.katzen.R
 import com.example.katzen.databinding.AddProductoFragmentBinding
 import com.squareup.picasso.Picasso
@@ -73,8 +76,16 @@ class AddProductoFragment : Fragment() {
         init()
         enableBtnGuardar()
         initLoading()
+        listeners(root)
 
+        if (Config.PRODUCTO_EDIT.nombre != "") {
+            initData()
+        }
 
+        return root
+    }
+
+    fun listeners(root : View){
         root.setOnClickListener { hideKeyBoardWorld(requireActivity(),it) }
         binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
             hideKeyBoardWorld(requireActivity(),root)
@@ -97,69 +108,74 @@ class AddProductoFragment : Fragment() {
             it.hideKeyboard()
             ConfigLoading.showLoadingAnimation()
             try {
-                btnGuardar(validarProducto())
-            }catch (e : Exception){
-                ConfigLoading.hideLoadingAnimation()
-                 Log.e(TAG,e.message.toString())
-            }
-        }
-        binding.btnEditar.setOnClickListener {
-            it.hideKeyboard()
-            ConfigLoading.showLoadingAnimation()
-            try {
-                btnEditar(validarProducto())
+                btnGuardar(getValuesProducto())
             }catch (e : Exception){
                 ConfigLoading.hideLoadingAnimation()
                 Log.e(TAG,e.message.toString())
             }
         }
 
-        if (Config.PRODUCTO_EDIT.nombre != "") {
-            initData()
-        }
-
-        return root
-    }
-
-    fun validarProducto() : ProductoModel {
-        val producto = ValidadorProducto.validarYCrearProducto(
-            requireContext(),
-            binding.editTextNombre,
-            binding.editTextPrecioVenta,
-            binding.editTextCosto,
-            binding.editTextFecha,
-            binding.editTextDescripcion,
-            imagenUri
-        )
-
-        return producto!!
-    }
-    fun btnEditar(producto : ProductoModel){
-
-        if (producto != null) {
+        binding.btnEditar.setOnClickListener {
+            it.hideKeyboard()
+            ConfigLoading.showLoadingAnimation()
             try {
-                producto.rutaImagen = imagenUri.toString()
-                FirebaseProductoUtil.editarProducto(requireContext(), producto, imagenUri)
+                btnEditar(getValuesProducto())
             }catch (e : Exception){
                 ConfigLoading.hideLoadingAnimation()
-                DialogMaterialHelper.mostrarErrorDialog(requireContext(), requireContext().getString(R.string.error_editing_product))
-                Log.e(TAG, "Error al obtener la URI de la imagen: ${e.message}")
+                Log.e(TAG,e.message.toString())
             }
+        }
+        binding.spCateogira.setOnClickListener { it.hideKeyboard() }
+    }
 
+    fun getValuesProducto() : ProductoModel{
+        var producto  = ProductoModel()
+        producto.rutaImagen = imagenUri.toString()
+        producto.nombre = binding.editTextNombre.editText?.text.toString()
+        producto.descripcion = binding.editTextDescripcion.text.toString()
+        producto.precioVenta = binding.editTextPrecioVenta.editText?.text.toString().toDoubleOrNull() ?: 0.0
+        producto.costo = binding.editTextCosto.editText?.text.toString().toDoubleOrNull() ?: 0.0
+        producto.fecha = binding.editTextFecha.editText?.text.toString()
+        producto.categoria = binding.editTextCategoria.editText?.text.toString()
+        producto.proveedor = binding.editTextProveedor.editText?.text.toString()
+
+        return  producto
+    }
+
+    fun btnEditar(producto : ProductoModel) {
+        if (producto.rutaImagen.isEmpty() || producto.rutaImagen.equals("")
+            || producto.rutaImagen == null  || producto.rutaImagen.equals("null")) {
+            producto.rutaImagen = Config.PRODUCTO_EDIT.rutaImagen
+        }
+        val validationResult = ProductoModel.validarProducto(requireContext(), producto)
+        if (validationResult.isValid) {
+            try {
+                FirebaseProductoUtil.editarProducto(requireContext(), producto, imagenUri)
+            } catch (e: Exception) {
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarErrorDialog(requireContext(), requireContext().getString(R.string.error_editing_product))
+                Log.e(TAG, "Error al editar el producto: ${e.message}")
+            }
         } else {
-            DialogMaterialHelper.mostrarErrorDialog(requireContext(), requireContext().getString(R.string.error_editing_product))
+            // Mostrar un mensaje de error si la validación falla
+            DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
             ConfigLoading.hideLoadingAnimation()
         }
     }
+
     fun btnGuardar(producto: ProductoModel){
-        if (producto != null) {
-            producto.rutaImagen = imagenUri.toString()
+        producto.rutaImagen = imagenUri.toString()
+        val validationResult : ValidationResult = ProductoModel.validarProducto(requireContext(), producto)
+        if (validationResult.isValid) {
             FirebaseProductoUtil.guardarProducto(requireContext(), producto, imagenUri!!)
+            cleanInputs()
         } else {
+            // Las validaciones fallaron, muestra los mensajes de error
             ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
         }
-        cleanInputs()
     }
+
 
     fun initLoading(){
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
@@ -173,6 +189,10 @@ class AddProductoFragment : Fragment() {
         binding.editTextFecha.editText!!.setText(CalendarioUtil.obtenerFechaHoraActual())
         convertirAMayusculas(binding.editTextNombre.editText!!)
         convertirAMayusculas(binding.editTextDescripcion)
+
+        val adapter = ArrayAdapter(requireActivity(),
+            android.R.layout.simple_list_item_1, Config.CATEGORIAS_PRODUCTO)
+        binding.spCateogira.setAdapter(adapter)
     }
 
     private fun seleccionarFoto() {
