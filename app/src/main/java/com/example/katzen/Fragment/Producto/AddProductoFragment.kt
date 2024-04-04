@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.ConditionVariable
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -58,6 +57,8 @@ class AddProductoFragment : Fragment() {
                 editTextPrecioVenta.editText?.setText(prod.precioVenta.toString())
                 editTextDescripcion.setText(prod.descripcion)
                 editTextFecha.editText?.setText(prod.fecha)
+                editTextCategoria.editText?.setText(prod.categoria)
+                editTextProveedor.editText?.setText(prod.proveedor)
                 Picasso.get().load(prod.rutaImagen).into(imageViewProducto)
             }
         }
@@ -126,6 +127,7 @@ class AddProductoFragment : Fragment() {
             }
         }
         binding.spCateogira.setOnClickListener { it.hideKeyboard() }
+        binding.spProveedor.setOnClickListener { it.hideKeyboard() }
     }
 
     fun getValuesProducto() : ProductoModel{
@@ -190,9 +192,13 @@ class AddProductoFragment : Fragment() {
         convertirAMayusculas(binding.editTextNombre.editText!!)
         convertirAMayusculas(binding.editTextDescripcion)
 
-        val adapter = ArrayAdapter(requireActivity(),
+        val adapterCategorias = ArrayAdapter(requireActivity(),
             android.R.layout.simple_list_item_1, Config.CATEGORIAS_PRODUCTO)
-        binding.spCateogira.setAdapter(adapter)
+        binding.spCateogira.setAdapter(adapterCategorias)
+
+        val adapterProveedor = ArrayAdapter(requireActivity(),
+            android.R.layout.simple_list_item_1, Config.PROVEEDORES)
+        binding.spProveedor.setAdapter(adapterProveedor)
     }
 
     private fun seleccionarFoto() {
@@ -250,6 +256,8 @@ class AddProductoFragment : Fragment() {
         binding.editTextDescripcion.setText("")
         binding.editTextPrecioVenta.editText?.setText("")
         binding.editTextCosto.editText?.setText("")
+        binding.editTextProveedor.editText?.setText("")
+        binding.editTextCategoria.editText?.setText("")
         binding.editTextFecha2.setText(CalendarioUtil.obtenerFechaHoraActual())
     }
 

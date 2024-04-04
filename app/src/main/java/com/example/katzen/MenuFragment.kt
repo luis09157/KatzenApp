@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment
+package com.example.katzen
 
 import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import android.os.Bundle

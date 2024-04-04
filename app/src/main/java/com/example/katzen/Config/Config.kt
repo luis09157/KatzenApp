@@ -8,9 +8,12 @@ class Config {
         val CATEGORIAS = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
         val UNIDAD_MEDIDA = listOf("Piezas","Mililitros", "Litros")
         val CATEGORIAS_PRODUCTO = listOf("Medicamento","Alimento", "Pet Shop")
+        val PROVEEDORES = listOf("GoPet")
         val SEXO = listOf("Macho","Hembra")
         val METODOS_PAGO = listOf("Efectivo","Tarjeta","Transferencia")
         val ESPECIE = listOf("Canino","Felino")
+
+
         var MES_DETALLE = ""
 
         var COSTO : Double = 0.00

@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.katzen.Config.Config
+import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
@@ -33,6 +35,8 @@ class MenuProductosFragment : Fragment() {
         _binding = MenuProductosFragmnetBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        initLoading()
+        ConfigLoading.showLoadingAnimation()
         // Inicializar la lista de productos y el adaptador
         productosList = mutableListOf()
         productosAdapter = ProductosAdapter(requireContext(), productosList)
@@ -90,9 +94,11 @@ class MenuProductosFragment : Fragment() {
 
                 // Notificar al adaptador que los datos han cambiado
                 productosAdapter.notifyDataSetChanged()
+                ConfigLoading.hideLoadingAnimation()
             }
 
             override fun onCancelled(error: DatabaseError) {
+                ConfigLoading.hideLoadingAnimation()
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
             }
@@ -101,5 +107,10 @@ class MenuProductosFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    fun initLoading(){
+        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 }

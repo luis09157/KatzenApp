@@ -1,33 +1,25 @@
 package com.example.katzen
 
-import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.katzen.Fragment.MenuFragment
-import com.example.katzen.Fragment.Venta.VentasFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.PDF.ConvertPDF
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.ui.card.PaymetCardFragment
-import com.example.katzen.ui.example.ExampleFragment
 import com.example.katzen.ui.gasolina.FuellFragment
-import com.example.katzen.ui.mascota.MascotaFragment
 import com.example.katzen.ui.medical.MedicalFragment
 import com.example.katzen.ui.viajes.ViajesFragment
 import com.google.android.material.navigation.NavigationView
@@ -37,37 +29,12 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity() {
-    val TAG = "MainActivity"
-    val code_notification =101
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var drawerToggle: ActionBarDrawerToggle
 
-    private fun CheckForPermissions(Permission:String,Name:String,RequestCode:Int)
-    {
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.M)
-        {
-            when{
-                ContextCompat.checkSelfPermission(applicationContext,Permission)== PackageManager.PERMISSION_GRANTED->{
-                    Toast.makeText(applicationContext,"$Name permission is granted",Toast.LENGTH_SHORT).show()
-                }
-                shouldShowRequestPermissionRationale(Permission) -> showDialog(Permission,Name,RequestCode)
-                else-> ActivityCompat.requestPermissions(this, arrayOf(Permission),RequestCode)
-            }
-        }
-    }
-    private fun showDialog(permission: String, name: String, requestCode: Int) {
-        val builder = AlertDialog.Builder(this)
-        builder.apply {
-            setMessage("Permission to access your $name is required to use this app")
-            setTitle("Permission Required")
-            setPositiveButton("ok"){dialog,which ->
-                ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission),requestCode)
-            }
-        }
-        val dialog =builder.create()
-        dialog.show()
-    }
+    private val codeNotification = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,152 +46,115 @@ class MainActivity : AppCompatActivity() {
 
         firebaseAnalytics = Firebase.analytics
         Firebase.messaging.isAutoInitEnabled = true
+
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_fuel, R.id.nav_payment_card, R.id.nav_slideshow,R.id.nav_viajes
+                R.id.nav_fuel, R.id.nav_payment_card, R.id.nav_slideshow, R.id.nav_viajes
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        navView.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_fuel -> {
-                    binding.appBarMain.toolbar.title = "Calcular gasolina"
-                    UtilFragment.changeFragment(this, FuellFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
-                R.id.nav_payment_card -> {
-                    binding.appBarMain.toolbar.title = "Pago con tarjeta"
-                    UtilFragment.changeFragment(this, PaymetCardFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
+        binding.navView.setupWithNavController(navController)
 
-                    true
-                }
-                R.id.nav_slideshow -> {
-                    binding.appBarMain.toolbar.title = "Dosis"
-                    UtilFragment.changeFragment(this, MedicalFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
+        drawerToggle = ActionBarDrawerToggle(
+            this, drawerLayout, binding.appBarMain.toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
 
-                    true
-                }
-                R.id.nav_viajes -> {
-                    binding.appBarMain.toolbar.title = "Domicilios"
-                    UtilFragment.changeFragment(this, ViajesFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-
-                    true
-                }
-                R.id.nav_example -> {
-                    binding.appBarMain.toolbar.title = "Example"
-                    UtilFragment.changeFragment(this, ExampleFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-
-                    true
-                }
-                R.id.nav_mascota -> {
-                    binding.appBarMain.toolbar.title = "Agregar Mascota"
-                    UtilFragment.changeFragment(this, MascotaFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-
-                    true
-                }
-                R.id.nav_ventas -> {
-                    binding.appBarMain.toolbar.title = "Ventas"
-                    UtilFragment.changeFragment(this, VentasFragment(),TAG)
-                    drawerLayout.closeDrawer(GravityCompat.START)
-
-                    true
-                }
-                else -> false
-            }
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            navigateTo(menuItem.itemId)
+            drawerLayout.closeDrawers()
+            true
         }
 
-
-        CheckForPermissions(android.Manifest.permission.POST_NOTIFICATIONS,"Notification",code_notification)
-
+        checkPermission(android.Manifest.permission.POST_NOTIFICATIONS, "Notification", codeNotification)
         logRegToken()
         UtilFragment.changeFragment(this, MenuFragment(),TAG)
 
-       /* val serviceIntent = Intent(this, DomiciliosPendientesService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startService(serviceIntent)
-        }*/
     }
-    fun logRegToken() {
-        // [START log_reg_token]
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        drawerToggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        drawerToggle.onConfigurationChanged(newConfig)
+    }
+
+    private fun navigateTo(itemId: Int) {
+        val fragment = when (itemId) {
+            R.id.nav_fuel -> FuellFragment()
+            R.id.nav_payment_card -> PaymetCardFragment()
+            R.id.nav_slideshow -> MedicalFragment()
+            R.id.nav_viajes -> ViajesFragment()
+            else -> return
+        }
+        binding.appBarMain.toolbar.title = menuItemTitle(itemId)
+        UtilFragment.changeFragment(this, fragment, TAG)
+    }
+
+    private fun menuItemTitle(itemId: Int) = when (itemId) {
+        R.id.nav_fuel -> "Calcular gasolina"
+        R.id.nav_payment_card -> "Pago con tarjeta"
+        R.id.nav_slideshow -> "Dosis"
+        R.id.nav_viajes -> "Domicilios"
+        else -> ""
+    }
+
+    private fun checkPermission(permission: String, name: String, requestCode: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            when {
+                ContextCompat.checkSelfPermission(applicationContext, permission) == PackageManager.PERMISSION_GRANTED -> {
+                    Toast.makeText(applicationContext, "$name permission is granted", Toast.LENGTH_SHORT).show()
+                }
+                shouldShowRequestPermissionRationale(permission) -> showDialog(permission, name, requestCode)
+                else -> ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+            }
+        }
+    }
+
+    private fun showDialog(permission: String, name: String, requestCode: Int) {
+        val builder = AlertDialog.Builder(this)
+        builder.apply {
+            setMessage("Permission to access your $name is required to use this app")
+            setTitle("Permission Required")
+            setPositiveButton("OK") { dialog, which ->
+                ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission), requestCode)
+            }
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun logRegToken() {
         Firebase.messaging.getToken().addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
+            if (task.isSuccessful) {
+                val token = task.result
+                Log.d(TAG, "FCM Registration token: $token")
+            } else {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
             }
-
-            // Get new FCM registration token
-            val token = task.result
-
-            // Log and toast
-            val msg = "FCM Registration token: $token"
-            Log.d(TAG, msg)
-            //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-        }
-        // [END log_reg_token]
-    }
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                Toast.makeText(applicationContext, "click on setting", Toast.LENGTH_LONG).show()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            ConvertPDF.REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED) {
-                    if ((ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) ===
-                                PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-                return
-            }
-            code_notification -> {
-                if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED) {
-                    if ((ContextCompat.checkSelfPermission(this,
-                            Manifest.permission.POST_NOTIFICATIONS) ===
-                                PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                   // ActivityCompat.requestPermissions(this, arrayOf("android.Manifest.permission.POST_NOTIFICATIONS"),code_notification)
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-                return
+        if (requestCode == codeNotification) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    companion object {
+        const val TAG = "MainActivity"
     }
 }
