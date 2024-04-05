@@ -4,27 +4,6 @@
     android:background="@color/background_color"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <ListView
-            android:id="@+id/listProductos"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"></ListView>
-        <Button
-            android:id="@+id/btnAddProducto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Agregar Producto"/>
-        <Button
-            android:id="@+id/btnAddVenta"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Agregar Venta"/>
-    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

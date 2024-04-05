@@ -24,15 +24,6 @@ class VentasFragment : Fragment() {
         val root: View = binding.root
 
 
-        binding.btnAddVenta.setOnClickListener{
-            UtilFragment.changeFragment(requireActivity(), AddVentaFragment(),TAG)
-        }
-        binding.btnAddProducto.setOnClickListener {
-            //UtilFragment.changeFragment(requireActivity(), AddProductoFragment(),TAG)
-            UtilFragment.changeFragment(requireActivity(), MenuFragment(),TAG)
-
-        }
-
         return root
     }
 
