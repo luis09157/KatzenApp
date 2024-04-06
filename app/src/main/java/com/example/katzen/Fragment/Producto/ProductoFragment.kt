@@ -21,9 +21,6 @@ class ProductoFragment : Fragment() {
         _binding = VentasFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.listProductos.setOnItemClickListener { adapterView, view, i, l ->
-
-        }
 
         return root
     }

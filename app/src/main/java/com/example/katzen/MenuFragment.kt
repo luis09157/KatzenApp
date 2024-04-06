@@ -11,6 +11,7 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Producto.AddProductoFragment
 import com.example.katzen.Fragment.Venta.AddVentaFragment
+import com.example.katzen.Fragment.Venta.VentasFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
@@ -48,7 +49,7 @@ class MenuFragment : Fragment() {
 
             when (titulo) {
                 "Venta" -> {
-                    UtilFragment.changeFragment(requireActivity(), AddVentaFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), VentasFragment(),TAG)
                 }
                 "Producto" -> {
                     Config.PRODUCTO_EDIT = ProductoModel()
