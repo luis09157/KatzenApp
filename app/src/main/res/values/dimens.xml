@@ -8,4 +8,6 @@
 
     <dimen name="txt_pdf_dat">7dp</dimen>
     <dimen name="txt_pdf_title">10dp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
 </resources>

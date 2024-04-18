@@ -130,16 +130,9 @@
     <string name="error_invalid_number">Los campos Precio de Venta y Costo deben ser números válidos</string>
     <string name="error_future_date">La fecha ingresada no puede ser en el futuro.</string>
     <string name="error_no_image_selected">Por favor, seleccione una imagen para el producto.</string>
-    <string name="dialog_product_name_exists">El nombre del producto ya está registrado.</string>
-    <string name="dialog_product_saved_success">Producto guardado exitosamente en la base de datos.</string>
-    <string name="dialog_error_saving_product">Error al guardar el producto en la base de datos: %s</string>
-    <string name="dialog_error_uploading_image">Error al subir la imagen del producto: %s</string>
-    <string name="dialog_database_query_error">Error al realizar la consulta en la base de datos: %s</string>
     <!-- VALIDADOR PRODUCTO -->
 
     <!-- UPDATE PRODUCTO -->
-    <string name="dialog_product_updated_success">¡Producto actualizado exitosamente!</string>
-    <string name="dialog_error_updating_product">Error al actualizar el producto: %1$s</string>
     <string name="error_getting_image_uri">Error al obtener la URI de la imagen.</string>
     <string name="error_editing_product">No se pudo editar el producto. Por favor, inténtalo de nuevo más tarde.</string>
 
@@ -161,6 +154,23 @@
     <!-- INVENTARIO PRODUCTO -->
     <string name="error_loading_product_data">Error al cargar los datos del producto. Inténtalo de nuevo.</string>
     <!-- INVENTARIO PRODUCTO -->
+
+
+    <!-- MASCOTA -->
+    <string name="dialog_product_name_exists">El nombre de la mascota ya está registrado.</string>
+    <string name="dialog_pet_name_exists">El nombre de la mascota ya está registrado.</string>
+    <string name="dialog_product_saved_success">¡Mascota guardada exitosamente!</string>
+    <string name="dialog_pet_saved_success">¡Mascota guardada exitosamente!</string>
+    <string name="dialog_error_saving_product">Error al guardar la mascota: %s</string>
+    <string name="dialog_error_saving_pet">Error al guardar la mascota: %s</string>
+    <string name="dialog_database_query_error">Error en la consulta de la base de datos: %s</string>
+    <string name="dialog_error_uploading_image">Error al subir la imagen: %s</string>
+    <string name="dialog_product_updated_success">¡Mascota actualizada exitosamente!</string>
+    <string name="dialog_pet_updated_success">¡Mascota actualizada exitosamente!</string>
+    <string name="dialog_error_updating_product">Error al actualizar la mascota: %s</string>
+    <string name="dialog_error_updating_pet">Error al actualizar la mascota: %s</string>
+    <!-- MASCOTA -->
+
 
 
 </resources>

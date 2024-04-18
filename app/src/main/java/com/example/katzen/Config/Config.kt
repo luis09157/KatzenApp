@@ -1,5 +1,6 @@
 package com.example.katzen.Config
 
+import com.example.katzen.Model.MascotaModel
 import com.example.katzen.Model.ProductoModel
 
 class Config {
@@ -21,6 +22,7 @@ class Config {
         var GANANCIA : Double = 0.00
 
         var PRODUCTO_EDIT : ProductoModel = ProductoModel()
+        var MASCOTA_EDIT : MascotaModel = MascotaModel()
         var IMG_CHANGE : Boolean = false
     }
 }

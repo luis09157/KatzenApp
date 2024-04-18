@@ -32,12 +32,12 @@ class KatzenDataBase(activity: Activity) {
             subirImagenAFirebaseStorage(uriImagen) { urlImagen ->
                 mascota.imageUrl = urlImagen
                 // Después de obtener la URL de la imagen, agregar la mascota a la base de datos
-                nuevoPacienteRef.setValue(mascota.toMap())
+                //nuevoPacienteRef.setValue(mascota.toMap())
                 Log.d(TAG, "Mascota y paciente agregados correctamente.")
             }
         } else {
             // Si no se proporciona una URI de imagen, agregar la mascota directamente a la base de datos
-            nuevoPacienteRef.setValue(mascota.toMap())
+            //nuevoPacienteRef.setValue(mascota.toMap())
             Log.d(TAG, "Mascota y paciente agregados correctamente.")
         }
         

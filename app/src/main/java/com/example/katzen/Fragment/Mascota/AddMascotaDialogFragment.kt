@@ -14,12 +14,24 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
+import com.example.katzen.Config.ConfigLoading
+import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
+import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
+import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
+import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.LoadingHelper
+import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.MascotaModel
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AddMascotaFragment : Fragment() {
     val TAG = "AddMascotaFragment"
+    val FOLDER_NAME = "Mascotas"
+    val PATH_FIREBASE = "Katzen/Mascota"
 
     private lateinit var loadingHelper: LoadingHelper
     private var _binding: VistaAgregarMascotaBinding? = null
@@ -36,74 +48,93 @@ class AddMascotaFragment : Fragment() {
         _binding = VistaAgregarMascotaBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        val txt_nombre = binding.textNombre
-        val sp_especie = binding.spEspecie
-        val sp_raza = binding.spRaza
-        val sp_sexo = binding.spSexo
-        val txt_peso = binding.textPeso
-        val txt_edad = binding.textEdad
-        val btn_cancelar = binding.btnCancelar
-        val btn_guardar = binding.btnGuardar
+        initLoading()
+        init()
+        listeners()
 
-        sp_raza.setOnClickListener {
-            //view.hideKeyboard()
-        }
-        sp_especie.setOnClickListener {
-           // view.hideKeyboard()
-        }
-        sp_sexo.setOnClickListener {
-           // view.hideKeyboard()
-        }
+        return view
+    }
 
-        btn_cancelar.setOnClickListener {
-            //view.hideKeyboard()
+    fun listeners(){
+        binding.spSexo.setOnClickListener { it.hideKeyboard() }
+        binding.spEspecie.setOnClickListener { it.hideKeyboard() }
+
+        binding.btnCancelar.setOnClickListener {
+            it.hideKeyboard()
             // Depending on your logic, you might want to navigate back to the previous fragment here
         }
 
-        btn_guardar.setOnClickListener {
-            //view.hideKeyboard()
+        binding.btnGuardar.setOnClickListener {
+            it.hideKeyboard()
+            val mascota = MascotaModel()
+            mascota.nombre = binding.textNombre.text.toString()
+            mascota.peso = binding.textPeso.text.toString()
+            mascota.raza = binding.spRaza.text.toString()
+            mascota.especie = binding.spEspecie.text.toString()
+            mascota.edad = binding.textEdad.text.toString()
+            mascota.sexo = binding.spSexo.text.toString()
+            mascota.imgData = URI_IMG_SELECTED
+            mascota.fecha = UtilHelper.getDate()
 
-            val mM = MascotaModel(
-                nombre = txt_nombre.text.toString(),
-                especie = sp_especie.text.toString(),
-                raza = sp_raza.text.toString(),
-                sexo = sp_sexo.text.toString(),
-                peso = txt_peso.text.toString(),
-                edad = txt_edad.text.toString()
-            )
+            // Validar la mascota
+         //   val validationResult = MascotaModel.validarMascota(requireContext(), mascota)
 
-            // Depending on your logic, you might want to pass the mM object to another function for further processing
-            dialogConfirm(mM)
+            GlobalScope.launch(Dispatchers.IO) {
+                val resultado = FirebaseMascotaUtil.guardarMascota(requireContext(), mascota)
+
+                if (resultado) {
+                    // La operación de guardado fue exitosa
+                    println("La mascota se guardó exitosamente.")
+                } else {
+                    // Hubo un error en la operación de guardado
+                    println("Hubo un error al guardar la mascota.")
+                }
+            }
+
+
+           /* if (validationResult.isValid) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val imageUrl = FirebaseStorageManager().uploadImage(URI_IMG_SELECTED, FOLDER_NAME)
+                    println("URL de descarga de la imagen: $imageUrl")
+                    mascota.imageUrl = imageUrl
+
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val resultado = FirebaseDatabaseManager().insertModel(mascota, PATH_FIREBASE)
+
+                        // Manejar el resultado
+                        if (resultado) {
+                            DialogMaterialHelper.mostrarSuccessDialog(requireContext(),"El modelo se insertó correctamente en la base de datos.")
+                        } else {
+                            DialogMaterialHelper.mostrarErrorDialog(requireContext(),"Hubo un error al insertar el modelo en la base de datos.")
+                        }
+                    }
+                }
+            }else {
+                // La mascota no es válida, mostrar mensaje de error
+                DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
+            }*/
         }
 
         binding.btnSubirImagen.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
-
-        val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
-        sp_sexo.setAdapter(adapterSEXO)
-        val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
-        sp_especie.setAdapter(adapterESPECIE)
-
-        return view
     }
-
+    fun init(){
+        val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
+        binding.spSexo.setAdapter(adapterSEXO)
+        val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
+        binding.spEspecie.setAdapter(adapterESPECIE)
+    }
+    fun initLoading(){
+        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-    private fun dialogConfirm(mascota: MascotaModel) {
-        try {
-            KatzenDataBase(requireActivity()).agregarMascota(mascota, URI_IMG_SELECTED)
-        } catch (e: Exception) {
-            // Handle the exception here, you can log it or show a Toast message
-            Log.e(TAG, "Error adding Mascota to database: ${e.message}")
-            Toast.makeText(requireContext(), "Error adding Mascota to database", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
