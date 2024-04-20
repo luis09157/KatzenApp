@@ -23,6 +23,7 @@ import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.MascotaModel
+import com.example.katzen.R
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -64,49 +65,8 @@ class AddMascotaFragment : Fragment() {
         }
 
         binding.btnGuardar.setOnClickListener {
-
             it.hideKeyboard()
-            val mascota = MascotaModel()
-            mascota.nombre = binding.textNombre.text.toString()
-            mascota.peso = binding.textPeso.text.toString()
-            mascota.raza = binding.spRaza.text.toString()
-            mascota.especie = binding.spEspecie.text.toString()
-            mascota.edad = binding.textEdad.text.toString()
-            mascota.sexo = binding.spSexo.text.toString()
-            mascota.fecha = UtilHelper.getDate()
-
-            // Validar la mascota
-            val validationResult = MascotaModel.validarMascota(requireContext(), mascota)
-
-            if (validationResult.isValid) {
-                GlobalScope.launch(Dispatchers.IO) {
-                    if (FirebaseStorageManager.hasSelectedImage()){
-                        val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
-                        println("URL de descarga de la imagen: $imageUrl")
-                        mascota.imageUrl = imageUrl
-
-                        GlobalScope.launch(Dispatchers.IO) {
-                            val resultado = FirebaseDatabaseManager.insertModel(mascota,PATH_FIREBASE)
-
-                            if (resultado) {
-                                // La operación de guardado fue exitosa
-                                println("La mascota se guardó exitosamente.")
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "La mascota se guardó exitosamente.")
-                            } else {
-                                // Hubo un error en la operación de guardado
-                                println("Hubo un error al guardar la mascota.")
-                                //DialogMaterialHelper.mostrarErrorDialog(requireContext(), "Hubo un error al guardar la mascota.")
-                            }
-                        }
-                    }else{
-                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Selecciona una iamgen.")
-                    }
-                }
-            }else {
-                // La mascota no es válida, mostrar mensaje de error
-                println(validationResult.message)
-                //DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
-            }
+            guardarMascota()
         }
 
         binding.btnSubirImagen.setOnClickListener {
@@ -125,6 +85,70 @@ class AddMascotaFragment : Fragment() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    }
+    fun guardarMascota(){
+        requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
+
+        val mascota = MascotaModel()
+        mascota.nombre = binding.textNombre.text.toString()
+        mascota.peso = binding.textPeso.text.toString()
+        mascota.raza = binding.spRaza.text.toString()
+        mascota.especie = binding.spEspecie.text.toString()
+        mascota.edad = binding.textEdad.text.toString()
+        mascota.sexo = binding.spSexo.text.toString()
+        mascota.fecha = UtilHelper.getDate()
+
+        // Validar la mascota
+        val validationResult = MascotaModel.validarMascota(requireContext(), mascota)
+
+        if (validationResult.isValid) {
+            GlobalScope.launch(Dispatchers.IO) {
+                if (FirebaseStorageManager.hasSelectedImage()){
+                    val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
+                    println("URL de descarga de la imagen: $imageUrl")
+                    mascota.imageUrl = imageUrl
+
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val resultado = FirebaseDatabaseManager.insertModel(mascota,PATH_FIREBASE)
+
+                        if (resultado) {
+                            // La operación de guardado fue exitosa
+                            println("La mascota se guardó exitosamente.")
+                            limpiarCampos()
+                            requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
+
+                            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "La mascota se guardó exitosamente.")
+                        } else {
+                            // Hubo un error en la operación de guardado
+                            requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
+                            println("Hubo un error al guardar la mascota.")
+                            //DialogMaterialHelper.mostrarErrorDialog(requireContext(), "Hubo un error al guardar la mascota.")
+                        }
+                    }
+                }else{
+                    requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
+                    DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Selecciona una iamgen.")
+                }
+            }
+        }else {
+            // La mascota no es válida, mostrar mensaje de error
+            println(validationResult.message)
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
+        }
+    }
+    fun limpiarCampos() {
+        requireActivity().runOnUiThread {
+            binding.apply {
+                textNombre.text?.clear()
+                spSexo.text?.clear()
+                spEspecie.text?.clear()
+                spRaza.text?.clear()
+                textPeso.text?.clear()
+                textEdad.text?.clear()
+                fotoMascota.setImageResource(R.drawable.ic_imagen)
+            }
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
