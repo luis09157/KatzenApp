@@ -18,14 +18,13 @@ data class MascotaModel(
     var idUsuario: String = "",
     var fecha: String = "",
     var imageUrl: String = "",
-    var imageFileName: String = "",
-    var imgData: Uri = Uri.EMPTY
+    var imageFileName: String = ""
 ) {
     companion object {
         fun validarMascota(context: Context, mascota: MascotaModel): ValidationResult {
             if (mascota.nombre.isEmpty() || mascota.peso.isEmpty() || mascota.raza.isEmpty() ||
                 mascota.especie.isEmpty() || mascota.edad.isEmpty() || mascota.sexo.isEmpty()
-                || mascota.fecha.isEmpty() || mascota.imgData == Uri.EMPTY) {
+                || mascota.fecha.isEmpty()) {
                 return ValidationResult(false, context.getString(R.string.error_empty_fields))
             }
 

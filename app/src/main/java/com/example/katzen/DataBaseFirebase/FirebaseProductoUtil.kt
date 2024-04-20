@@ -1,3 +1,4 @@
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import com.example.katzen.Config.Config
@@ -16,7 +17,7 @@ class FirebaseProductoUtil {
         private const val PRODUCTOS_IMAGES_PATH = "Productos" // Carpeta en Firebase Storage para guardar las imágenes de los productos
 
         @JvmStatic
-        fun guardarProducto(context: Context, producto: ProductoModel, imagenUri: Uri) {
+        fun guardarProducto(activity: Activity, producto: ProductoModel, imagenUri: Uri) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
             val storage: FirebaseStorage = FirebaseStorage.getInstance()
@@ -28,7 +29,7 @@ class FirebaseProductoUtil {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // El nombre del producto ya está registrado
-                        DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_name_exists))
+                        DialogMaterialHelper.mostrarSuccessDialog(activity, activity.getString(R.string.dialog_product_name_exists))
                         ConfigLoading.hideLoadingAnimation()
                     } else {
                         // El nombre del producto no está registrado, guardar la imagen en Firebase Storage
@@ -47,18 +48,18 @@ class FirebaseProductoUtil {
                                 referenciaProductos.child(productoId).setValue(producto)
                                     .addOnSuccessListener {
                                         // Operación exitosa
-                                        DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_saved_success))
+                                        DialogMaterialHelper.mostrarSuccessDialog(activity, activity.getString(R.string.dialog_product_saved_success))
                                         ConfigLoading.hideLoadingAnimation()
                                     }
                                     .addOnFailureListener { exception ->
                                         // Manejar errores
-                                        DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_saving_product, exception))
+                                        DialogMaterialHelper.mostrarErrorDialog(activity, activity.getString(R.string.dialog_error_saving_product, exception))
                                         ConfigLoading.hideLoadingAnimation()
                                     }
                             }
                         }.addOnFailureListener { exception ->
                             // Manejar errores de la subida de la imagen
-                            DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_uploading_image, exception))
+                            DialogMaterialHelper.mostrarErrorDialog(activity, activity.getString(R.string.dialog_error_uploading_image, exception))
                             ConfigLoading.hideLoadingAnimation()
                         }
                     }
@@ -66,7 +67,7 @@ class FirebaseProductoUtil {
 
                 override fun onCancelled(error: DatabaseError) {
                     // Manejar errores
-                    DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_database_query_error, error))
+                    DialogMaterialHelper.mostrarErrorDialog(activity, activity.getString(R.string.dialog_database_query_error, error))
                     ConfigLoading.hideLoadingAnimation()
                 }
             })
@@ -84,7 +85,7 @@ class FirebaseProductoUtil {
             referenciaProducto.addListenerForSingleValueEvent(listener)
         }
         @JvmStatic
-        fun editarProducto(context: Context, producto: ProductoModel, imagenUri: Uri?) {
+        fun editarProducto(activity: Activity, producto: ProductoModel, imagenUri: Uri?) {
             val database = FirebaseDatabase.getInstance()
             val referenciaProductos = database.getReference(PRODUCTOS_PATH)
             producto.id = Config.PRODUCTO_EDIT.id
@@ -103,37 +104,37 @@ class FirebaseProductoUtil {
                     imagenRef.downloadUrl.addOnSuccessListener { uri ->
                         val imageUrl = uri.toString()
                         producto.rutaImagen = imageUrl // Asignar la URL de la imagen al producto
-                        actualizarProductoEnBaseDatos(context, producto, referenciaProductos)
+                        actualizarProductoEnBaseDatos(activity, producto, referenciaProductos)
                     }.addOnFailureListener { exception ->
-                        manejarErrorSubidaImagen(context, exception)
+                        manejarErrorSubidaImagen(activity, exception)
                     }
                 }.addOnFailureListener { exception ->
-                    manejarErrorSubidaImagen(context, exception)
+                    manejarErrorSubidaImagen(activity, exception)
                 }
             } else {
                 // Si no hay cambio de imagen, simplemente actualizar el producto sin subir nueva imagen
                 producto.rutaImagen = Config.PRODUCTO_EDIT.rutaImagen
-                actualizarProductoEnBaseDatos(context, producto, referenciaProductos)
+                actualizarProductoEnBaseDatos(activity, producto, referenciaProductos)
             }
         }
 
-        private fun actualizarProductoEnBaseDatos(context: Context, producto: ProductoModel, referenciaProductos: DatabaseReference) {
+        private fun actualizarProductoEnBaseDatos(activity: Activity, producto: ProductoModel, referenciaProductos: DatabaseReference) {
             referenciaProductos.child(producto.id).setValue(producto)
                 .addOnSuccessListener {
                     // Operación exitosa
-                    DialogMaterialHelper.mostrarSuccessDialog(context, context.getString(R.string.dialog_product_updated_success))
+                    DialogMaterialHelper.mostrarSuccessDialog(activity, activity.getString(R.string.dialog_product_updated_success))
                     ConfigLoading.hideLoadingAnimation()
                 }
                 .addOnFailureListener { exception ->
                     // Manejar errores
-                    DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_updating_product, exception))
+                    DialogMaterialHelper.mostrarErrorDialog(activity, activity.getString(R.string.dialog_error_updating_product, exception))
                     ConfigLoading.hideLoadingAnimation()
                 }
         }
 
-        private fun manejarErrorSubidaImagen(context: Context, exception: Exception) {
+        private fun manejarErrorSubidaImagen(activity: Activity, exception: Exception) {
             // Manejar errores de la subida de la imagen
-            DialogMaterialHelper.mostrarErrorDialog(context, context.getString(R.string.dialog_error_uploading_image, exception))
+            DialogMaterialHelper.mostrarErrorDialog(activity, activity.getString(R.string.dialog_error_uploading_image, exception))
             ConfigLoading.hideLoadingAnimation()
         }
 

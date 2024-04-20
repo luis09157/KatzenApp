@@ -101,7 +101,7 @@ class AddProductoInventarioFragment : Fragment() {
                         limpiar()
                         init()
                         ConfigLoading.hideLoadingAnimation()
-                        DialogMaterialHelper.mostrarSuccessDialog(requireContext(), "Producto agregado correctamente")
+                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "Producto agregado correctamente")
                     }
 
                     override fun onRegistroError(mensaje: String) {
@@ -109,7 +109,7 @@ class AddProductoInventarioFragment : Fragment() {
                         ConfigLoading.hideLoadingAnimation()
 
                         // Hubo un problema al agregar el registro
-                        DialogMaterialHelper.mostrarErrorDialog(requireContext(), mensaje)
+                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), mensaje)
                     }
                 })
             } else {
@@ -117,7 +117,7 @@ class AddProductoInventarioFragment : Fragment() {
                 limpiar()
                 init()
                 ConfigLoading.hideLoadingAnimation()
-                DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
             }
         }
     }
@@ -148,7 +148,7 @@ class AddProductoInventarioFragment : Fragment() {
             }
 
         } catch (e: Exception) {
-            DialogMaterialHelper.mostrarErrorDialog(requireContext(), getString(R.string.error_loading_product_data))
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), getString(R.string.error_loading_product_data))
             ConfigLoading.showNodata()
         }
     }

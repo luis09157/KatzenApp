@@ -152,15 +152,15 @@ class AddProductoFragment : Fragment() {
         val validationResult = ProductoModel.validarProducto(requireContext(), producto)
         if (validationResult.isValid) {
             try {
-                FirebaseProductoUtil.editarProducto(requireContext(), producto, imagenUri)
+                FirebaseProductoUtil.editarProducto(requireActivity(), producto, imagenUri)
             } catch (e: Exception) {
                 ConfigLoading.hideLoadingAnimation()
-                DialogMaterialHelper.mostrarErrorDialog(requireContext(), requireContext().getString(R.string.error_editing_product))
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), requireContext().getString(R.string.error_editing_product))
                 Log.e(TAG, "Error al editar el producto: ${e.message}")
             }
         } else {
             // Mostrar un mensaje de error si la validación falla
-            DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
             ConfigLoading.hideLoadingAnimation()
         }
     }
@@ -169,12 +169,12 @@ class AddProductoFragment : Fragment() {
         producto.rutaImagen = imagenUri.toString()
         val validationResult : ValidationResult = ProductoModel.validarProducto(requireContext(), producto)
         if (validationResult.isValid) {
-            FirebaseProductoUtil.guardarProducto(requireContext(), producto, imagenUri!!)
+            FirebaseProductoUtil.guardarProducto(requireActivity(), producto, imagenUri!!)
             cleanInputs()
         } else {
             // Las validaciones fallaron, muestra los mensajes de error
             ConfigLoading.hideLoadingAnimation()
-            DialogMaterialHelper.mostrarErrorDialog(requireContext(), validationResult.message)
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
         }
     }
 

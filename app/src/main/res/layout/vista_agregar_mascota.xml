@@ -96,6 +96,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
+                            android:text="Oreon"
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,6 +110,7 @@
 
                         <AutoCompleteTextView
                             android:id="@+id/sp_sexo"
+                            android:text="Macho"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="@string/txtField_sexo" />
@@ -125,6 +127,7 @@
 
                         <AutoCompleteTextView
                             android:id="@+id/sp_especie"
+                            android:text="Felino"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:hint="@string/txtField_especie" />
@@ -143,6 +146,7 @@
                             android:id="@+id/sp_raza"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:text="hola"
                             android:hint="@string/txtField_raza" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -157,6 +161,7 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/text_peso"
+                            android:text="2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
@@ -174,10 +179,12 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/text_edad"
+                            android:text="2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
-                            android:inputType="text" />
+                            android:digits="0123456789."
+                            android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
 
 
