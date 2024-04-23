@@ -62,11 +62,25 @@
 
 
     <string name="txtField_nombre">Nombre</string>
+    <string name="txtField_apellido_paterno">Apellido Paterno</string>
+    <string name="txtField_apellido_materno">Apellido Materno</string>
     <string name="txtField_especie">Especie</string>
     <string name="txtField_raza">Raza</string>
     <string name="txtField_fecha_nacimiento">Fecha Nacimiento</string>
     <string name="txtField_edad">Edad</string>
     <string name="txtField_peso">Peso</string>
+
+    <string name="txtField_telefono">Telefono</string>
+
+    <string name="txtField_calle">Calle</string>
+    <string name="txtField_numero"># Numero</string>
+    <string name="txtField_colonia">Colonia</string>
+    <string name="txtField_municipio">Municipio</string>
+    <string name="txtField_estado">Estado</string>
+    <string name="txtField_pais">Pais</string>
+
+    <string name="txtField_correo">Correo Electronico</string>
+
 
     <string name="txtField_producto">Producto</string>
     <string name="txtField_categoria">Categoria</string>

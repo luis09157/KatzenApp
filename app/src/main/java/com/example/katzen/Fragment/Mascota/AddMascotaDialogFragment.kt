@@ -20,6 +20,8 @@ import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.LoadingHelper
+import com.example.katzen.Helper.UpperCaseTextWatcher
+import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.MascotaModel
@@ -51,6 +53,7 @@ class AddMascotaFragment : Fragment() {
         initLoading()
         init()
         listeners()
+        view.setOnClickListener { it.hideKeyboard() }
 
         return view
     }
@@ -61,14 +64,12 @@ class AddMascotaFragment : Fragment() {
 
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            // Depending on your logic, you might want to navigate back to the previous fragment here
+            UtilFragment.changeFragment(requireContext() ,PacienteFragment() ,TAG)
         }
-
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
             guardarMascota()
         }
-
         binding.btnSubirImagen.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
@@ -80,6 +81,14 @@ class AddMascotaFragment : Fragment() {
         binding.spSexo.setAdapter(adapterSEXO)
         val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
         binding.spEspecie.setAdapter(adapterESPECIE)
+
+        UpperCaseTextWatcher.UpperText(binding.textColor)
+        UpperCaseTextWatcher.UpperText(binding.textPeso)
+        UpperCaseTextWatcher.UpperText(binding.textNombre)
+        UpperCaseTextWatcher.UpperText(binding.textEdad)
+        UpperCaseTextWatcher.UpperText(binding.spEspecie)
+        UpperCaseTextWatcher.UpperText(binding.spRaza)
+        UpperCaseTextWatcher.UpperText(binding.spSexo)
     }
     fun initLoading(){
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
@@ -87,14 +96,13 @@ class AddMascotaFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
     fun guardarMascota(){
-        requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
-
         val mascota = MascotaModel()
         mascota.nombre = binding.textNombre.text.toString()
         mascota.peso = binding.textPeso.text.toString()
         mascota.raza = binding.spRaza.text.toString()
         mascota.especie = binding.spEspecie.text.toString()
         mascota.edad = binding.textEdad.text.toString()
+        mascota.color = binding.textColor.text.toString()
         mascota.sexo = binding.spSexo.text.toString()
         mascota.fecha = UtilHelper.getDate()
 
@@ -102,8 +110,10 @@ class AddMascotaFragment : Fragment() {
         val validationResult = MascotaModel.validarMascota(requireContext(), mascota)
 
         if (validationResult.isValid) {
+
             GlobalScope.launch(Dispatchers.IO) {
                 if (FirebaseStorageManager.hasSelectedImage()){
+                    requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
                     val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
                     println("URL de descarga de la imagen: $imageUrl")
                     mascota.imageUrl = imageUrl
@@ -146,6 +156,7 @@ class AddMascotaFragment : Fragment() {
                 spRaza.text?.clear()
                 textPeso.text?.clear()
                 textEdad.text?.clear()
+                textColor.text?.clear()
                 fotoMascota.setImageResource(R.drawable.ic_imagen)
             }
         }

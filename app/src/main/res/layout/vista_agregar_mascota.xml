@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:layout_margin="20dp"
+xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         android:id="@+id/fragment_no_data"
@@ -27,16 +28,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+<ScrollView
+    android:id="@+id/cont_add_producto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent">
 
     <LinearLayout
-        android:id="@+id/cont_add_producto"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -156,6 +162,23 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:enabled="true"
+                        android:hint="@string/txtField_color"
+                        app:startIconDrawable="@drawable/ic_pet">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/text_color"
+                            android:text="2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/white"
+                            android:inputType="text"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:enabled="true"
                         android:hint="@string/txtField_peso"
                         app:startIconDrawable="@drawable/ic_pet">
 
@@ -218,9 +241,10 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
     </LinearLayout>
+</ScrollView>
 
-
-
+<!-- Tus otras vistas aquí -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,11 +8,11 @@ class Config {
 
         val CATEGORIAS = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
         val UNIDAD_MEDIDA = listOf("Piezas","Mililitros", "Litros")
-        val CATEGORIAS_PRODUCTO = listOf("Medicamento","Alimento", "Pet Shop")
-        val PROVEEDORES = listOf("GoPet")
-        val SEXO = listOf("Macho","Hembra")
-        val METODOS_PAGO = listOf("Efectivo","Tarjeta","Transferencia")
-        val ESPECIE = listOf("Canino","Felino")
+        val CATEGORIAS_PRODUCTO = listOf("MEDICAMENTO","ALIMENTO", "PET SHOP")
+        val PROVEEDORES = listOf("GOPET")
+        val SEXO = listOf("MACHO","HEMBRA")
+        val METODOS_PAGO = listOf("EFECTIVO","TARJETA","TRANSFERENCIA")
+        val ESPECIE = listOf("CANINO","FELINO")
 
 
         var MES_DETALLE = ""

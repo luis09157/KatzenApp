@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Config.Config
+import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Mascota.PacienteFragment
 import com.example.katzen.Fragment.Producto.AddProductoFragment
@@ -30,7 +31,8 @@ class MenuFragment : Fragment() {
         MenuModel("Lista Productos", R.drawable.img_lista_productos),
         MenuModel("Balance General", R.drawable.img_balance_general),
         MenuModel("Inventario", R.drawable.img_inventario),
-        MenuModel("Paciente", R.drawable.img_paciente)
+        MenuModel("Paciente", R.drawable.img_paciente),
+        MenuModel("Cliente", R.drawable.img_cliente)
     )
 
 
@@ -67,6 +69,9 @@ class MenuFragment : Fragment() {
                 }
                 "Paciente" -> {
                     UtilFragment.changeFragment(requireActivity(), PacienteFragment(),TAG)
+                }
+                "Cliente" -> {
+                    UtilFragment.changeFragment(requireActivity(), ClienteFragment(),TAG)
                 }
             }
         }
