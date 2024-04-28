@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.PDF.ConvertPDF
-import com.example.katzen.Model.PacienteModel
 import com.example.katzen.databinding.FragmentResponsivasBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -40,13 +39,13 @@ class ResponsivaFragment : Fragment() {
     }
 
     fun writeNewUser(id: String, nombre: String, especie: String) {
-        val pacienteModel = PacienteModel(nombre, especie)
+        /*val pacienteModel = PacienteModel(nombre, especie)
 
         database.child("Katzen")
                 .child("Campaña")
                 .child("campaña_24_09_2023")
                 .child("pacientes")
-                .child(id).setValue(pacienteModel)
+                .child(id).setValue(pacienteModel)*/
     }
 
     override fun onDestroyView() {
