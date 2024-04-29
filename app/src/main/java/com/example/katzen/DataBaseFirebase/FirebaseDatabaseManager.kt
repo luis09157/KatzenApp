@@ -7,7 +7,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.UUID
 import kotlin.coroutines.resume
 
 class FirebaseDatabaseManager {
