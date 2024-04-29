@@ -120,38 +120,34 @@ class AddClienteFragment : Fragment() {
                 clienteModel.imageUrl = imageUrl
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val resultado = FirebaseDatabaseManager.insertModel(clienteModel,PATH_FIREBASE)
+                    val ( flag,message ) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id ,PATH_FIREBASE)
 
-                    if (resultado) {
-                        // La operación de guardado fue exitosa
-                        println("El cliente se guardó exitosamente.")
+                    if (flag) {
                         limpiarCampos()
-                        requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-
-                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
+                        requireActivity().runOnUiThread {
+                            ConfigLoading.hideLoadingAnimation()
+                            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
+                        }
                     } else {
-                        // Hubo un error en la operación de guardado
-                        requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                        println("Hubo un error al guardar el cliente.")
-                        //DialogMaterialHelper.mostrarErrorDialog(requireContext(), "Hubo un error al guardar la mascota.")
+                        requireActivity().runOnUiThread {
+                            ConfigLoading.hideLoadingAnimation()
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                        }
                     }
                 }
             }else{
                 GlobalScope.launch(Dispatchers.IO) {
-                    val resultado = FirebaseDatabaseManager.insertModel(clienteModel,PATH_FIREBASE)
+                    val ( flag,message ) =  FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
 
-                    if (resultado) {
-                        // La operación de guardado fue exitosa
-                        println("El cliente se guardó exitosamente.")
+                    if (flag) {
                         limpiarCampos()
                         requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-
                         DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
                     } else {
-                        // Hubo un error en la operación de guardado
-                        requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                        println("Hubo un error al guardar el cliente.")
-                        //DialogMaterialHelper.mostrarErrorDialog(requireContext(), "Hubo un error al guardar la mascota.")
+                        requireActivity().runOnUiThread {
+                            ConfigLoading.hideLoadingAnimation()
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                        }
                     }
                 }
             }

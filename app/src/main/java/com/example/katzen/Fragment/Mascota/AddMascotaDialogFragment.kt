@@ -119,9 +119,9 @@ class AddMascotaFragment : Fragment() {
                     mascota.imageUrl = imageUrl
 
                     GlobalScope.launch(Dispatchers.IO) {
-                        val resultado = FirebaseDatabaseManager.insertModel(mascota,PATH_FIREBASE)
+                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(mascota, mascota.id,PATH_FIREBASE)
 
-                        if (resultado) {
+                        if (flag) {
                             // La operación de guardado fue exitosa
                             println("La mascota se guardó exitosamente.")
                             limpiarCampos()
