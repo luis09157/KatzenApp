@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ClienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.ProductoModel
@@ -40,6 +41,7 @@ class ClienteFragment : Fragment() {
     }
 
     fun init(){
+        ConfigLoading.showLoadingAnimation()
         clientesList = mutableListOf()
         clientesAdapter = ClienteAdapter(requireContext(), clientesList)
         binding.lisMenuClientes.adapter = clientesAdapter
