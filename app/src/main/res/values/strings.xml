@@ -71,6 +71,7 @@
     <string name="txtField_peso">Peso</string>
 
     <string name="txtField_telefono">Telefono</string>
+    <string name="txtField_googlemaps">Google Maps</string>
 
     <string name="txtField_calle">Calle</string>
     <string name="txtField_numero"># Numero</string>

@@ -18,6 +18,7 @@ class ClienteModel(
     var numero: String = "",
     var colonia: String = "",
     var municipio: String = "",
+    var urlGoogleMaps: String = "",
     var fecha: String = UtilHelper.getDate(),
     var imageUrl: String = "",
     var imageFileName: String = ""

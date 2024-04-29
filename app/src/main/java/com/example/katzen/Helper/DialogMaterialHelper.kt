@@ -5,21 +5,22 @@ import android.content.Context
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DialogMaterialHelper {
-    companion object{
+    companion object {
 
         fun mostrarSuccessDialog(activity: Activity, mensaje: String) {
             activity.runOnUiThread {
                 MaterialAlertDialogBuilder(activity)
-                    .setTitle("Exito")
+                    .setTitle("Éxito")
                     .setMessage(mensaje)
                     .setPositiveButton("Aceptar", null)
                     .show()
             }
         }
+
         fun mostrarErrorDialog(activity: Activity, mensaje: String) {
             activity.runOnUiThread {
                 MaterialAlertDialogBuilder(activity)
-                    .setTitle("Error")
+                    .setTitle("Advertencia")
                     .setMessage(mensaje)
                     .setPositiveButton("Aceptar", null)
                     .show()
