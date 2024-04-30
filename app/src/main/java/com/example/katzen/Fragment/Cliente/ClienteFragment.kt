@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ClienteAdapter
 import com.example.katzen.Config.ConfigLoading
@@ -33,9 +34,11 @@ class ClienteFragment : Fragment() {
         _binding = ClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = "Clientes"
+
         initLoading()
-        listeners()
         init()
+        listeners()
 
         return root
     }
@@ -48,10 +51,29 @@ class ClienteFragment : Fragment() {
 
         obtenerClientes()
     }
+     fun filterClientes(text: String) {
+        val filteredList = clientesList.filter { cliente ->
+            val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
+            fullName.contains(text, ignoreCase = true)
+        }
+        clientesAdapter.updateList(filteredList)
+    }
     fun listeners(){
         binding.btnAddCliente.setOnClickListener {
             UtilFragment.changeFragment(requireActivity(), AddClienteFragment(),TAG)
         }
+        binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Aplicar el filtro del adaptador al escribir en el SearchView
+                filterClientes(newText.toString())
+                return true
+            }
+        })
     }
     fun initLoading(){
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView

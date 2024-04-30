@@ -40,6 +40,8 @@ class AddClienteFragment : Fragment() {
         _binding = AddClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = "Añdadir Cliente"
+
         initLoading()
         initListeners()
         init()

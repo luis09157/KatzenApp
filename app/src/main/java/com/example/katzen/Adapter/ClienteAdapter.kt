@@ -5,14 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
 
-class ClienteAdapter(context: Context, private val productList: List<ClienteModel>) :
-    ArrayAdapter<ClienteModel>(context, R.layout.cliente_list_fragment, productList) {
+class ClienteAdapter(
+    context: Context,
+    private var clienteList: List<ClienteModel>
+) : ArrayAdapter<ClienteModel>(context, R.layout.cliente_list_fragment, clienteList) {
+
+    private var originalList: List<ClienteModel> = clienteList.toList()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
@@ -28,33 +33,37 @@ class ClienteAdapter(context: Context, private val productList: List<ClienteMode
             holder.ubicacionTextView = itemView.findViewById(R.id.textViewUbicacion)
             itemView.tag = holder
         } else {
-            holder = itemView.tag as ViewHolder
+            holder = itemView.tag as ClienteAdapter.ViewHolder
         }
 
-        val producto = productList[position]
+        val cliente = clienteList[position]
 
-        holder.nombreCompletoTextView?.text = ""
-        holder.telefonoTextView?.text = ""
-        holder.correoTextView?.text = ""
-        holder.ubicacionTextView?.text = ""
-        holder.imgPerfil?.setImageResource(R.drawable.img_venta)
+        holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
+        holder.telefonoTextView?.text = cliente.telefono
+        holder.correoTextView?.text = cliente.correo
+        holder.ubicacionTextView?.text = cliente.urlGoogleMaps
 
-        // Asigna los valores del producto a las vistas correspondientes
-        holder.nombreCompletoTextView?.text =  "${producto.nombre} ${producto.apellidoPaterno} ${producto.apellidoMaterno}"
-        holder.telefonoTextView?.text = producto.telefono
-        holder.correoTextView?.text = producto.correo
-        holder.ubicacionTextView?.text = producto.urlGoogleMaps
-
-        // Cargar la imagen del producto utilizando Picasso
-        if (producto.imageUrl.isNotEmpty()) {
-            // Si hay una URL de imagen disponible, cargar desde la URL
-            Picasso.get().load(producto.imageUrl).into(holder.imgPerfil)
+        if (cliente.imageUrl.isNotEmpty()) {
+            Picasso.get().load(cliente.imageUrl).into(holder.imgPerfil)
         } else {
-            // Si no hay una URL de imagen, cargar desde el recurso drawable
             holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
         }
 
+
         return itemView!!
+    }
+
+    override fun getCount(): Int {
+        return clienteList.size
+    }
+
+    override fun getItem(position: Int): ClienteModel? {
+        return clienteList[position]
+    }
+    fun updateList(newList: List<ClienteModel>) {
+        clienteList = newList
+        originalList = newList.toList()
+        notifyDataSetChanged()
     }
 
     private class ViewHolder {

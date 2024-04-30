@@ -34,31 +34,18 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textViewNombreCompleto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Clientes"
-            android:gravity="right|center"
-            android:layout_marginRight="20dp"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="25sp"
-            app:autoSizeMaxTextSize="30sp"
-            android:layout_weight="1"
-            android:textStyle="bold" />
         <SearchView
             android:id="@+id/buscarCliente"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         <ListView
             android:id="@+id/lis_menu_clientes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/white"
-            android:layout_weight="0.2"/>
+            android:layout_weight="0.1"/>
 
 
     </LinearLayout>
