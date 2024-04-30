@@ -2,6 +2,8 @@ package com.example.katzen.Helper
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -22,12 +24,6 @@ class UtilHelper {
         fun getDateYear() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("yyyy")
-
-            return formatter.format(time).toString()
-        }
-        fun getDateMonth() : String {
-            val time = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("MM/yyyy")
 
             return formatter.format(time).toString()
         }
@@ -105,5 +101,31 @@ class UtilHelper {
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
         }
+        fun abrirGoogleMaps(activity: Activity, urlGoogleMaps: String) {
+            if(urlGoogleMaps.isNotEmpty()){
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(urlGoogleMaps)
+                )
+                activity.startActivity(intent)
+                if (intent.resolveActivity(activity.packageManager) != null) {
+                    activity.startActivity(intent)
+                } else {
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo abrir la aplicación de Google Maps")
+                }
+            }else{
+                DialogMaterialHelper.mostrarErrorDialog(activity, "No tiene una direccion relacionada.")
+            }
+
+        }
+        fun llamarCliente(activity: Activity, phoneNumber: String){
+            if(phoneNumber.isNotEmpty()){
+                val intent = Intent(Intent.ACTION_DIAL).apply {
+                    data = Uri.parse("tel:$phoneNumber")
+                }
+                activity.startActivity(intent)
+            }
+        }
+
     }
 }

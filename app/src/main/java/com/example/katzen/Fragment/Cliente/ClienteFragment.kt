@@ -5,12 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ClienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
+import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.ClienteFragmentBinding
@@ -46,8 +49,9 @@ class ClienteFragment : Fragment() {
     fun init(){
         ConfigLoading.showLoadingAnimation()
         clientesList = mutableListOf()
-        clientesAdapter = ClienteAdapter(requireContext(), clientesList)
+        clientesAdapter = ClienteAdapter(requireActivity(), clientesList)
         binding.lisMenuClientes.adapter = clientesAdapter
+        binding.lisMenuClientes.divider = null
 
         obtenerClientes()
     }
@@ -109,4 +113,15 @@ class ClienteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        init()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+            }
+        })
+    }
+
 }
