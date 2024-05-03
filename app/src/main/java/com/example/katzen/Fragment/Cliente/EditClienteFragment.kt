@@ -8,11 +8,12 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
+import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Mascota.AddMascotaFragment
+import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
@@ -20,6 +21,7 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.example.katzen.databinding.AddClienteFragmentBinding
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -72,11 +74,20 @@ class EditClienteFragment : Fragment() {
     fun initValues() {
         // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
         CLIENTE_EDIT?.let { cliente ->
-            // Asigna los valores a los TextView solo si CLIENTE_EDIT no es nulo
+            if (cliente.imageUrl.isNotEmpty()) {
+                Picasso.get()
+                    .load(cliente.imageUrl)
+                    .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
+                    .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                    .into(binding.imgPerfil)
+            } else {
+                binding.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
+            }
             binding.textNombre.setText(cliente.nombre)
             binding.textAppellidoPaterno.setText(cliente.apellidoPaterno)
             binding.textAppellidoMaterno.setText(cliente.apellidoMaterno)
             binding.textCalle.setText(cliente.calle)
+            binding.textNumero.setText(cliente.numero)
             binding.textColonia.setText(cliente.colonia)
             binding.textMunicipio.setText(cliente.municipio)
             binding.textTelefono.setText(cliente.telefono)
@@ -93,38 +104,17 @@ class EditClienteFragment : Fragment() {
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, AddMascotaFragment.PICK_IMAGE_REQUEST)
+            startActivityForResult(intent, AddPacienteFragment.PICK_IMAGE_REQUEST)
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
-            val nombre = binding.textNombre.text.toString()
-            val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
-            val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
-            val correo = binding.textCorreo.text.toString()
-            val telefono = binding.textTelefono.text.toString()
-            val calle = binding.textCalle.text.toString()
-            val numero = binding.textNumero.text.toString()
-            val colonia = binding.textColonia.text.toString()
-            val municipio = binding.textMunicipio.text.toString()
-            val googleMaps = binding.textGoogleMaps.text.toString()
 
-            val cliente = ClienteModel(
-                nombre = nombre,
-                apellidoPaterno = apellidoPaterno,
-                apellidoMaterno = apellidoMaterno,
-                correo = correo,
-                telefono = telefono,
-                calle = calle,
-                numero = numero,
-                colonia = colonia,
-                municipio = municipio,
-                urlGoogleMaps = googleMaps
-            )
+            setCliente()
 
-            val validationResult = ClienteModel.validarCliente(requireContext(), cliente)
+            val validationResult = ClienteModel.validarCliente(requireContext(), CLIENTE_EDIT)
             if (validationResult.isValid) {
                 GlobalScope.launch(Dispatchers.IO) {
-                    guardarCliente(cliente)
+                    editarCliente(CLIENTE_EDIT)
                 }
             } else {
                 println(validationResult.message)
@@ -133,7 +123,30 @@ class EditClienteFragment : Fragment() {
             }
         }
     }
-    fun guardarCliente(clienteModel: ClienteModel){
+    fun setCliente(){
+        val nombre = binding.textNombre.text.toString()
+        val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
+        val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
+        val correo = binding.textCorreo.text.toString()
+        val telefono = binding.textTelefono.text.toString()
+        val calle = binding.textCalle.text.toString()
+        val numero = binding.textNumero.text.toString()
+        val colonia = binding.textColonia.text.toString()
+        val municipio = binding.textMunicipio.text.toString()
+        val googleMaps = binding.textGoogleMaps.text.toString()
+
+        CLIENTE_EDIT.nombre = nombre
+        CLIENTE_EDIT.apellidoPaterno = apellidoPaterno
+        CLIENTE_EDIT.apellidoMaterno = apellidoMaterno
+        CLIENTE_EDIT.correo = correo
+        CLIENTE_EDIT.telefono = telefono
+        CLIENTE_EDIT.calle = calle
+        CLIENTE_EDIT.numero = numero
+        CLIENTE_EDIT.colonia = colonia
+        CLIENTE_EDIT.municipio = municipio
+        CLIENTE_EDIT.urlGoogleMaps = googleMaps
+    }
+    fun editarCliente(clienteModel: ClienteModel){
         GlobalScope.launch(Dispatchers.IO) {
             if (FirebaseStorageManager.hasSelectedImage()){
                 requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
@@ -142,33 +155,47 @@ class EditClienteFragment : Fragment() {
                 clienteModel.imageUrl = imageUrl
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val ( flag,message ) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id ,PATH_FIREBASE)
-
-                    if (flag) {
-                        limpiarCampos()
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
+                    try {
+                        val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
+                        result.onSuccess { message ->
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
+                            }
                         }
-                    } else {
+                        result.onFailure { exception ->
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
+                            }
+                        }
+                    } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
                         }
                     }
                 }
             }else{
                 GlobalScope.launch(Dispatchers.IO) {
-                    val ( flag,message ) =  FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
-
-                    if (flag) {
-                        limpiarCampos()
-                        requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
-                    } else {
+                    try {
+                        val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
+                        result.onSuccess { message ->
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
+                            }
+                        }
+                        result.onFailure { exception ->
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
+                            }
+                        }
+                    } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
                         }
                     }
                 }
@@ -192,17 +219,27 @@ class EditClienteFragment : Fragment() {
                 textColonia.text!!.clear()
                 textMunicipio.text!!.clear()
                 textGoogleMaps.text!!.clear()
-                fotoMascota.setImageResource(R.drawable.ic_imagen)
+                imgPerfil.setImageResource(R.drawable.ic_imagen)
             }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AddMascotaFragment.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == AddPacienteFragment.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
             // You can now upload this image to Firebase Storage and display it in the ImageView
 
-            binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
+            binding.imgPerfil.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
+                }
+            })
     }
 }

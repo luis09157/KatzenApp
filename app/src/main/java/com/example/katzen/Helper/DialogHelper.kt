@@ -1,6 +1,7 @@
 package com.example.katzen.Helper
 
 import KatzenDataBase
+import PacienteModel
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.ArrayAdapter
@@ -11,7 +12,6 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Helper.ValidateFormulario.Companion.validarFormulario
 import com.example.katzen.MainActivity
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -197,7 +197,7 @@ class DialogHelper {
                 .show()
         }
         fun dialogConfirm(alertDialog: AlertDialog, activity: Activity,
-                          mM: MascotaModel, loadingHelper: LoadingHelper){
+                          mM: PacienteModel, loadingHelper: LoadingHelper){
             MaterialAlertDialogBuilder(activity,
                 com.google.android.material.R.style.MaterialAlertDialog_Material3 )
                 .setTitle(activity.resources.getString(R.string.dialog_msg_title_mascota))

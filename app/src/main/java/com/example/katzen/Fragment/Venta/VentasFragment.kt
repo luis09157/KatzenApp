@@ -1,6 +1,6 @@
 package com.example.katzen.Fragment.Venta
 
-import MenuProductosInventarioAdapter
+import com.example.katzen.Adapter.Producto.MenuProductosInventarioAdapter
 import android.R
 import android.os.Bundle
 import android.text.Editable

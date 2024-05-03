@@ -8,11 +8,12 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Mascota.AddMascotaFragment
+import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
@@ -73,7 +74,7 @@ class AddClienteFragment : Fragment() {
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, AddMascotaFragment.PICK_IMAGE_REQUEST)
+            startActivityForResult(intent, AddPacienteFragment.PICK_IMAGE_REQUEST)
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -172,17 +173,27 @@ class AddClienteFragment : Fragment() {
                 textColonia.text!!.clear()
                 textMunicipio.text!!.clear()
                 textGoogleMaps.text!!.clear()
-                fotoMascota.setImageResource(R.drawable.ic_imagen)
+                imgPerfil.setImageResource(R.drawable.ic_imagen)
             }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AddMascotaFragment.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == AddPacienteFragment.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
             // You can now upload this image to Firebase Storage and display it in the ImageView
 
-            binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
+            binding.imgPerfil.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
+                }
+            })
     }
 }

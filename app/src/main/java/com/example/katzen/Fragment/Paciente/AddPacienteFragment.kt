@@ -1,37 +1,32 @@
-package com.example.katzen.Fragment.Mascota
+package com.example.katzen.Fragment.Paciente
 
-import KatzenDataBase
+import PacienteModel
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.R
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class AddMascotaFragment : Fragment() {
+class AddPacienteFragment : Fragment() {
     val TAG = "AddMascotaFragment"
     val FOLDER_NAME = "Mascotas"
     val PATH_FIREBASE = "Katzen/Mascota"
@@ -41,6 +36,7 @@ class AddMascotaFragment : Fragment() {
     private val binding get() = _binding!!
     companion object{
         val PICK_IMAGE_REQUEST = 1
+        var ADD_PACIENTE : PacienteModel = PacienteModel()
     }
 
     override fun onCreateView(
@@ -53,6 +49,7 @@ class AddMascotaFragment : Fragment() {
         initLoading()
         init()
         listeners()
+        setValues()
         view.setOnClickListener { it.hideKeyboard() }
 
         return view
@@ -74,6 +71,18 @@ class AddMascotaFragment : Fragment() {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
+        binding.textCliente.setOnClickListener {
+            it.hideKeyboard()
+            setPacienteModel()
+            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment() ,TAG)
+        }
+        binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                view.hideKeyboard()
+                setPacienteModel()
+                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment(), TAG)
+            }
+        }
     }
     fun init(){
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
@@ -89,6 +98,8 @@ class AddMascotaFragment : Fragment() {
         UpperCaseTextWatcher.UpperText(binding.spEspecie)
         UpperCaseTextWatcher.UpperText(binding.spRaza)
         UpperCaseTextWatcher.UpperText(binding.spSexo)
+        UpperCaseTextWatcher.UpperText(binding.textCliente)
+
     }
     fun initLoading(){
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
@@ -96,18 +107,11 @@ class AddMascotaFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
     fun guardarMascota(){
-        val mascota = MascotaModel()
-        mascota.nombre = binding.textNombre.text.toString()
-        mascota.peso = binding.textPeso.text.toString()
-        mascota.raza = binding.spRaza.text.toString()
-        mascota.especie = binding.spEspecie.text.toString()
-        mascota.edad = binding.textEdad.text.toString()
-        mascota.color = binding.textColor.text.toString()
-        mascota.sexo = binding.spSexo.text.toString()
-        mascota.fecha = UtilHelper.getDate()
+
+       setPacienteModel()
 
         // Validar la mascota
-        val validationResult = MascotaModel.validarMascota(requireContext(), mascota)
+        val validationResult = PacienteModel.validarMascota(requireContext(), ADD_PACIENTE)
 
         if (validationResult.isValid) {
 
@@ -116,28 +120,41 @@ class AddMascotaFragment : Fragment() {
                     requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
                     val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
                     println("URL de descarga de la imagen: $imageUrl")
-                    mascota.imageUrl = imageUrl
+                    ADD_PACIENTE.imageUrl = imageUrl
 
                     GlobalScope.launch(Dispatchers.IO) {
-                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(mascota, mascota.id,PATH_FIREBASE)
+                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(ADD_PACIENTE, ADD_PACIENTE.id,PATH_FIREBASE)
 
                         if (flag) {
-                            // La operación de guardado fue exitosa
-                            println("La mascota se guardó exitosamente.")
                             limpiarCampos()
-                            requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-
-                            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "La mascota se guardó exitosamente.")
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El paciente se guardó exitosamente.")
+                            }
                         } else {
-                            // Hubo un error en la operación de guardado
-                            requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                            println("Hubo un error al guardar la mascota.")
-                            //DialogMaterialHelper.mostrarErrorDialog(requireContext(), "Hubo un error al guardar la mascota.")
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                            }
                         }
                     }
                 }else{
-                    requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                    DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Selecciona una iamgen.")
+                    GlobalScope.launch(Dispatchers.IO) {
+                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(ADD_PACIENTE, ADD_PACIENTE.id,PATH_FIREBASE)
+
+                        if (flag) {
+                            limpiarCampos()
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El paciente se guardó exitosamente.")
+                            }
+                        } else {
+                            requireActivity().runOnUiThread {
+                                ConfigLoading.hideLoadingAnimation()
+                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+                            }
+                        }
+                    }
                 }
             }
         }else {
@@ -157,6 +174,7 @@ class AddMascotaFragment : Fragment() {
                 textPeso.text?.clear()
                 textEdad.text?.clear()
                 textColor.text?.clear()
+                textCliente.text?.clear()
                 fotoMascota.setImageResource(R.drawable.ic_imagen)
             }
         }
@@ -173,5 +191,27 @@ class AddMascotaFragment : Fragment() {
 
             binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
         }
+    }
+
+    fun setValues(){
+        binding.textNombre.setText(ADD_PACIENTE.nombre)
+        binding.textPeso.setText(ADD_PACIENTE.peso)
+        binding.spRaza.setText(ADD_PACIENTE.raza)
+        binding.spEspecie.setText(ADD_PACIENTE.especie)
+        binding.textEdad.setText(ADD_PACIENTE.edad)
+        binding.textColor.setText(ADD_PACIENTE.color)
+        binding.spSexo.setText(ADD_PACIENTE.sexo)
+        binding.textCliente.setText(ADD_PACIENTE.nombreCliente)
+    }
+    fun setPacienteModel(){
+        ADD_PACIENTE.nombre = binding.textNombre.text.toString()
+        ADD_PACIENTE.peso = binding.textPeso.text.toString()
+        ADD_PACIENTE.raza = binding.spRaza.text.toString()
+        ADD_PACIENTE.especie = binding.spEspecie.text.toString()
+        ADD_PACIENTE.edad = binding.textEdad.text.toString()
+        ADD_PACIENTE.color = binding.textColor.text.toString()
+        ADD_PACIENTE.sexo = binding.spSexo.text.toString()
+        ADD_PACIENTE.nombreCliente = binding.textCliente.text.toString()
+        ADD_PACIENTE.fecha = UtilHelper.getDate()
     }
 }

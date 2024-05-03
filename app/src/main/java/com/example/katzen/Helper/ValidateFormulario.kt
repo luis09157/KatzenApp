@@ -1,8 +1,7 @@
 package com.example.katzen.Helper
 
-import android.util.Log
+import PacienteModel
 import com.example.katzen.Config.Config
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.Model.VentaMesDetalleModel
 
 class ValidateFormulario {
@@ -61,7 +60,7 @@ class ValidateFormulario {
 
             return Pair(message, flag)
         }
-        fun validarFormulario(mM : MascotaModel) :  Pair<String, Boolean>  {
+        fun validarFormulario(mM : PacienteModel) :  Pair<String, Boolean>  {
             var flag = true
             var message = ""
 

@@ -1,5 +1,6 @@
 package com.example.katzen.ui.mascota
 
+import PacienteModel
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -8,12 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.MascotaAdapter
-import com.example.katzen.Fragment.Mascota.AddMascotaFragment
+import com.example.katzen.Adapter.Paciente.PacienteAdapter
+import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.FirebaseHelper
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.databinding.FragmentMascotaBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -24,8 +24,8 @@ class MascotaFragment : Fragment() {
     val TAG : String = "MascotaFragment"
     private var _binding: FragmentMascotaBinding? = null
     lateinit var loadingHelper : LoadingHelper
-    var adapter: MascotaAdapter? = null
-    var listMascotas = arrayListOf<MascotaModel>()
+    var adapter: PacienteAdapter? = null
+    var listMascotas = arrayListOf<PacienteModel>()
     var postListener : ValueEventListener? = null
     var queryMascota: DatabaseReference? = null
     private val binding get() = _binding!!
@@ -49,14 +49,14 @@ class MascotaFragment : Fragment() {
         getMascotasAPI()
 
         binding.btnAddMascota.setOnClickListener {
-            UtilFragment.changeFragment(requireActivity(), AddMascotaFragment(),TAG)
+            UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(),TAG)
         }
 
 
         return root
     }
     fun initUI(){
-        adapter = MascotaAdapter(requireContext(),listMascotas)
+        adapter = PacienteAdapter(requireActivity(),listMascotas)
         binding.listMascotas.adapter = adapter
         binding.listMascotas.divider = null
         binding.listMascotas.setOnItemClickListener { _, _, i, _ ->
@@ -82,19 +82,19 @@ class MascotaFragment : Fragment() {
 
             for (postSnapshot in dataSnapshot.children) {
                 for (data in postSnapshot.children) {
-                    var mascotaModel = MascotaModel()
+                    var pacienteModel = PacienteModel()
 
-                    mascotaModel.nombre = data.child("nombre").value.toString()
-                    mascotaModel.peso = data.child("peso").value.toString()
-                    mascotaModel.fecha = data.child("fecha").value.toString()
-                    mascotaModel.sexo = data.child("sexo").value.toString()
-                    mascotaModel.especie = data.child("especie").value.toString()
-                    mascotaModel.edad = data.child("edad").value.toString()
-                    mascotaModel.raza = data.child("raza").value.toString()
+                    pacienteModel.nombre = data.child("nombre").value.toString()
+                    pacienteModel.peso = data.child("peso").value.toString()
+                    pacienteModel.fecha = data.child("fecha").value.toString()
+                    pacienteModel.sexo = data.child("sexo").value.toString()
+                    pacienteModel.especie = data.child("especie").value.toString()
+                    pacienteModel.edad = data.child("edad").value.toString()
+                    pacienteModel.raza = data.child("raza").value.toString()
 
-                    Log.e("checateesto",mascotaModel.nombre)
+                    Log.e("checateesto",pacienteModel.nombre)
 
-                    listMascotas.add(mascotaModel)
+                    listMascotas.add(pacienteModel)
                 }
             }
             adapter!!.notifyDataSetChanged()

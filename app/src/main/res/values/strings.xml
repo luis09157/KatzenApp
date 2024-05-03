@@ -69,6 +69,7 @@
     <string name="txtField_fecha_nacimiento">Fecha Nacimiento</string>
     <string name="txtField_edad">Edad</string>
     <string name="txtField_peso">Peso</string>
+    <string name="txtField_cliente">Cliente</string>
 
     <string name="txtField_telefono">Telefono</string>
     <string name="txtField_googlemaps">Google Maps</string>
@@ -85,8 +86,10 @@
 
     <string name="txtField_producto">Producto</string>
     <string name="txtField_categoria">Categoria</string>
+    <string name="txtField_seleccion_cliente">Selecciona Cliente...</string>
     <string name="txtField_costo">Costo</string>
     <string name="txtField_venta">Venta</string>
+
 
 
     <string name="txtField_domicilio">Domicilio</string>
@@ -186,6 +189,6 @@
     <string name="dialog_error_updating_pet">Error al actualizar la mascota: %s</string>
     <!-- MASCOTA -->
 
-
+    <string name="error_invalid_date_format">Formato de fecha inválido. Utilice el formato dd/MM/yyyy.</string>
 
 </resources>

@@ -2,13 +2,9 @@ package com.example.katzen.Helper
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.util.Log
 import android.widget.Toast
-import com.example.katzen.Config.Config
 import com.example.katzen.Helper.DialogHelper.Companion.getDateNow
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.R
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase

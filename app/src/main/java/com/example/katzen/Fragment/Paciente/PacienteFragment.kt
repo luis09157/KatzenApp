@@ -1,5 +1,6 @@
-package com.example.katzen.Fragment.Cliente
+package com.example.katzen.Fragment.Paciente
 
+import PacienteModel
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,34 +8,33 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Cliente.ClienteAdapter
+import com.example.katzen.Adapter.Paciente.PacienteAdapter
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
-import com.example.katzen.Model.ClienteModel
-import com.example.katzen.databinding.ClienteFragmentBinding
+import com.example.katzen.databinding.PacienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-class ClienteFragment : Fragment() {
-    val TAG : String  = "ClienteFragment"
+class PacienteFragment : Fragment() {
+    val TAG : String  = "PacienteFragment"
 
-    private var _binding: ClienteFragmentBinding? = null
+    private var _binding: PacienteFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var clientesList: MutableList<ClienteModel>
-    private lateinit var clientesAdapter: ClienteAdapter
+    private lateinit var mascotasList: MutableList<PacienteModel>
+    private lateinit var mascotasAdapter: PacienteAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ClienteFragmentBinding.inflate(inflater, container, false)
+        _binding = PacienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = "Clientes"
+        requireActivity().title = "Pacientes"
 
         initLoading()
         init()
@@ -45,30 +45,19 @@ class ClienteFragment : Fragment() {
 
     fun init(){
         ConfigLoading.showLoadingAnimation()
-        clientesList = mutableListOf()
-        clientesAdapter = ClienteAdapter(requireActivity(), clientesList)
-        binding.lisMenuClientes.adapter = clientesAdapter
-        binding.lisMenuClientes.divider = null
-        binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
-            EditClienteFragment.CLIENTE_EDIT = ClienteModel()
-            EditClienteFragment.CLIENTE_EDIT = clientesList[i]
-            UtilFragment.changeFragment(requireActivity() , EditClienteFragment() ,TAG)
-        }
+        mascotasList = mutableListOf()
+        mascotasAdapter = PacienteAdapter(requireActivity(), mascotasList)
+        binding.lisMenuMascota.adapter = mascotasAdapter
+        binding.lisMenuMascota.divider = null
 
-        obtenerClientes()
-    }
-     fun filterClientes(text: String) {
-        val filteredList = clientesList.filter { cliente ->
-            val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
-            fullName.contains(text, ignoreCase = true)
-        }
-        clientesAdapter.updateList(filteredList)
+        obtenerMascotas()
     }
     fun listeners(){
-        binding.btnAddCliente.setOnClickListener {
-            UtilFragment.changeFragment(requireActivity(), AddClienteFragment(),TAG)
+        binding.btnAddMascota.setOnClickListener {
+            AddPacienteFragment.ADD_PACIENTE = PacienteModel()
+            UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(),TAG)
         }
-        binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
                 return false
@@ -76,7 +65,7 @@ class ClienteFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 // Aplicar el filtro del adaptador al escribir en el SearchView
-                filterClientes(newText.toString())
+                filterMascotas(newText.toString())
                 return true
             }
         })
@@ -87,20 +76,24 @@ class ClienteFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 
-    fun obtenerClientes(){
-        FirebaseClienteUtil.obtenerListaClientes(object : ValueEventListener {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    fun obtenerMascotas(){
+        FirebaseMascotaUtil.obtenerListaMascotas(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // Limpiar la lista antes de agregar los nuevos datos
-                clientesList.clear()
+                mascotasList.clear()
 
                 // Recorrer los datos obtenidos y agregarlos a la lista de productos
                 for (productoSnapshot in snapshot.children) {
-                    val producto = productoSnapshot.getValue(ClienteModel::class.java)
-                    producto?.let { clientesList.add(it) }
+                    val producto = productoSnapshot.getValue(PacienteModel::class.java)
+                    producto?.let { mascotasList.add(it) }
                 }
 
                 // Notificar al adaptador que los datos han cambiado
-                clientesAdapter.notifyDataSetChanged()
+                mascotasAdapter.notifyDataSetChanged()
                 ConfigLoading.hideLoadingAnimation()
             }
 
@@ -111,11 +104,12 @@ class ClienteFragment : Fragment() {
             }
         })
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    fun filterMascotas(text: String) {
+        val filteredList = mascotasList.filter { mascota ->
+            mascota.nombre.contains(text, ignoreCase = true)
+        }
+        mascotasAdapter.updateList(filteredList)
     }
-
     override fun onResume() {
         super.onResume()
         init()
@@ -125,5 +119,4 @@ class ClienteFragment : Fragment() {
             }
         })
     }
-
 }

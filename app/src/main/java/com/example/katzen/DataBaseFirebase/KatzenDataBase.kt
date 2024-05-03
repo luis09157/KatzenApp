@@ -3,7 +3,6 @@ import android.net.Uri
 import android.util.Log
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Model.MascotaModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 
@@ -17,7 +16,7 @@ class KatzenDataBase(activity: Activity) {
 
     // Función para agregar una nueva mascota y paciente a la base de datos
     fun agregarMascota(
-        mascota: MascotaModel,
+        mascota: PacienteModel,
         uriImagen: Uri? = null
     ) {
         val nuevoId = mascotasRef.push().key

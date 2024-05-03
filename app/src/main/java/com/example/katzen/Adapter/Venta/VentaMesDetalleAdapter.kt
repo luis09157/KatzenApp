@@ -1,7 +1,6 @@
-package com.example.katzen.Adapter
+package com.example.katzen.Adapter.Venta
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater

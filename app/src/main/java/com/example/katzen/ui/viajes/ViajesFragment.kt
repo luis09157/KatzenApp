@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.VentaMesAdapter
+import com.example.katzen.Adapter.Venta.VentaMesAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment

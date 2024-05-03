@@ -70,12 +70,12 @@
                             android:layout_gravity="center"
                             app:cardCornerRadius="50dp">
                             <ImageView
-                                android:id="@+id/foto_mascota"
+                                android:id="@+id/imgPerfil"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:src="@drawable/ic_imagen"
                                 android:adjustViewBounds="true"
-                                android:scaleType="centerInside"/>
+                                android:scaleType="centerCrop"/>
 
                             <!-- Botón para seleccionar la foto -->
                             <Button

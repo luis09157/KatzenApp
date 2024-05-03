@@ -1,3 +1,5 @@
+package com.example.katzen.Adapter.Producto
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

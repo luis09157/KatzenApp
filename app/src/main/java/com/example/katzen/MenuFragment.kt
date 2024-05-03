@@ -10,14 +10,12 @@ import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Inventario.InventarioFragment
-import com.example.katzen.Fragment.Mascota.PacienteFragment
+import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Producto.AddProductoFragment
-import com.example.katzen.Fragment.Venta.AddVentaFragment
 import com.example.katzen.Fragment.Venta.VentasFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.R
 import com.example.katzen.databinding.MenuFragmentBinding
 
 class MenuFragment : Fragment() {

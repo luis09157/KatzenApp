@@ -5,16 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.ProductoInventarioAdapter
+import com.example.katzen.Adapter.Producto.ProductoInventarioAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.InventarioFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 class InventarioFragment : Fragment() {

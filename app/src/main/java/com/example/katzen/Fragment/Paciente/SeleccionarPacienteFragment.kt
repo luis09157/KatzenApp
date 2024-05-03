@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment.Cliente
+package com.example.katzen.Fragment.Paciente
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Cliente.ClienteAdapter
+import com.example.katzen.Adapter.Cliente.SeleccionClienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.Fragment.Cliente.AddClienteFragment
+import com.example.katzen.Fragment.Cliente.EditClienteFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
@@ -18,13 +20,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-class ClienteFragment : Fragment() {
+class SeleccionarPacienteFragment : Fragment() {
     val TAG : String  = "ClienteFragment"
 
     private var _binding: ClienteFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var clientesList: MutableList<ClienteModel>
-    private lateinit var clientesAdapter: ClienteAdapter
+    private lateinit var seleccionClienteAdapter: SeleccionClienteAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +36,7 @@ class ClienteFragment : Fragment() {
         _binding = ClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = "Clientes"
+        requireActivity().title = "Selecciona el cliente"
 
         initLoading()
         init()
@@ -45,24 +47,25 @@ class ClienteFragment : Fragment() {
 
     fun init(){
         ConfigLoading.showLoadingAnimation()
+        binding.btnAddCliente.visibility = View.GONE
         clientesList = mutableListOf()
-        clientesAdapter = ClienteAdapter(requireActivity(), clientesList)
-        binding.lisMenuClientes.adapter = clientesAdapter
+        seleccionClienteAdapter = SeleccionClienteAdapter(requireActivity(), clientesList)
+        binding.lisMenuClientes.adapter = seleccionClienteAdapter
         binding.lisMenuClientes.divider = null
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
-            EditClienteFragment.CLIENTE_EDIT = ClienteModel()
-            EditClienteFragment.CLIENTE_EDIT = clientesList[i]
-            UtilFragment.changeFragment(requireActivity() , EditClienteFragment() ,TAG)
+            AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
+            AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+            UtilFragment.changeFragment(requireActivity() , AddPacienteFragment() ,TAG)
         }
 
         obtenerClientes()
     }
-     fun filterClientes(text: String) {
+    fun filterClientes(text: String) {
         val filteredList = clientesList.filter { cliente ->
             val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
             fullName.contains(text, ignoreCase = true)
         }
-        clientesAdapter.updateList(filteredList)
+        seleccionClienteAdapter.updateList(filteredList)
     }
     fun listeners(){
         binding.btnAddCliente.setOnClickListener {
@@ -100,7 +103,7 @@ class ClienteFragment : Fragment() {
                 }
 
                 // Notificar al adaptador que los datos han cambiado
-                clientesAdapter.notifyDataSetChanged()
+                seleccionClienteAdapter.notifyDataSetChanged()
                 ConfigLoading.hideLoadingAnimation()
             }
 

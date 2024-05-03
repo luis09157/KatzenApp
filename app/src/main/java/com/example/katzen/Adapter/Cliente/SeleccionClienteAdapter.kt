@@ -1,8 +1,8 @@
-package com.example.katzen.Adapter
+package com.example.katzen.Adapter.Cliente
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +10,15 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.example.katzen.Fragment.Cliente.EditClienteFragment
+import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
 
-class ClienteAdapter(
+class SeleccionClienteAdapter (
     activity: Activity,
     private var clienteList: List<ClienteModel>
 ) : ArrayAdapter<ClienteModel>(activity, R.layout.cliente_list_fragment, clienteList) {
@@ -44,13 +43,14 @@ class ClienteAdapter(
             holder.fondoTelefono = itemView.findViewById(R.id.fondoTelefono)
             holder.fondoCorreo = itemView.findViewById(R.id.fondoCorreo)
             holder.fondoUbicacion = itemView.findViewById(R.id.fondoUbicacion)
-            holder.btnEditar = itemView.findViewById(R.id.btnEditar)
+            holder.btnEliminar = itemView.findViewById(R.id.btnEliminar)
             itemView.tag = holder
         } else {
-            holder = itemView.tag as ClienteAdapter.ViewHolder
+            holder = itemView.tag as ViewHolder
         }
         val cliente = clienteList[position]
 
+        holder.btnEliminar!!.visibility = View.GONE
         holder.nombreCompletoTextView?.text = ""
         holder.telefonoTextView?.text = ""
         holder.correoTextView?.text = ""
@@ -91,10 +91,18 @@ class ClienteAdapter(
         holder.fondoUbicacion!!.setOnClickListener {
             UtilHelper.abrirGoogleMaps(activity, cliente.urlGoogleMaps)
         }
-        holder.btnEditar!!.setOnClickListener {
-            EditClienteFragment.CLIENTE_EDIT = ClienteModel()
-            EditClienteFragment.CLIENTE_EDIT = cliente
-            UtilFragment.changeFragment(activity , EditClienteFragment() ,TAG)
+        holder.btnEliminar!!.setOnClickListener {
+            FirebaseClienteUtil.eliminarCliente(cliente.id , object :
+                OnCompleteListener {
+                override fun onComplete(success: Boolean, message: String) {
+                    if (success) {
+                        DialogMaterialHelper.mostrarSuccessDialog(activity, message)
+                    } else {
+                        DialogMaterialHelper.mostrarErrorDialog(activity, message)
+                    }
+                }
+            })
+
         }
 
         return itemView!!
@@ -143,7 +151,7 @@ class ClienteAdapter(
         var fondoTelefono: ImageView? = null
         var fondoCorreo: ImageView? = null
         var fondoUbicacion: ImageView? = null
-        var btnEditar: CardView? = null
+        var btnEliminar: CardView? = null
 
     }
 }

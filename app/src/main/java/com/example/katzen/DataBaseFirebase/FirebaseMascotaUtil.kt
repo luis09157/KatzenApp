@@ -1,16 +1,14 @@
 package com.example.katzen.DataBaseFirebase
 
+import PacienteModel
 import android.app.Activity
-import android.content.Context
 import android.net.Uri
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.R
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.UUID
 import kotlin.coroutines.resume
@@ -20,34 +18,34 @@ class FirebaseMascotaUtil {
         private const val MASCOTAS_PATH = "Katzen/Mascota" // Ruta donde se guardarán las mascotas
         private const val MASCOTAS_IMAGES_PATH = "Mascotas" // Carpeta en Firebase Storage para guardar las imágenes de las mascotas
 
-        suspend fun guardarMascota(mascota: MascotaModel): Boolean {
-            return suspendCancellableCoroutine { continuation ->
-                try {
-                    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-                    val referenciaMascotas: DatabaseReference = database.getReference(MASCOTAS_PATH)
-
-                    // Insertar la mascota en la base de datos
-                    val mascotaId = mascota.id ?: referenciaMascotas.push().key // Generar un nuevo ID si no se proporciona
-                    referenciaMascotas.child(mascotaId!!).setValue(mascota)
-                        .addOnSuccessListener {
-                            continuation.resume(true)
-                        }
-                        .addOnFailureListener { exception ->
-                            println("Error al guardar la mascota: ${exception.message}")
-                            continuation.resume(false)
-                        }
-                } catch (e: Exception) {
-                    println("Excepción atrapada: ${e.message}")
-                    continuation.resume(false)
-                }
-            }
-        }
 
         @JvmStatic
         fun obtenerListaMascotas(listener: ValueEventListener) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
             val referenciaMascotas: DatabaseReference = database.getReference(MASCOTAS_PATH)
             referenciaMascotas.addValueEventListener(listener)
+        }
+
+        suspend fun eliminarMascota(mascotaId: String): Pair<Boolean, String> {
+            return suspendCancellableCoroutine { continuation ->
+                try {
+                    val database = FirebaseDatabase.getInstance()
+                    val referenciaMascotas = database.getReference(MASCOTAS_PATH)
+
+                    // Eliminar la mascota de la base de datos
+                    referenciaMascotas.child(mascotaId).removeValue()
+                        .addOnSuccessListener {
+                            continuation.resume(true to "Paciente eliminado exitosamente.")
+                        }
+                        .addOnFailureListener { exception ->
+                            println("Error al eliminar el paciente: ${exception.message}")
+                            continuation.resume(false to "Error al eliminar el paciente.")
+                        }
+                } catch (e: Exception) {
+                    println("Excepción atrapada: ${e.message}")
+                    continuation.resume(false to "Error al eliminar el paciente.")
+                }
+            }
         }
 
         @JvmStatic
@@ -58,7 +56,7 @@ class FirebaseMascotaUtil {
         }
 
         @JvmStatic
-        fun editarMascota(activity: Activity, mascota: MascotaModel, imagenUri: Uri?) {
+        fun editarMascota(activity: Activity, mascota: PacienteModel, imagenUri: Uri?) {
             val database = FirebaseDatabase.getInstance()
             val referenciaMascotas = database.getReference(MASCOTAS_PATH)
             mascota.id = Config.MASCOTA_EDIT.id
@@ -91,7 +89,7 @@ class FirebaseMascotaUtil {
             }
         }
 
-        private fun actualizarMascotaEnBaseDatos(activity: Activity, mascota: MascotaModel, referenciaMascotas: DatabaseReference) {
+        private fun actualizarMascotaEnBaseDatos(activity: Activity, mascota: PacienteModel, referenciaMascotas: DatabaseReference) {
             referenciaMascotas.child(mascota.id).setValue(mascota)
                 .addOnSuccessListener {
                     // Operación exitosa

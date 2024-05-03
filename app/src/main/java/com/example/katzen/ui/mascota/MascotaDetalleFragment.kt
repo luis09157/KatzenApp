@@ -1,5 +1,6 @@
 package com.example.katzen.ui.mascota
 
+import PacienteModel
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -8,14 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MainActivity
-import com.example.katzen.Model.MascotaModel
 import com.example.katzen.databinding.VistaMascotaDetalleBinding
-import com.example.katzen.ui.viajes.ViajesFragment
 
-class MascotaDetalleFragment(mascotaModel: MascotaModel) : Fragment() {
+class MascotaDetalleFragment(pacienteModel: PacienteModel) : Fragment() {
     val TAG : String = "MascotaDetalleFragment"
     private var _binding: VistaMascotaDetalleBinding? = null
-    private var mascotaModel : MascotaModel = mascotaModel
+    private var pacienteModel : PacienteModel = pacienteModel
     private val binding get() = _binding!!
 
 
@@ -42,11 +41,11 @@ class MascotaDetalleFragment(mascotaModel: MascotaModel) : Fragment() {
         binding.textEspecie.isEnabled = false
         binding.textFechaNacimiento.isEnabled = false
 
-        binding.textNombre.setText(mascotaModel.nombre)
-        binding.textEspecie.setText(mascotaModel.especie)
-        binding.textRaza.setText(mascotaModel.raza)
-        binding.textColor.setText(mascotaModel.color)
-        binding.textSexo.setText(mascotaModel.sexo)
+        binding.textNombre.setText(pacienteModel.nombre)
+        binding.textEspecie.setText(pacienteModel.especie)
+        binding.textRaza.setText(pacienteModel.raza)
+        binding.textColor.setText(pacienteModel.color)
+        binding.textSexo.setText(pacienteModel.sexo)
     }
 
     override fun onResume() {
