@@ -101,7 +101,11 @@ class ClienteFragment : Fragment() {
 
                 // Notificar al adaptador que los datos han cambiado
                 clientesAdapter.notifyDataSetChanged()
-                ConfigLoading.hideLoadingAnimation()
+                if (clientesList.size > 0){
+                    ConfigLoading.hideLoadingAnimation()
+                }else{
+                    ConfigLoading.showNodata()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {

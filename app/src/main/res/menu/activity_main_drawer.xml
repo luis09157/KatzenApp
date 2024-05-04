@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_gas_station"
+            android:title="@string/nav_home" />
+        <item
             android:id="@+id/nav_fuel"
             android:icon="@drawable/ic_gas_station"
             android:title="@string/menu_gallery" />
@@ -12,29 +16,21 @@
             android:id="@+id/nav_payment_card"
             android:icon="@drawable/ic_payment_card"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_medical"
-            android:title="@string/menu_slideshow" />
 
         <item
             android:id="@+id/nav_viajes"
             android:icon="@drawable/baseline_directions_car_24"
             android:title="@string/menu_viajes" />
 
-        <!--<item
-            android:id="@+id/nav_example"
-            android:icon="@drawable/baseline_directions_car_24"
-            android:title="@string/menu_example" />-->
 
         <item
-            android:id="@+id/nav_mascota"
+            android:id="@+id/nav_paciente"
             android:icon="@drawable/ic_pet"
-            android:title="@string/menu_mascota" />
+            android:title= "@string/menu_mascota" />
 
         <item
-            android:id="@+id/nav_ventas"
+            android:id="@+id/nav_cliente"
             android:icon="@drawable/ic_venta"
-            android:title="@string/menu_venta" />
+            android:title="@string/menu_cliente" />
     </group>
 </menu>

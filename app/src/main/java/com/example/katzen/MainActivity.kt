@@ -16,6 +16,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.katzen.Fragment.Cliente.ClienteFragment
+import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.ui.card.PaymetCardFragment
@@ -89,10 +91,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateTo(itemId: Int) {
         val fragment = when (itemId) {
+            R.id.nav_home -> MenuFragment()
             R.id.nav_fuel -> FuellFragment()
             R.id.nav_payment_card -> PaymetCardFragment()
-            R.id.nav_slideshow -> MedicalFragment()
             R.id.nav_viajes -> ViajesFragment()
+            R.id.nav_cliente -> ClienteFragment()
+            R.id.nav_paciente -> PacienteFragment()
             else -> return
         }
         binding.appBarMain.toolbar.title = menuItemTitle(itemId)
@@ -100,10 +104,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun menuItemTitle(itemId: Int) = when (itemId) {
+        R.id.nav_home -> getString(R.string.menu_home)
         R.id.nav_fuel -> "Calcular gasolina"
         R.id.nav_payment_card -> "Pago con tarjeta"
-        R.id.nav_slideshow -> "Dosis"
         R.id.nav_viajes -> "Domicilios"
+        R.id.nav_cliente -> getString(R.string.menu_cliente)
+        R.id.nav_paciente -> getString(R.string.menu_paciente)
         else -> ""
     }
 

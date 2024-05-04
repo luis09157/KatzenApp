@@ -101,11 +101,16 @@ class PacienteFragment : Fragment() {
 
                 // Notificar al adaptador que los datos han cambiado
                 mascotasAdapter.notifyDataSetChanged()
-                ConfigLoading.hideLoadingAnimation()
+                if (mascotasList.size > 0){
+                    ConfigLoading.hideLoadingAnimation()
+                }else{
+                    ConfigLoading.showNodata()
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                ConfigLoading.hideLoadingAnimation()
+                ConfigLoading.showNodata()
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
             }
