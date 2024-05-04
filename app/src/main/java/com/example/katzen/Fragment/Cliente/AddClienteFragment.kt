@@ -11,8 +11,10 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
+import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
+import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
@@ -21,6 +23,7 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.example.katzen.databinding.AddClienteFragmentBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -128,8 +131,16 @@ class AddClienteFragment : Fragment() {
                     if (flag) {
                         limpiarCampos()
                         requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
+                            requireActivity().runOnUiThread {
+                                DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
+                                    if (confirmed) {
+                                        ConfigLoading.hideLoadingAnimation()
+                                        UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
+                                    } else {
+                                        // El usuario canceló la operación
+                                    }
+                                }
+                            }
                         }
                     } else {
                         requireActivity().runOnUiThread {

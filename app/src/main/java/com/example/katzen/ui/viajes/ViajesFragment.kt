@@ -6,13 +6,16 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Venta.VentaMesAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.MenuFragment
 import com.example.katzen.Model.VentaMesModel
+import com.example.katzen.R
 import com.example.katzen.databinding.FragmentViajesBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -44,6 +47,8 @@ class ViajesFragment : Fragment() {
         _binding = FragmentViajesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = getString(R.string.menu_viajes)
+
         loadingHelper = LoadingHelper(binding.loading,binding.contentList,binding.listViajes,null,binding.contentNotResult)
 
         loadingHelper.loading()
@@ -72,11 +77,11 @@ class ViajesFragment : Fragment() {
         if (view == null) {
             return
         }
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v, keyCode, event ->
-            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
-        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+            }
+        })
     }
 
     override fun onStop() {

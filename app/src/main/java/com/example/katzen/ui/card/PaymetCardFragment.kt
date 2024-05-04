@@ -29,6 +29,8 @@ class PaymetCardFragment : Fragment() {
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = getString(R.string.menu_pago_tarjeta)
+
         binding.btnCalcula.setOnClickListener {
             if(binding.etCosto.text.toString().trim().isEmpty()){
                 Snackbar.make(it, "Agrega la cantidad a calcular.", Snackbar.LENGTH_LONG)

@@ -15,6 +15,7 @@ import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
+import com.example.katzen.R
 import com.example.katzen.databinding.PacienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -36,7 +37,7 @@ class PacienteFragment : Fragment() {
         _binding = PacienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = "Pacientes"
+        requireActivity().title = getString(R.string.menu_paciente)
 
         initLoading()
         init()

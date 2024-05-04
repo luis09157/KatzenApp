@@ -13,6 +13,7 @@ import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
+import com.example.katzen.R
 import com.example.katzen.databinding.ClienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,7 +35,7 @@ class ClienteFragment : Fragment() {
         _binding = ClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = "Clientes"
+        requireActivity().title = getString(R.string.menu_cliente)
 
         initLoading()
         init()
@@ -109,7 +110,7 @@ class ClienteFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                ConfigLoading.hideLoadingAnimation()
+                ConfigLoading.showNodata()
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
             }

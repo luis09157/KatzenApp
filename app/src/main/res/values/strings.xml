@@ -15,15 +15,15 @@
     <string name="menu_add_paciente">Agregar Paciente</string>
     <string name="menu_store">Tienda</string>
     <string name="menu_viajes">Viajes</string>
-    <string name="menu_mascota">Mascota</string>
+    <string name="menu_mascota">Paciente</string>
     <string name="menu_example">Example</string>
     <string name="menu_add_travel">Agregar Domicilio</string>
 
 
     <string name="menu_paciente">Paciente</string>
     <string name="menu_cliente">Cliente</string>
-    <string name="menu_gasolina">Pago Con Tarjeta</string>
-    <string name="menu_pago_tarjeta">Gasolina</string>
+    <string name="menu_gasolina">Gasolina</string>
+    <string name="menu_pago_tarjeta">Pago Con Tarjeta</string>
 
 
 

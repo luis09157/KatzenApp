@@ -33,6 +33,8 @@ class FuellFragment : Fragment() {
         _binding = FragmentGasolinaBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = getString(R.string.menu_gasolina)
+
         binding.btnCalcula.setOnClickListener {
             if(binding.etCosto.text.toString().trim().isEmpty()){
                 Snackbar.make(it, "Agrega la cantidad a calcular.", Snackbar.LENGTH_LONG)
