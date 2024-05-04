@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
+import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Helper.GasHelper
+import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.MenuFragment
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentGasolinaBinding
 import com.google.android.material.snackbar.Snackbar
 class FuellFragment : Fragment() {
-
+    val TAG = "FuellFragment"
     private var _binding: FragmentGasolinaBinding? = null
 
     // This property is only valid between onCreateView and
@@ -74,15 +78,19 @@ class FuellFragment : Fragment() {
         binding.txtVenta.text = getString(R.string.title_dinero)
         binding.etCosto.text?.clear()
     }
+
     override fun onResume() {
         super.onResume()
         if (view == null) {
             return
         }
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v, keyCode, event ->
-            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
-        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                }
+            })
     }
 }

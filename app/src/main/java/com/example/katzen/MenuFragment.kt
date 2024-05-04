@@ -17,22 +17,22 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuFragmentBinding
+import com.example.katzen.ui.card.PaymetCardFragment
+import com.example.katzen.ui.gasolina.FuellFragment
 
 class MenuFragment : Fragment() {
     val TAG : String  = "MenuFragment"
 
     private var _binding: MenuFragmentBinding? = null
     private val binding get() = _binding!!
-    val menuList = listOf(
-        MenuModel("Venta", R.drawable.img_venta),
-        MenuModel("Producto", R.drawable.img_producto),
-        MenuModel("Lista Productos", R.drawable.img_lista_productos),
-        MenuModel("Balance General", R.drawable.img_balance_general),
-        MenuModel("Inventario", R.drawable.img_inventario),
-        MenuModel("Paciente", R.drawable.img_paciente),
-        MenuModel("Cliente", R.drawable.img_cliente)
-    )
+    private lateinit var menuList: List<MenuModel>
 
+
+    //MenuModel("Venta", R.drawable.img_venta),
+    //MenuModel("Producto", R.drawable.img_producto),
+    //MenuModel("Lista Productos", R.drawable.img_lista_productos),
+    //MenuModel("Balance General", R.drawable.img_balance_general),
+    //MenuModel("Inventario", R.drawable.img_inventario),
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +42,12 @@ class MenuFragment : Fragment() {
         _binding = MenuFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        menuList = listOf(
+            MenuModel(requireActivity().getString(R.string.menu_gasolina), R.drawable.img_cliente),
+            MenuModel(requireActivity().getString(R.string.menu_pago_tarjeta), R.drawable.img_cliente),
+            MenuModel(requireActivity().getString(R.string.menu_paciente), R.drawable.img_paciente),
+            MenuModel(requireActivity().getString(R.string.menu_cliente), R.drawable.img_cliente)
+        )
         val adapter = MenuAdapter(requireContext(), menuList)
         binding.lisMenu.adapter = adapter
 
@@ -65,11 +71,17 @@ class MenuFragment : Fragment() {
                 "Inventario" -> {
                     UtilFragment.changeFragment(requireActivity(), InventarioFragment(),TAG)
                 }
-                "Paciente" -> {
+                requireActivity().getString(R.string.menu_paciente) -> {
                     UtilFragment.changeFragment(requireActivity(), PacienteFragment(),TAG)
                 }
-                "Cliente" -> {
+                requireActivity().getString(R.string.menu_cliente) -> {
                     UtilFragment.changeFragment(requireActivity(), ClienteFragment(),TAG)
+                }
+                requireActivity().getString(R.string.menu_gasolina) -> {
+                    UtilFragment.changeFragment(requireActivity(), FuellFragment(),TAG)
+                }
+                requireActivity().getString(R.string.menu_pago_tarjeta) -> {
+                    UtilFragment.changeFragment(requireActivity(), PaymetCardFragment(),TAG)
                 }
             }
         }

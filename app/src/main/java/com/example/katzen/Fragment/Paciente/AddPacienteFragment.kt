@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
+import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
@@ -46,6 +48,8 @@ class AddPacienteFragment : Fragment() {
         _binding = VistaAgregarMascotaBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        requireActivity().title = "Añadir Paciente"
+
         initLoading()
         init()
         listeners()
@@ -74,18 +78,17 @@ class AddPacienteFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
-            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment() ,TAG)
+            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment(false) ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
                 setPacienteModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment(), TAG)
+                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment(false), TAG)
             }
         }
     }
     fun init(){
-        FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
         val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
         binding.spSexo.setAdapter(adapterSEXO)
         val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
@@ -194,6 +197,7 @@ class AddPacienteFragment : Fragment() {
     }
 
     fun setValues(){
+        binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
         binding.textNombre.setText(ADD_PACIENTE.nombre)
         binding.textPeso.setText(ADD_PACIENTE.peso)
         binding.spRaza.setText(ADD_PACIENTE.raza)
@@ -213,5 +217,17 @@ class AddPacienteFragment : Fragment() {
         ADD_PACIENTE.sexo = binding.spSexo.text.toString()
         ADD_PACIENTE.nombreCliente = binding.textCliente.text.toString()
         ADD_PACIENTE.fecha = UtilHelper.getDate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setPacienteModel()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), PacienteFragment(), TAG)
+                }
+            })
     }
 }

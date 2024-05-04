@@ -5,6 +5,7 @@
     <string name="nav_header_title">Katzen</string>
     <string name="nav_header_subtitle">Ganando dinero como tiburones.</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_home">Inicio</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Pago Con Tarjeta</string>
@@ -17,6 +18,14 @@
     <string name="menu_mascota">Mascota</string>
     <string name="menu_example">Example</string>
     <string name="menu_add_travel">Agregar Domicilio</string>
+
+
+    <string name="menu_paciente">Paciente</string>
+    <string name="menu_cliente">Cliente</string>
+    <string name="menu_gasolina">Pago Con Tarjeta</string>
+    <string name="menu_pago_tarjeta">Gasolina</string>
+
+
 
 
     <string name="menu_add_mascota">Agregar Mascota</string>

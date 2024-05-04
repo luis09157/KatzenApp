@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Paciente
 
 import PacienteModel
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Paciente.PacienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
+import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.databinding.PacienteFragmentBinding
@@ -55,6 +57,7 @@ class PacienteFragment : Fragment() {
     fun listeners(){
         binding.btnAddMascota.setOnClickListener {
             AddPacienteFragment.ADD_PACIENTE = PacienteModel()
+            FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
             UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(),TAG)
         }
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -69,6 +72,10 @@ class PacienteFragment : Fragment() {
                 return true
             }
         })
+        binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
+            EditarPacienteFragment.PACIENTE_EDIT = mascotasList[i]
+            UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(),TAG)
+        }
     }
     fun initLoading(){
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView

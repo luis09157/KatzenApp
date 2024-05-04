@@ -20,13 +20,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-class SeleccionarPacienteFragment : Fragment() {
+class SeleccionarPacienteFragment(val flagVentanaEdit : Boolean) : Fragment( ) {
     val TAG : String  = "ClienteFragment"
 
     private var _binding: ClienteFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var clientesList: MutableList<ClienteModel>
     private lateinit var seleccionClienteAdapter: SeleccionClienteAdapter
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +36,7 @@ class SeleccionarPacienteFragment : Fragment() {
     ): View {
         _binding = ClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
 
         requireActivity().title = "Selecciona el cliente"
 
@@ -53,9 +55,17 @@ class SeleccionarPacienteFragment : Fragment() {
         binding.lisMenuClientes.adapter = seleccionClienteAdapter
         binding.lisMenuClientes.divider = null
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
-            AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
-            AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
-            UtilFragment.changeFragment(requireActivity() , AddPacienteFragment() ,TAG)
+
+            if(flagVentanaEdit){
+                EditarPacienteFragment.PACIENTE_EDIT.idCliente = clientesList[i].id
+                EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                UtilFragment.changeFragment(requireActivity() , EditarPacienteFragment() ,TAG)
+            }else{
+                AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
+                AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                UtilFragment.changeFragment(requireActivity() , AddPacienteFragment() ,TAG)
+            }
+
         }
 
         obtenerClientes()
@@ -124,7 +134,12 @@ class SeleccionarPacienteFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+                if(flagVentanaEdit){
+                    UtilFragment.changeFragment(requireContext() , EditarPacienteFragment() ,TAG)
+                }else{
+                    UtilFragment.changeFragment(requireContext() , AddPacienteFragment() ,TAG)
+                }
+
             }
         })
     }

@@ -5,7 +5,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.example.katzen.Fragment.Paciente.PacienteFragment
+import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.MenuFragment
 import com.example.katzen.R
 import com.example.katzen.databinding.FragmentCardBinding
 import com.google.android.material.snackbar.Snackbar
@@ -13,6 +17,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 
 class PaymetCardFragment : Fragment() {
+    val TAG = "PaymetCardFragment"
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
 
@@ -66,10 +71,13 @@ class PaymetCardFragment : Fragment() {
         if (view == null) {
             return
         }
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v, keyCode, event ->
-            event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK
-        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                }
+            })
     }
 }
