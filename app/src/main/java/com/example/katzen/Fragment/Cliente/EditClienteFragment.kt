@@ -238,7 +238,7 @@ class EditClienteFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
+                    UtilFragment.changeFragment(requireContext(), ClienteDetalleFragment(), TAG)
                 }
             })
     }

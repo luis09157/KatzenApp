@@ -31,7 +31,7 @@
 
       <androidx.cardview.widget.CardView
           android:layout_width="match_parent"
-          android:layout_height="200dp"
+          android:layout_height="230dp"
           android:layout_margin="15dp"
           app:cardCornerRadius="30dp">
 
@@ -57,8 +57,10 @@
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_weight="1"
-                          android:textSize="18sp"
-                          android:lines="2"
+                          app:autoSizeTextType="uniform"
+                          app:autoSizeMinTextSize="15sp"
+                          app:autoSizeMaxTextSize="20sp"
+                          android:lines="1"
                           android:fontFamily="@font/varela"
                           android:textStyle="bold"
                           android:text="Nombre del producto" />
@@ -89,6 +91,7 @@
                       android:layout_height="match_parent"
                       android:orientation="vertical">
                       <LinearLayout
+                          android:id="@+id/btn_telefono"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_weight="1"
@@ -106,12 +109,15 @@
                               android:layout_weight="1"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
-                              android:textSize="18sp"
-                              android:lines="2"
+                              app:autoSizeTextType="uniform"
+                              app:autoSizeMinTextSize="10sp"
+                              app:autoSizeMaxTextSize="15sp"
+                              android:lines="1"
                               android:fontFamily="@font/varela"
                               android:textStyle="bold"/>
                       </LinearLayout>
                       <LinearLayout
+                          android:id="@+id/btn_googleMaps"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_weight="1"
@@ -129,12 +135,15 @@
                               android:layout_weight="1"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
-                              android:textSize="18sp"
+                              app:autoSizeTextType="uniform"
+                              app:autoSizeMinTextSize="10sp"
+                              app:autoSizeMaxTextSize="15sp"
                               android:lines="2"
                               android:fontFamily="@font/varela"
                               android:textStyle="bold"/>
                       </LinearLayout>
                       <LinearLayout
+                          android:id="@+id/btn_whatssap"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_weight="1"
@@ -152,13 +161,15 @@
                               android:layout_weight="1"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
-                              android:textSize="18sp"
-                              android:lines="2"
+                              app:autoSizeTextType="uniform"
+                              app:autoSizeMinTextSize="10sp"
+                              app:autoSizeMaxTextSize="15sp"
+                              android:lines="1"
                               android:fontFamily="@font/varela"
-                              android:textStyle="bold"
-                              android:text="whatssap" />
+                              android:textStyle="bold" />
                       </LinearLayout>
                       <LinearLayout
+                          android:id="@+id/btn_correo"
                           android:layout_width="match_parent"
                           android:layout_height="match_parent"
                           android:layout_weight="1"
@@ -176,11 +187,12 @@
                               android:layout_weight="1"
                               android:layout_width="match_parent"
                               android:layout_height="match_parent"
-                              android:textSize="18sp"
-                              android:lines="2"
+                              app:autoSizeTextType="uniform"
+                              app:autoSizeMinTextSize="10sp"
+                              app:autoSizeMaxTextSize="15sp"
+                              android:lines="1"
                               android:fontFamily="@font/varela"
-                              android:textStyle="bold"
-                              android:text="Nombre del producto" />
+                              android:textStyle="bold"/>
                       </LinearLayout>
                   </LinearLayout>
 
@@ -188,8 +200,12 @@
           </LinearLayout>
 
       </androidx.cardview.widget.CardView>
-
-
+        <ListView
+            android:id="@+id/lista_pacientes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

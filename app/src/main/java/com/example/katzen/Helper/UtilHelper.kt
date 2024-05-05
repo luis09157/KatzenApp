@@ -102,29 +102,98 @@ class UtilHelper {
             imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
         }
         fun abrirGoogleMaps(activity: Activity, urlGoogleMaps: String) {
-            if(urlGoogleMaps.isNotEmpty()){
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(urlGoogleMaps)
-                )
-                activity.startActivity(intent)
-                if (intent.resolveActivity(activity.packageManager) != null) {
+            if (urlGoogleMaps.isNotEmpty()) {
+                try {
+                    if (validarURLGoogleMaps(urlGoogleMaps)) {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(urlGoogleMaps)
+                        )
+                        if (intent.resolveActivity(activity.packageManager) != null) {
+                            activity.startActivity(intent)
+                        } else {
+                            DialogMaterialHelper.mostrarErrorDialog(activity, "No se puede abrir Google Maps. No hay aplicaciones compatibles.")
+                        }
+                    } else {
+                        DialogMaterialHelper.mostrarErrorDialog(activity, "La URL no es válida de Google Maps.")
+                    }
+                } catch (e: Exception) {
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "Error al abrir Google Maps: ${e.message}")
+                }
+            } else {
+                DialogMaterialHelper.mostrarErrorDialog(activity, "No tiene una dirección relacionada.")
+            }
+        }
+        fun enviarMensajeWhatsApp(activity: Activity, numeroTelefono: String) {
+            try {
+                // Validar que el número de teléfono no esté vacío
+                if (numeroTelefono.isNotEmpty()) {
+                    // Crear un intent para abrir WhatsApp con el número de teléfono
+                    val uri = Uri.parse("https://wa.me/$numeroTelefono")
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+
+                    // Abrir WhatsApp
                     activity.startActivity(intent)
                 } else {
-                    DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo abrir la aplicación de Google Maps")
+                    // Mostrar un mensaje si el número de teléfono está vacío
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "El número de teléfono está vacío.")
                 }
-            }else{
-                DialogMaterialHelper.mostrarErrorDialog(activity, "No tiene una direccion relacionada.")
+            } catch (e: Exception) {
+                // Mostrar un mensaje si ocurre un error al intentar abrir WhatsApp
+                DialogMaterialHelper.mostrarErrorDialog(activity, "Error al abrir WhatsApp: ${e.message}")
             }
-
         }
-        fun llamarCliente(activity: Activity, phoneNumber: String){
-            if(phoneNumber.isNotEmpty()){
-                val intent = Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:$phoneNumber")
+        fun llamarCliente(activity: Activity, phoneNumber: String) {
+            if (phoneNumber.isNotEmpty()) {
+                try {
+                    // Validar el número de teléfono (opcional)
+                    if (phoneNumber.matches(Regex("\\d+"))) { // Verifica si el número contiene solo dígitos
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse("tel:$phoneNumber")
+                        }
+                        activity.startActivity(intent)
+                    } else {
+                        // Mostrar un mensaje de error si el número de teléfono no es válido
+                        DialogMaterialHelper.mostrarErrorDialog(activity, "El número de teléfono no es válido.")
+                    }
+                } catch (e: Exception) {
+                    // Mostrar un mensaje de error si ocurre una excepción al intentar llamar
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "Error al llamar al cliente: ${e.message}")
                 }
-                activity.startActivity(intent)
+            } else {
+                // Mostrar un mensaje si el número de teléfono está vacío
+                DialogMaterialHelper.mostrarErrorDialog(activity, "El número de teléfono está vacío.")
             }
+        }
+        fun enviarCorreoElectronicoGmail(activity: Activity, correoDestinatario: String) {
+            try {
+                // Crear un intent para enviar correo electrónico con Gmail
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "message/rfc822" // Especificar el tipo de contenido como correo electrónico
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(correoDestinatario)) // Agregar el destinatario del correo
+                    putExtra(Intent.EXTRA_SUBJECT, "") // Asunto vacío
+                    putExtra(Intent.EXTRA_TEXT, "") // Cuerpo del correo vacío
+                }
+
+                // Verificar si hay alguna aplicación que pueda manejar el intent
+                if (intent.resolveActivity(activity.packageManager) != null) {
+                    // Abrir la aplicación de Gmail
+                    activity.startActivity(intent)
+                } else {
+                    // Mostrar un mensaje si no se encuentra ninguna aplicación que pueda manejar el intent
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo abrir la aplicación de Gmail.")
+                }
+            } catch (e: Exception) {
+                // Mostrar un mensaje si ocurre un error al intentar abrir la aplicación de Gmail
+                DialogMaterialHelper.mostrarErrorDialog(activity, "Error al abrir la aplicación de Gmail: ${e.message}")
+            }
+        }
+
+        fun validarURLGoogleMaps(url: String): Boolean {
+            // Patrón de la URL de Google Maps
+            val patron = Regex("^https?://(?:www\\.)?google\\.(?:com?/maps)(?:\\?.*)?\$")
+            // Comprobación de la coincidencia
+            return patron.matches(url)
         }
 
     }

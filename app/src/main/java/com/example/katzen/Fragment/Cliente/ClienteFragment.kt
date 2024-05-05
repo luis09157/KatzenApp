@@ -53,7 +53,8 @@ class ClienteFragment : Fragment() {
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
             EditClienteFragment.CLIENTE_EDIT = ClienteModel()
             EditClienteFragment.CLIENTE_EDIT = clientesList[i]
-            UtilFragment.changeFragment(requireActivity() , EditClienteFragment() ,TAG)
+            //UtilFragment.changeFragment(requireActivity() , EditClienteFragment() ,TAG)
+            UtilFragment.changeFragment(requireActivity() , ClienteDetalleFragment() ,TAG)
         }
 
         obtenerClientes()
