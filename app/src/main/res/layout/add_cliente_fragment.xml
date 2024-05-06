@@ -250,6 +250,21 @@
                                 android:inputType="text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:enabled="true"
+                            android:hint="@string/txtField_kilometros"
+                            app:startIconDrawable="@drawable/ic_pet">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/text_kilometrosCasa"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/white"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
 

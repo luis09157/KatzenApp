@@ -3,7 +3,6 @@ package com.example.katzen.Fragment.Paciente
 import PacienteModel
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.PaintDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,17 +14,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
+import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
-import com.example.katzen.databinding.AddClienteFragmentBinding
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
@@ -165,7 +160,7 @@ class EditarPacienteFragment : Fragment() {
 
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
-                        val result = FirebaseMascotaUtil.editarMascota(pacienteModel.id, pacienteModel)
+                        val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
                                 ConfigLoading.hideLoadingAnimation()
@@ -188,7 +183,7 @@ class EditarPacienteFragment : Fragment() {
             }else{
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
-                        val result = FirebaseMascotaUtil.editarMascota(pacienteModel.id, pacienteModel)
+                        val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
                                 ConfigLoading.hideLoadingAnimation()

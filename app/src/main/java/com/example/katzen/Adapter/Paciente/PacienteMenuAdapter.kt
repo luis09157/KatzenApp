@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.katzen.Model.ClienteModel
@@ -29,9 +30,6 @@ class PacienteMenuAdapter(
             holder = ViewHolder()
             holder.imgPerfil = itemView.findViewById(R.id.imgPerfil)
             holder.nombreCompletoTextView = itemView.findViewById(R.id.textViewNombreCompleto)
-            holder.telefonoTextView = itemView.findViewById(R.id.textViewTelefono)
-            holder.correoTextView = itemView.findViewById(R.id.textViewCorreo)
-            holder.ubicacionTextView = itemView.findViewById(R.id.textViewUbicacion)
 
             holder.fondoTelefono = itemView.findViewById(R.id.fondoTelefono)
             holder.fondoCorreo = itemView.findViewById(R.id.fondoCorreo)
@@ -44,15 +42,9 @@ class PacienteMenuAdapter(
         val cliente = clienteList[position]
 
         holder.nombreCompletoTextView?.text = ""
-        holder.telefonoTextView?.text = ""
-        holder.correoTextView?.text = ""
-        holder.ubicacionTextView?.text = ""
         holder.imgPerfil?.setImageResource(R.drawable.ic_perfil)
 
         holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
-        holder.telefonoTextView?.text = cliente.telefono
-        holder.correoTextView?.text = cliente.correo
-        holder.ubicacionTextView?.text = cliente.urlGoogleMaps
 
 
 
@@ -76,13 +68,10 @@ class PacienteMenuAdapter(
     private class ViewHolder {
         var imgPerfil: ImageView? = null
         var nombreCompletoTextView: TextView? = null
-        var telefonoTextView: TextView? = null
-        var correoTextView: TextView? = null
-        var ubicacionTextView: TextView? = null
         var fondoTelefono: ImageView? = null
         var fondoCorreo: ImageView? = null
         var fondoUbicacion: ImageView? = null
-        var btnEliminar: CardView? = null
+        var btnEliminar: LinearLayout? = null
 
     }
 }

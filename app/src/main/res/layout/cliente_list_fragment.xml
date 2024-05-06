@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
+    android:padding="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="120dp"
         app:cardCornerRadius="30dp"
         tools:ignore="MissingConstraints">
 
@@ -17,14 +17,14 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="125dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:padding="10dp"
                 android:gravity="center"
                 android:orientation="vertical">
                 <androidx.cardview.widget.CardView
-                    android:layout_width="115dp"
-                    android:layout_height="115dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     app:cardCornerRadius="50dp">
                     <ImageView
                         android:id="@+id/imgPerfil"
@@ -41,41 +41,26 @@
                 android:layout_weight="0.5"
                 android:orientation="vertical">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/btnEliminar"
-                    android:layout_gravity="right"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    app:cardCornerRadius="50dp"
-                    android:layout_marginTop="-25dp"
-                    android:layout_marginRight="15dp"
-                    android:backgroundTint="@color/red_A700">
-
-                    <ImageView
-
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="4dp"
-                        android:src="@drawable/ic_delete" />
-                </androidx.cardview.widget.CardView>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textViewNombreCompleto"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="bottom|center"
+                    android:maxLines="2"
                     android:text="Luis Alfonso Niño Mtz"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:layout_marginBottom="10dp"
-                    app:autoSizeTextType="uniform"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="18sp"
                     app:autoSizeMinTextSize="14sp"
-                    app:autoSizeMaxTextSize="20sp"
-                    android:textStyle="bold" />
+                    app:autoSizeTextType="uniform" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"
                     android:orientation="vertical">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -105,50 +90,20 @@
                             android:layout_height="match_parent" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/textViewTelefono"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="Luis Alfonso Niño Mtz"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            app:autoSizeTextType="uniform"
-                            app:autoSizeMinTextSize="12sp"
-                            app:autoSizeMaxTextSize="20sp" />
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/textViewCorreo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="Luis Alfonso Niño Mtz"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            app:autoSizeTextType="uniform"
-                            app:autoSizeMinTextSize="12sp"
-                            app:autoSizeMaxTextSize="20sp" />
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/textViewUbicacion"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="Luis Alfonso Niño Mtz"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            app:autoSizeTextType="uniform"
-                            app:autoSizeMinTextSize="12sp"
-                            app:autoSizeMaxTextSize="20sp" />
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/btnEliminar"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:background="@color/katzen_rosa"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_delete"/>
             </LinearLayout>
 
         </LinearLayout>

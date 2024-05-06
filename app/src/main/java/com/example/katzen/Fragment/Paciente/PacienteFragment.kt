@@ -11,7 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Paciente.PacienteAdapter
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
+import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
@@ -56,7 +56,7 @@ class PacienteFragment : Fragment() {
         obtenerMascotas()
     }
     fun listeners(){
-        binding.btnAddMascota.setOnClickListener {
+        binding.btnAddPaciente.setOnClickListener {
             AddPacienteFragment.ADD_PACIENTE = PacienteModel()
             FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
             UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(),TAG)
@@ -89,7 +89,7 @@ class PacienteFragment : Fragment() {
         _binding = null
     }
     fun obtenerMascotas(){
-        FirebaseMascotaUtil.obtenerListaMascotas(object : ValueEventListener {
+        FirebasePacienteUtil.obtenerListaMascotas(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // Limpiar la lista antes de agregar los nuevos datos
                 mascotasList.clear()

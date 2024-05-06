@@ -91,6 +91,7 @@ class AddClienteFragment : Fragment() {
             val colonia = binding.textColonia.text.toString()
             val municipio = binding.textMunicipio.text.toString()
             val googleMaps = binding.textGoogleMaps.text.toString()
+            val kilometros = binding.textKilometrosCasa.text.toString()
 
             val cliente = ClienteModel(
                 nombre = nombre,
@@ -102,7 +103,8 @@ class AddClienteFragment : Fragment() {
                 numero = numero,
                 colonia = colonia,
                 municipio = municipio,
-                urlGoogleMaps = googleMaps
+                urlGoogleMaps = googleMaps,
+                kilometrosCasa = kilometros
             )
 
             val validationResult = ClienteModel.validarCliente(requireContext(), cliente)
@@ -184,6 +186,7 @@ class AddClienteFragment : Fragment() {
                 textColonia.text!!.clear()
                 textMunicipio.text!!.clear()
                 textGoogleMaps.text!!.clear()
+                textKilometrosCasa.text!!.clear()
                 imgPerfil.setImageResource(R.drawable.ic_imagen)
             }
         }

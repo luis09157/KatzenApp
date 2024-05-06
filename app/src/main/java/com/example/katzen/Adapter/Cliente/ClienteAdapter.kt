@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
 import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper
@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ClienteAdapter(
     activity: Activity,
@@ -40,9 +39,6 @@ class ClienteAdapter(
             holder = ViewHolder()
             holder.imgPerfil = itemView.findViewById(R.id.imgPerfil)
             holder.nombreCompletoTextView = itemView.findViewById(R.id.textViewNombreCompleto)
-            holder.telefonoTextView = itemView.findViewById(R.id.textViewTelefono)
-            holder.correoTextView = itemView.findViewById(R.id.textViewCorreo)
-            holder.ubicacionTextView = itemView.findViewById(R.id.textViewUbicacion)
 
             holder.fondoTelefono = itemView.findViewById(R.id.fondoTelefono)
             holder.fondoCorreo = itemView.findViewById(R.id.fondoCorreo)
@@ -55,15 +51,9 @@ class ClienteAdapter(
         val cliente = clienteList[position]
 
         holder.nombreCompletoTextView?.text = ""
-        holder.telefonoTextView?.text = ""
-        holder.correoTextView?.text = ""
-        holder.ubicacionTextView?.text = ""
         holder.imgPerfil?.setImageResource(R.drawable.ic_perfil)
 
         holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
-        holder.telefonoTextView?.text = cliente.telefono
-        holder.correoTextView?.text = cliente.correo
-        holder.ubicacionTextView?.text = cliente.urlGoogleMaps
 
         if (cliente.imageUrl.isNotEmpty()) {
             Picasso.get()
@@ -78,21 +68,11 @@ class ClienteAdapter(
         holder.fondoTelefono!!.setOnClickListener {
             UtilHelper.llamarCliente(activity, cliente.telefono)
         }
-        holder.telefonoTextView!!.setOnClickListener {
-            UtilHelper.llamarCliente(activity, cliente.telefono)
-        }
-
-        holder.correoTextView!!.setOnClickListener {
-            enviarCorreoElectronico(cliente.correo)
-        }
         holder.fondoCorreo!!.setOnClickListener {
-            enviarCorreoElectronico(cliente.correo)
-        }
-        holder.ubicacionTextView!!.setOnClickListener {
-            UtilHelper.abrirGoogleMaps(activity ,cliente.urlGoogleMaps)
+            UtilHelper.enviarCorreoElectronicoGmail(activity, cliente.correo)
         }
         holder.fondoUbicacion!!.setOnClickListener {
-            UtilHelper.abrirGoogleMaps(activity, cliente.urlGoogleMaps)
+            UtilHelper.expandirUrlGoogleMaps(activity, cliente.urlGoogleMaps)
         }
         holder.btnEliminar?.setOnClickListener {
             activity.runOnUiThread {
@@ -120,27 +100,6 @@ class ClienteAdapter(
         return itemView!!
     }
 
-
-    fun enviarCorreoElectronico(email: String) {
-        if (email.isNotEmpty()) {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-                putExtra(Intent.EXTRA_SUBJECT, "Asunto del correo")
-                putExtra(Intent.EXTRA_TEXT, "Contenido del correo")
-                // Especificamos que queremos enviar el correo a través de Gmail
-                setPackage("com.google.android.gm")
-            }
-            if (intent.resolveActivity(activity.packageManager) != null) {
-                activity.startActivity(intent)
-            } else {
-                DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo abrir la aplicación de Gmail")
-            }
-        } else {
-            DialogMaterialHelper.mostrarErrorDialog(activity, "No tiene un correo relacionado.")
-        }
-    }
-
     override fun getCount(): Int {
         return clienteList.size
     }
@@ -157,13 +116,10 @@ class ClienteAdapter(
     private class ViewHolder {
         var imgPerfil: ImageView? = null
         var nombreCompletoTextView: TextView? = null
-        var telefonoTextView: TextView? = null
-        var correoTextView: TextView? = null
-        var ubicacionTextView: TextView? = null
         var fondoTelefono: ImageView? = null
         var fondoCorreo: ImageView? = null
         var fondoUbicacion: ImageView? = null
-        var btnEliminar: CardView? = null
+        var btnEliminar: LinearLayout? = null
 
     }
 }

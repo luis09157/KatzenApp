@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_margin="20dp"
         app:cardCornerRadius="20dp"
         tools:ignore="MissingConstraints">
 
@@ -42,7 +42,7 @@
                 <TextView
                     android:id="@+id/text_nombre"
                     android:textColor="@color/black"
-                    android:gravity="left|center"
+                    android:gravity="left|bottom"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

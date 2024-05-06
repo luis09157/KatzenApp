@@ -9,7 +9,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class FirebaseMascotaUtil {
+class FirebasePacienteUtil {
     companion object {
         private const val MASCOTAS_PATH = "Katzen/Mascota" // Ruta donde se guardarán las mascotas
         private const val MASCOTAS_IMAGES_PATH = "Mascotas" // Carpeta en Firebase Storage para guardar las imágenes de las mascotas
@@ -55,5 +55,29 @@ class FirebaseMascotaUtil {
                 }
             }
         }
+
+        suspend fun obtenerPacientesDeCliente(idCliente: String): List<PacienteModel> {
+            return suspendCancellableCoroutine { continuation ->
+                referenciaMascota.orderByChild("idCliente").equalTo(idCliente)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val pacientes = mutableListOf<PacienteModel>()
+                            for (pacienteSnapshot in snapshot.children) {
+                                val paciente = pacienteSnapshot.getValue(PacienteModel::class.java)
+                                paciente?.let {
+                                    pacientes.add(it)
+                                }
+                            }
+                            continuation.resume(pacientes)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            println("Error al obtener la lista de pacientes: ${error.message}")
+                            continuation.resumeWithException(error.toException())
+                        }
+                    })
+            }
+        }
+
     }
 }

@@ -19,14 +19,14 @@ class ClienteModel(
     var colonia: String = "",
     var municipio: String = "",
     var urlGoogleMaps: String = "",
+    var kilometrosCasa: String = "",
     var fecha: String = UtilHelper.getDate(),
     var imageUrl: String = "",
     var imageFileName: String = ""
 ) {
     companion object {
         fun validarCliente(context: Context, cliente: ClienteModel): ValidationResult {
-            if (cliente.nombre.isEmpty() || cliente.apellidoPaterno.isEmpty() ||
-                cliente.correo.isEmpty() || cliente.telefono.isEmpty() ||
+            if (cliente.nombre.isEmpty()  || cliente.telefono.isEmpty() ||
                 cliente.calle.isEmpty() || cliente.numero.isEmpty() ||
                 cliente.colonia.isEmpty() || cliente.municipio.isEmpty() ||
                 cliente.fecha.isEmpty()) {
@@ -46,10 +46,10 @@ class ClienteModel(
             }
 
             // Validar el formato de correo electrónico
-            val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+           /* val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
             if (!cliente.correo.matches(emailPattern.toRegex())) {
                 return ValidationResult(false, context.getString(R.string.error_invalid_email))
-            }
+            }*/
 
             // Validar el formato de número de teléfono
             val phonePattern = "\\d{10}"

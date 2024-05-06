@@ -37,23 +37,26 @@
 
         <ListView
             android:id="@+id/lis_menu_clientes"
+            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/white"/>
 
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+            <Button
+                android:id="@+id/btn_add_cliente"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Cliente"
+                android:drawableLeft="@drawable/ic_mas_blanco"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
-
-    <!-- FloatingActionButton fuera del LinearLayout, encima de todo -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_add_cliente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:backgroundTint="@color/white"
-        android:background="@color/white"
-        android:src="@drawable/btn_carrito_compras"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

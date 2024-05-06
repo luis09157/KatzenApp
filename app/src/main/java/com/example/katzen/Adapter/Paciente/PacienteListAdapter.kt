@@ -7,9 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
+import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
@@ -35,7 +36,7 @@ class PacienteListAdapter (
             itemView = LayoutInflater.from(activity).inflate(R.layout.view_list_paciente, parent, false)
             holder = ViewHolder()
             holder.imgPerfil = itemView.findViewById(R.id.imgPerfil)
-            holder.nombrePaciente = itemView.findViewById(R.id.txt_nombre)
+            holder.nombrePaciente = itemView.findViewById(R.id.text_nombre)
             holder.descripcion = itemView.findViewById(R.id.text_descripcion)
             holder.btnEliminar = itemView.findViewById(R.id.btnEliminar)
             itemView.tag = holder
@@ -59,7 +60,7 @@ class PacienteListAdapter (
         }
 
         holder.nombrePaciente?.text = "${paciente.nombre}"
-        holder.descripcion?.text = "ESPECIE: ${paciente.especie}"
+        holder.descripcion?.text = "${paciente.especie}, ${paciente.edad} años"
 
 
         holder.btnEliminar?.setOnClickListener {
@@ -67,7 +68,7 @@ class PacienteListAdapter (
                 DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este paciente?") { confirmed ->
                     if (confirmed) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            val (success, message) = FirebaseMascotaUtil.eliminarMascota(paciente.id)
+                            val (success, message) = FirebasePacienteUtil.eliminarMascota(paciente.id)
                             withContext(Dispatchers.Main) {
                                 if (success) {
                                     DialogMaterialHelper.mostrarSuccessDialog(activity, message)
@@ -105,7 +106,7 @@ class PacienteListAdapter (
         var imgPerfil: ImageView? = null
         var nombrePaciente: TextView? = null
         var descripcion: TextView? = null
-        var btnEliminar: CardView? = null
+        var btnEliminar: LinearLayout? = null
 
     }
 }

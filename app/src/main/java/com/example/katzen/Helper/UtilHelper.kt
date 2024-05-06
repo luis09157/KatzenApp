@@ -13,6 +13,8 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Model.VentaMesModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import java.math.RoundingMode
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.DecimalFormat
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
@@ -100,6 +102,34 @@ class UtilHelper {
         fun hideKeyBoardWorld(activity : Activity,view : View){
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+        }
+        fun expandirUrlGoogleMaps(activity: Activity,urlCorta: String) {
+            Thread {
+                try {
+                    // Conectar a la URL corta
+                    val connection = URL(urlCorta).openConnection() as HttpURLConnection
+                    connection.instanceFollowRedirects = false
+                    // Obtener la URL completa desde la cabecera de redirección
+                    val expandedUrl = connection.getHeaderField("Location")
+                    connection.disconnect()
+
+                    // Verificar si la URL expandida no es nula ni vacía
+                    if (!expandedUrl.isNullOrBlank()) {
+                        // Llamar a la función para abrir Google Maps con la URL completa
+                        abrirGoogleMaps(activity, expandedUrl)
+                    } else {
+                        // Mostrar un mensaje de error si la URL expandida es nula o vacía
+                        activity.runOnUiThread {
+                            DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo obtener la URL completa de Google Maps.")
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Capturar y mostrar cualquier error que ocurra durante la expansión de la URL
+                    activity.runOnUiThread {
+                        DialogMaterialHelper.mostrarErrorDialog(activity, "Error al expandir la URL de Google Maps: ${e.message}")
+                    }
+                }
+            }.start()
         }
         fun abrirGoogleMaps(activity: Activity, urlGoogleMaps: String) {
             if (urlGoogleMaps.isNotEmpty()) {

@@ -2,7 +2,6 @@ package com.example.katzen.Adapter.Paciente
 
 import PacienteModel
 import android.app.Activity
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +9,12 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
-import com.example.katzen.DataBaseFirebase.FirebaseMascotaUtil
-import com.example.katzen.DataBaseFirebase.OnCompleteListener
+import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -83,7 +79,7 @@ class PacienteAdapter(
                 DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este paciente?") { confirmed ->
                     if (confirmed) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            val (success, message) = FirebaseMascotaUtil.eliminarMascota(paciente.id)
+                            val (success, message) = FirebasePacienteUtil.eliminarMascota(paciente.id)
                             withContext(Dispatchers.Main) {
                                 if (success) {
                                     DialogMaterialHelper.mostrarSuccessDialog(activity, message)

@@ -23,8 +23,8 @@ data class PacienteModel(
     companion object {
 
         fun validarMascota(context: Context, mascota: PacienteModel): ValidationResult {
-            if (mascota.nombre.isEmpty() || mascota.peso.isEmpty() || mascota.raza.isEmpty() ||
-                mascota.especie.isEmpty() || mascota.edad.isEmpty() || mascota.sexo.isEmpty() ||
+            if (mascota.nombre.isEmpty()  || mascota.raza.isEmpty() ||
+                mascota.especie.isEmpty()  || mascota.sexo.isEmpty() ||
                 mascota.fecha.isEmpty() || mascota.nombreCliente.isEmpty() || mascota.idCliente.isEmpty()) {
                 return ValidationResult(false, context.getString(R.string.error_empty_fields))
             }
