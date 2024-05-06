@@ -79,7 +79,7 @@ class ClienteDetalleFragment : Fragment() {
             UtilHelper.llamarCliente(requireActivity(), EditClienteFragment.CLIENTE_EDIT.telefono)
         }
         binding.btnGoogleMaps.setOnClickListener {
-            UtilHelper.expandirUrlGoogleMaps(requireActivity(), EditClienteFragment.CLIENTE_EDIT.urlGoogleMaps)
+            UtilHelper.abrirGoogleMaps(requireActivity(), EditClienteFragment.CLIENTE_EDIT.urlGoogleMaps)
         }
         binding.btnWhatssap.setOnClickListener {
             UtilHelper.enviarMensajeWhatsApp(requireActivity(), EditClienteFragment.CLIENTE_EDIT.telefono)

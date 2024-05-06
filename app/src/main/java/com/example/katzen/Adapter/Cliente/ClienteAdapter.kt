@@ -72,7 +72,7 @@ class ClienteAdapter(
             UtilHelper.enviarCorreoElectronicoGmail(activity, cliente.correo)
         }
         holder.fondoUbicacion!!.setOnClickListener {
-            UtilHelper.expandirUrlGoogleMaps(activity, cliente.urlGoogleMaps)
+            UtilHelper.abrirGoogleMaps(activity, cliente.urlGoogleMaps)
         }
         holder.btnEliminar?.setOnClickListener {
             activity.runOnUiThread {

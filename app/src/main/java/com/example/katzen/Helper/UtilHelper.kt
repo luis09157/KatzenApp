@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ListView
+import androidx.core.content.ContextCompat.startActivity
 import com.example.katzen.Config.Config
 import com.example.katzen.Model.VentaMesModel
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -103,55 +104,16 @@ class UtilHelper {
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
         }
-        fun expandirUrlGoogleMaps(activity: Activity,urlCorta: String) {
-            Thread {
-                try {
-                    // Conectar a la URL corta
-                    val connection = URL(urlCorta).openConnection() as HttpURLConnection
-                    connection.instanceFollowRedirects = false
-                    // Obtener la URL completa desde la cabecera de redirección
-                    val expandedUrl = connection.getHeaderField("Location")
-                    connection.disconnect()
 
-                    // Verificar si la URL expandida no es nula ni vacía
-                    if (!expandedUrl.isNullOrBlank()) {
-                        // Llamar a la función para abrir Google Maps con la URL completa
-                        abrirGoogleMaps(activity, expandedUrl)
-                    } else {
-                        // Mostrar un mensaje de error si la URL expandida es nula o vacía
-                        activity.runOnUiThread {
-                            DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo obtener la URL completa de Google Maps.")
-                        }
-                    }
-                } catch (e: Exception) {
-                    // Capturar y mostrar cualquier error que ocurra durante la expansión de la URL
-                    activity.runOnUiThread {
-                        DialogMaterialHelper.mostrarErrorDialog(activity, "Error al expandir la URL de Google Maps: ${e.message}")
-                    }
-                }
-            }.start()
-        }
         fun abrirGoogleMaps(activity: Activity, urlGoogleMaps: String) {
-            if (urlGoogleMaps.isNotEmpty()) {
-                try {
-                    if (validarURLGoogleMaps(urlGoogleMaps)) {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(urlGoogleMaps)
-                        )
-                        if (intent.resolveActivity(activity.packageManager) != null) {
-                            activity.startActivity(intent)
-                        } else {
-                            DialogMaterialHelper.mostrarErrorDialog(activity, "No se puede abrir Google Maps. No hay aplicaciones compatibles.")
-                        }
-                    } else {
-                        DialogMaterialHelper.mostrarErrorDialog(activity, "La URL no es válida de Google Maps.")
-                    }
-                } catch (e: Exception) {
-                    DialogMaterialHelper.mostrarErrorDialog(activity, "Error al abrir Google Maps: ${e.message}")
-                }
+            // Crear un intent para ver la URL en Google Maps
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlGoogleMaps))
+
+            // Verificar si hay alguna aplicación que pueda manejar la acción de ver la URL
+            if (intent.resolveActivity(activity.packageManager) != null) {
+                activity.startActivity(intent)
             } else {
-                DialogMaterialHelper.mostrarErrorDialog(activity, "No tiene una dirección relacionada.")
+                DialogMaterialHelper.mostrarErrorDialog(activity, "No se puede abrir Google Maps.")
             }
         }
         fun enviarMensajeWhatsApp(activity: Activity, numeroTelefono: String) {
