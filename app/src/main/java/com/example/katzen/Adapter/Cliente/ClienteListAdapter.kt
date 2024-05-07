@@ -76,7 +76,7 @@ class ClienteListAdapter (
                 DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este Cliente?") { confirmed ->
                     if (confirmed) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            eliminarClienteYClientes()
+                            eliminarClienteYClientes(paciente)
                         }
                     } else {
                         // El usuario canceló la operación
@@ -107,26 +107,28 @@ class ClienteListAdapter (
         var btnEliminar: LinearLayout? = null
 
     }
-    private fun eliminarClienteYClientes(cliente : ClienteModel) {
-        // Eliminar el cliente y luego sus pacientes
-        FirebaseClienteUtil.eliminarCliente(cliente.id, clienteReference, OnCompleteListener { clienteTask ->
-            if (clienteTask.isSuccessful) {
+    private fun eliminarClienteYClientes(cliente: ClienteModel) {
+        // Iniciar una corrutina para realizar operaciones suspendidas
+        CoroutineScope(Dispatchers.Main).launch {
+            // Eliminar el cliente
+            val clienteEliminado = FirebaseClienteUtil.eliminarCliente(cliente.id)
+            if (clienteEliminado) {
                 // Cliente eliminado exitosamente, ahora eliminar los pacientes
-                FirebaseClienteUtil.eliminarPacientesDeCliente(clienteId, pacienteReference, OnCompleteListener { pacientesTask ->
-                    if (pacientesTask.isSuccessful) {
-                        // Todos los pacientes del cliente fueron eliminados
-                        // Puedes mostrar un mensaje de éxito o realizar alguna otra acción aquí
-                    } else {
-                        // Error al eliminar los pacientes
-                        val error = pacientesTask.exception?.message ?: "Error desconocido al eliminar los pacientes"
-                        // Manejar el error
-                    }
-                })
+                val pacientesEliminados = FirebasePacienteUtil.eliminarPacientesDeCliente(cliente.id)
+                if (pacientesEliminados) {
+                    // Todos los pacientes del cliente fueron eliminados
+                    // Mostrar un mensaje de éxito
+                    DialogMaterialHelper.mostrarSuccessDialog(activity, "Cliente y sus pacientes eliminados correctamente.")
+                } else {
+                    // Error al eliminar los pacientes
+                    DialogMaterialHelper.mostrarErrorDialog(activity, "Error al eliminar los pacientes del cliente.")
+                }
             } else {
                 // Error al eliminar el cliente
-                val error = clienteTask.exception?.message ?: "Error desconocido al eliminar el cliente"
-                // Manejar el error
+                DialogMaterialHelper.mostrarErrorDialog(activity, "Error al eliminar el cliente.")
             }
-        })
+        }
     }
+
+
 }

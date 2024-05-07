@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -70,28 +71,14 @@ class FirebaseClienteUtil {
                 }
             }
         }
-        fun eliminarCliente(clienteId: String, clienteReference: DatabaseReference, listener: OnCompleteListener<Void>) {
-            clienteReference.child(clienteId).removeValue()
-                .addOnCompleteListener(listener)
-        }
-
-        // Eliminar los pacientes de un cliente por su ID de cliente
-        fun eliminarPacientesDeCliente(idCliente: String, referenciaMascota: DatabaseReference, listener: OnCompleteListener<Void>) {
-            referenciaMascota.orderByChild("idCliente").equalTo(idCliente)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        // Recorrer los pacientes y eliminarlos
-                        for (pacienteSnapshot in snapshot.children) {
-                            pacienteSnapshot.ref.removeValue()
-                        }
-                        listener.onComplete(null) // Indicar que la eliminación de pacientes ha sido completada
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        // Manejar el error en caso de que ocurra
-                        listener.onComplete(error.toException())
-                    }
-                })
+        suspend fun eliminarCliente(clienteId: String): Boolean {
+            return try {
+                referenciaCliente.child(clienteId).removeValue().await()
+                true
+            } catch (e: Exception) {
+                println("Error al eliminar el cliente: ${e.message}")
+                false
+            }
         }
     }
 }

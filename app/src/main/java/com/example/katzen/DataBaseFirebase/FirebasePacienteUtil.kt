@@ -4,6 +4,7 @@ import PacienteModel
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -20,7 +21,6 @@ class FirebasePacienteUtil {
         fun obtenerListaMascotas(listener: ValueEventListener) {
             referenciaMascota.addValueEventListener(listener)
         }
-
         suspend fun eliminarMascota(mascotaId: String): Pair<Boolean, String> {
             return suspendCancellableCoroutine { continuation ->
                 try {
@@ -55,7 +55,6 @@ class FirebasePacienteUtil {
                 }
             }
         }
-
         suspend fun obtenerPacientesDeCliente(idCliente: String): List<PacienteModel> {
             return suspendCancellableCoroutine { continuation ->
                 referenciaMascota.orderByChild("idCliente").equalTo(idCliente)
@@ -78,6 +77,19 @@ class FirebasePacienteUtil {
                     })
             }
         }
+        suspend fun eliminarPacientesDeCliente(clienteId: String): Boolean {
+            return try {
+                val pacientes = obtenerPacientesDeCliente(clienteId)
+                for (paciente in pacientes) {
+                    referenciaMascota.child(paciente.id).removeValue().await()
+                }
+                true
+            } catch (e: Exception) {
+                println("Error al eliminar los pacientes del cliente: ${e.message}")
+                false
+            }
+        }
+
 
     }
 }
