@@ -10,6 +10,7 @@ import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Paciente.PacienteAdapter
+import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
@@ -27,7 +28,7 @@ class PacienteFragment : Fragment() {
     private var _binding: PacienteFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var mascotasList: MutableList<PacienteModel>
-    private lateinit var mascotasAdapter: PacienteAdapter
+    private lateinit var pacienteListAdapter: PacienteListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,8 +50,8 @@ class PacienteFragment : Fragment() {
     fun init(){
         ConfigLoading.showLoadingAnimation()
         mascotasList = mutableListOf()
-        mascotasAdapter = PacienteAdapter(requireActivity(), mascotasList)
-        binding.lisMenuMascota.adapter = mascotasAdapter
+        pacienteListAdapter = PacienteListAdapter(requireActivity(), mascotasList)
+        binding.lisMenuMascota.adapter = pacienteListAdapter
         binding.lisMenuMascota.divider = null
 
         obtenerMascotas()
@@ -75,7 +76,7 @@ class PacienteFragment : Fragment() {
         })
         binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
             EditarPacienteFragment.PACIENTE_EDIT = mascotasList[i]
-            UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(),TAG)
+            UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(),TAG)
         }
     }
     fun initLoading(){
@@ -101,7 +102,7 @@ class PacienteFragment : Fragment() {
                 }
 
                 // Notificar al adaptador que los datos han cambiado
-                mascotasAdapter.notifyDataSetChanged()
+                pacienteListAdapter.notifyDataSetChanged()
                 if (mascotasList.size > 0){
                     ConfigLoading.hideLoadingAnimation()
                 }else{
@@ -121,7 +122,7 @@ class PacienteFragment : Fragment() {
         val filteredList = mascotasList.filter { mascota ->
             mascota.nombre.contains(text, ignoreCase = true)
         }
-        mascotasAdapter.updateList(filteredList)
+        pacienteListAdapter.updateList(filteredList)
     }
     override fun onResume() {
         super.onResume()

@@ -5,6 +5,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:layout_margin="20dp"
+    android:background="@color/white"
 xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
@@ -29,6 +30,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 <ScrollView
+    android:background="@color/white"
     android:id="@+id/cont_add_producto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,6 +50,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_height="match_parent">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -75,7 +78,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_imagen"
                             android:adjustViewBounds="true"
-                            android:scaleType="centerInside"/>
+                            android:scaleType="centerCrop"/>
 
                         <!-- Botón para seleccionar la foto -->
                         <Button

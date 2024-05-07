@@ -104,7 +104,7 @@ class EditarPacienteFragment : Fragment() {
     fun initListeners(){
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            UtilFragment.changeFragment(requireContext(), PacienteFragment(), TAG)
+            UtilFragment.changeFragment(requireContext(), PacienteDetalleFragment(), TAG)
         }
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
