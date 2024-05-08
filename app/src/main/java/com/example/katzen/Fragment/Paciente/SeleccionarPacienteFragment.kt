@@ -8,6 +8,7 @@ import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Cliente.SeleccionClienteAdapter
+import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Fragment.Cliente.AddClienteFragment
@@ -114,11 +115,16 @@ class SeleccionarPacienteFragment(val flagVentanaEdit : Boolean) : Fragment( ) {
 
                 // Notificar al adaptador que los datos han cambiado
                 seleccionClienteAdapter.notifyDataSetChanged()
-                ConfigLoading.hideLoadingAnimation()
+
+                if(clientesList.size > 0){
+                    ConfigLoading.hideLoadingAnimation()
+                }else{
+                    ConfigLoading.showNodata()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                ConfigLoading.hideLoadingAnimation()
+                ConfigLoading.showNodata()
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
             }
