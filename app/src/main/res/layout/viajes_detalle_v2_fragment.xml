@@ -43,11 +43,24 @@
             <ListView
                 android:id="@+id/lis_menu_viaje"
                 android:layout_weight="1"
+                android:layout_margin="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/white"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+            <Button
+                android:id="@+id/btn_add_viaje"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Viaje"
+                android:drawableLeft="@drawable/ic_mas_blanco"
+                android:layout_margin="10dp"/>
+        </LinearLayout>
     </LinearLayout>
 
 

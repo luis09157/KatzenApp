@@ -1,10 +1,12 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Venta.VentaMesDetalleAdapter
@@ -13,6 +15,7 @@ import com.example.katzen.Adapter.Viaje.ViajeMesDetalleV2Adapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
+import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.MenuFragment
@@ -26,6 +29,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
+import java.text.DecimalFormat
 
 class ViajesDetalleV2Fragment : Fragment() {
     val TAG : String  = "ViajesDetalleV2Fragment"
@@ -62,28 +66,7 @@ class ViajesDetalleV2Fragment : Fragment() {
         // Obtener los cargos de viaje
         FirebaseViajesUtil.obtenerListaCargosViajes(Config.MES_DETALLE, object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Limpiar la lista antes de agregar los nuevos datos
-                viajesDetalleList.clear()
-
-                for (viajeSnapshot in snapshot.children) {
-                    val genericTypeIndicator = object : GenericTypeIndicator<Map<String, Any>>() {}
-                    val ventaMesMap: Map<String, Any> = viajeSnapshot.getValue(genericTypeIndicator) ?: continue
-                    val ventaMesModel = VentaMesDetalleModel(
-                        venta = ventaMesMap["venta"].toString(),
-                        costo = ventaMesMap["costo"].toString(),
-                        fecha = ventaMesMap["fecha"].toString(),
-                        ganancia = ventaMesMap["ganancia"].toString()
-                    )
-                    viajesDetalleList.add(ventaMesModel)
-                }
-
-                // Notificar al adaptador que los datos han cambiado
-                viajesDetalleAdapter.notifyDataSetChanged()
-                if (viajesDetalleList.size > 0) {
-                    ConfigLoading.hideLoadingAnimation()
-                } else {
-                    ConfigLoading.showNodata()
-                }
+                getData(snapshot)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -94,9 +77,38 @@ class ViajesDetalleV2Fragment : Fragment() {
         })
     }
 
+    private fun getData(dataSnapshot: DataSnapshot) {
+        viajesDetalleList.clear()
+        Config.COSTO = 0.00
+        Config.GANANCIA = 0.00
+        Config.VENTA = 0.00
+
+        for (postSnapshot in dataSnapshot.children) {
+            val key_date = postSnapshot.key.toString()
+            for (data in postSnapshot.children) {
+                val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
+                    ?: continue
+
+                if (ventaMesDetalleModel.key_date.isEmpty()) {
+                    ventaMesDetalleModel.key_date = key_date
+                }
+
+                Config.COSTO += ventaMesDetalleModel.costo.toDouble()
+                Config.VENTA += ventaMesDetalleModel.venta.toDouble()
+                Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
+
+                viajesDetalleList.add(ventaMesDetalleModel)
+            }
+        }
+
+        viajesDetalleAdapter.notifyDataSetChanged()
+        ConfigLoading.hideLoadingAnimation()
+    }
+
+
     fun filterClientes(text: String) {
         val filteredList = viajesDetalleList.filter { viaje ->
-            viaje.kilometros.contains(text, ignoreCase = true)
+            viaje.domicilio.contains(text, ignoreCase = true)
         }
         viajesDetalleAdapter.updateList(filteredList)
     }
@@ -117,6 +129,14 @@ class ViajesDetalleV2Fragment : Fragment() {
         binding.lisMenuViaje.setOnItemClickListener { adapterView, view, i, l ->
             //Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesDetalleList[i].mes)}-${viajesDetalleList[i].anio}"
             UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
+        }
+        binding.btnAddViaje.setOnClickListener {
+            /*DialogHelper.dialogAddDomicilio(
+                requireActivity(),
+                vMDM,
+                myTopPostsQuery!!,
+                loadingHelper
+            )*/
         }
 
     }
