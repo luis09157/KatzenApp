@@ -38,12 +38,12 @@
                 android:id="@+id/buscarCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"/>
+                android:layout_margin="5dp"/>
 
             <ListView
                 android:id="@+id/lis_menu_viaje"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/white"/>
@@ -59,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:text="Viaje"
                 android:drawableLeft="@drawable/ic_mas_blanco"
-                android:layout_margin="10dp"/>
+                android:layout_margin="5dp"/>
         </LinearLayout>
     </LinearLayout>
 

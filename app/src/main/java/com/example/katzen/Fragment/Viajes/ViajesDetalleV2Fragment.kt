@@ -1,33 +1,23 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Venta.VentaMesDetalleAdapter
-import com.example.katzen.Adapter.Viaje.ViajeAdapter
 import com.example.katzen.Adapter.Viaje.ViajeMesDetalleV2Adapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.MenuFragment
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.Model.VentaMesModel
 import com.example.katzen.R
 import com.example.katzen.databinding.ViajesDetalleV2FragmentBinding
-import com.example.katzen.databinding.ViajesV2FragmentBinding
-import com.example.katzen.ui.viajes.ViajesDetalleFragment
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 import java.text.DecimalFormat
 
@@ -128,15 +118,10 @@ class ViajesDetalleV2Fragment : Fragment() {
         })
         binding.lisMenuViaje.setOnItemClickListener { adapterView, view, i, l ->
             //Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesDetalleList[i].mes)}-${viajesDetalleList[i].anio}"
-            UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
+            //UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
         }
         binding.btnAddViaje.setOnClickListener {
-            /*DialogHelper.dialogAddDomicilio(
-                requireActivity(),
-                vMDM,
-                myTopPostsQuery!!,
-                loadingHelper
-            )*/
+            DialogHelper.dialogAddDomicilio(requireActivity())
         }
 
     }

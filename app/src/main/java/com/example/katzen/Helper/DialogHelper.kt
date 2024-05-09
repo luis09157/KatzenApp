@@ -32,8 +32,7 @@ class DialogHelper {
             val dateFormatter = SimpleDateFormat("dd-MM-yyyy")
             return dateFormatter.format(Date())
         }
-        fun dialogAddDomicilio(activity: Activity, vMDM : VentaMesDetalleModel,
-                               myTopPostsQuery: DatabaseReference, loadingHelper: LoadingHelper){
+        fun dialogAddDomicilio(activity: Activity){
             val datePicker =
                 MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Select date")
@@ -62,13 +61,14 @@ class DialogHelper {
                 builder.hide()
             }
             btn_guardar.setOnClickListener {
+                var vMDM = VentaMesDetalleModel()
                 vMDM.fecha = txt_fecha_detalle.text.toString()
                 vMDM.kilometros = txt_kilometros.text.toString()
                 vMDM.categoria = txt_categoria.text.toString()
                 vMDM.domicilio = txt_domicilio.text.toString()
                 vMDM.linkMaps = txt_link_maps.text.toString()
                 vMDM.isEdit = false
-                dialogConfirm(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
+                //dialogConfirm(builder,activity,vMDM)
             }
             txt_fecha_detalle.setOnClickListener {
                 view.hideKeyboard()

@@ -43,9 +43,9 @@ class ViajeAdapter (
 
 
         holder.txt_mes?.text = viaje.mes
-        holder.txt_costo?.text = viaje.costo
-        holder.txt_ganancia?.text = viaje.ganancia
-        holder.txt_venta?.text = viaje.venta
+        holder.txt_costo?.text = "$${viaje.costo}"
+        holder.txt_ganancia?.text = "$${viaje.ganancia}"
+        holder.txt_venta?.text = "$${viaje.venta}"
 
 
         return itemView!!
