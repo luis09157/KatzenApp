@@ -2,14 +2,15 @@ package com.example.katzen.ui.viajes
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Venta.VentaMesDetalleAdapter
 import com.example.katzen.Config.Config
+import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.DialogHelper.Companion.dialogAddDomicilio
 import com.example.katzen.Helper.LoadingHelper
 import com.example.katzen.Helper.UtilFragment
@@ -88,22 +89,6 @@ class ViajesDetalleFragment : Fragment() {
         myTopPostsQuery!!.removeEventListener(postListener!!)
         myTopPostsQuery!!.onDisconnect()
     }
-    override fun onResume() {
-        super.onResume()
-        if (view == null) {
-            return
-        }
-        requireView().isFocusableInTouchMode = true
-        requireView().requestFocus()
-        requireView().setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                database.onDisconnect()
-                UtilFragment.changeFragment(requireContext(),ViajesFragment(),TAG)
-                true
-            } else false
-        }
-    }
-
     fun initFirebase(){
         database = Firebase.database.reference
         queryRefreshCost =  database.child("Katzen").child("Gasolina").child(UtilHelper.getDateYear())
@@ -183,6 +168,14 @@ class ViajesDetalleFragment : Fragment() {
         queryRefreshCost!!.child("costo").setValue(df.format(Config.COSTO))
         queryRefreshCost!!.child("ganancia").setValue(df.format(Config.GANANCIA))
         queryRefreshCost!!.child("venta").setValue(df.format(Config.VENTA))
+    }
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                UtilFragment.changeFragment(requireContext(),ViajesFragment(),TAG)
+            }
+        })
     }
 
 }

@@ -20,6 +20,8 @@ import java.text.DecimalFormat
 import java.text.FieldPosition
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class UtilHelper {
 
@@ -180,13 +182,22 @@ class UtilHelper {
                 DialogMaterialHelper.mostrarErrorDialog(activity, "Error al abrir la aplicación de Gmail: ${e.message}")
             }
         }
-
-        fun validarURLGoogleMaps(url: String): Boolean {
-            // Patrón de la URL de Google Maps
-            val patron = Regex("^https?://(?:www\\.)?google\\.(?:com?/maps)(?:\\?.*)?\$")
-            // Comprobación de la coincidencia
-            return patron.matches(url)
+        fun obtenerNumeroMes(mesAbreviado: String): String {
+            return when (mesAbreviado.toUpperCase()) {
+                "ENE" -> "01"
+                "FEB" -> "02"
+                "MAR" -> "03"
+                "ABR" -> "04"
+                "MAY" -> "05"
+                "JUN" -> "06"
+                "JUL" -> "07"
+                "AGO" -> "08"
+                "SEP" -> "09"
+                "OCT" -> "10"
+                "NOV" -> "11"
+                "DIC" -> "12"
+                else -> throw IllegalArgumentException("Nombre de mes no válido: $mesAbreviado")
+            }
         }
-
     }
 }

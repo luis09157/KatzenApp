@@ -18,12 +18,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
+import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.ui.card.PaymetCardFragment
 import com.example.katzen.ui.gasolina.FuellFragment
-import com.example.katzen.ui.medical.MedicalFragment
-import com.example.katzen.ui.viajes.ViajesFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics

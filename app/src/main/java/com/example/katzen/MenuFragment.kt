@@ -17,13 +17,13 @@ import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Producto.AddProductoFragment
 import com.example.katzen.Fragment.Venta.VentasFragment
+import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuFragmentBinding
 import com.example.katzen.ui.card.PaymetCardFragment
 import com.example.katzen.ui.gasolina.FuellFragment
-import com.example.katzen.ui.viajes.ViajesFragment
 
 class MenuFragment : Fragment() {
     val TAG : String  = "MenuFragment"
@@ -92,6 +92,7 @@ class MenuFragment : Fragment() {
                     UtilFragment.changeFragment(requireActivity(), PaymetCardFragment(),TAG)
                 }
                 requireActivity().getString(R.string.menu_viajes) -> {
+                    //UtilFragment.changeFragment(requireActivity(), ViajesFragment(),TAG)
                     UtilFragment.changeFragment(requireActivity(), ViajesFragment(),TAG)
                 }
             }
