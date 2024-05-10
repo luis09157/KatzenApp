@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class  VentaMesDetalleModel (
     var id: String = UUID.randomUUID().toString(),
+    var nombreDomicilio: String = "",
     var categoria: String = "",
     var costo: String = "",
     var domicilio: String = "",

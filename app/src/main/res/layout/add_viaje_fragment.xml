@@ -1,150 +1,185 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:background="@color/background_color"
+android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+<include
+    android:id="@+id/fragment_no_data"
+    layout="@layout/fragment_no_data"/>
+
+<com.airbnb.lottie.LottieAnimationView
+    android:id="@+id/lottieAnimationView"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:lottie_autoPlay="true"
+    android:background="@color/white"
+    app:lottie_loop="true"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
+
+<androidx.cardview.widget.CardView
+    android:id="@+id/contAddViaje"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_margin="25dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_margin="25dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet"
+                android:enabled="true"
+                android:hint="@string/txtField_nombre_domicilio">
 
-                <com.google.android.material.textfield.TextInputLayout
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nombreDomicilio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:enabled="true"
-                    android:hint="@string/txtField_seleccion_cliente"
-                    app:startIconDrawable="@drawable/ic_pet">
+                    android:backgroundTint="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_cliente"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
-                    android:enabled="true"
-                    android:hint="@string/txtField_domicilio">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_domicilio"
-                        android:backgroundTint="@color/white"
-                        android:layout_width="match_parent"
-                        android:inputType="text"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/autoTextView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="@string/txtField_categoria"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
-                    android:enabled="true"
-                    android:hint="@string/txtField_fecha">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_fecha_detalle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/white" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
-                    android:enabled="true"
-                    android:hint="@string/txtField_kilometros">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_kilometros"
-                        android:backgroundTint="@color/white"
-                        android:inputType="numberDecimal"
-                        android:digits="0123456789."
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    app:startIconDrawable="@drawable/ic_pet"
-                    android:enabled="true"
-                    android:hint="@string/txtField_maps">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_link_maps"
-                        android:backgroundTint="@color/white"
-                        android:inputType="text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_cancelar"
-                    style="@style/Widget.MaterialComponents.Button"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:enabled="true"
+                android:hint="@string/txtField_seleccion_cliente"
+                app:startIconDrawable="@drawable/ic_pet">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_cliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet"
+                android:enabled="true"
+                android:hint="@string/txtField_domicilio">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_domicilio"
+                    android:backgroundTint="@color/white"
+                    android:layout_width="match_parent"
+                    android:inputType="text"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet">
+
+                <AutoCompleteTextView
+                    android:id="@+id/text_categoria"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:text="Cancelar"/>
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_guardar"
-                    android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:text="Guardar"/>
+                    android:hint="@string/txtField_categoria"/>
 
-            </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet"
+                android:enabled="true"
+                android:hint="@string/txtField_fecha">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_fecha_detalle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/white" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet"
+                android:enabled="true"
+                android:hint="@string/txtField_kilometros">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_kilometros"
+                    android:backgroundTint="@color/white"
+                    android:inputType="numberDecimal"
+                    android:digits="0123456789."
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:startIconDrawable="@drawable/ic_pet"
+                android:enabled="true"
+                android:hint="@string/txtField_maps">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/text_link_maps"
+                    android:backgroundTint="@color/white"
+                    android:inputType="text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancelar"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:text="Cancelar"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_guardar"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:text="Guardar"/>
 
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

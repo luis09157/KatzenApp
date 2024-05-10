@@ -70,8 +70,7 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
                         UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
                     }
                     "ADD_VIAJE" -> {
-                        AddViajeFragment.ADD_VIAJE.idCliente = clientesList[i].id
-                        AddViajeFragment.ADD_VIAJE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        AddViajeFragment.ADD_CLIENTE_VIAJE = clientesList[i]
                         UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
                     }
                     else -> {

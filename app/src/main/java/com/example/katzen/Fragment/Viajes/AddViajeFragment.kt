@@ -1,11 +1,8 @@
 package com.example.katzen.Fragment.Viajes
 
-import PacienteModel
 import android.R
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,33 +11,35 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
-import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Paciente.SeleccionarPacienteFragment
-import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.UpperCaseTextWatcher
+import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
+import com.example.katzen.MainActivity
+import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.databinding.AddViajeFragmentBinding
-import com.example.katzen.databinding.VistaAgregarMascotaBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 class AddViajeFragment : Fragment() {
     val TAG = "AddMascotaFragment"
-    val FOLDER_NAME = "Mascotas"
-    val PATH_FIREBASE = "Katzen/Mascota"
+    val PATH_FIREBASE = "Katzen/Gasolina"
 
 
     private var _binding: AddViajeFragmentBinding? = null
     private val binding get() = _binding!!
+    private val datePicker =
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Selecciona Fecha")
+            .build()
     companion object{
         val PICK_IMAGE_REQUEST = 1
         var ADD_VIAJE : VentaMesDetalleModel = VentaMesDetalleModel()
+        var ADD_CLIENTE_VIAJE : ClienteModel = ClienteModel()
     }
 
     override fun onCreateView(
@@ -83,16 +82,39 @@ class AddViajeFragment : Fragment() {
                 UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_VIAJE"), TAG)
             }
         }
+        binding.textFechaDetalle.setOnClickListener {
+            it.hideKeyboard()
+            datePicker.show((activity as MainActivity).supportFragmentManager, DialogHelper.TAG);
+        }
+        binding.textFechaDetalle.setOnFocusChangeListener { view, b ->
+            if(b){
+                view.hideKeyboard()
+                datePicker.show((activity as MainActivity).supportFragmentManager, DialogHelper.TAG);
+            }
+        }
+
+        datePicker.addOnPositiveButtonClickListener {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            calendar.time = Date(it)
+            var fecha = "${calendar.get(Calendar.DAY_OF_MONTH)}-" +
+                    "${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}"
+            binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(fecha)
+        }
+
     }
     fun init(){
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.simple_list_item_1, Config.CATEGORIAS)
+        binding.textCategoria.setAdapter(adapter)
 
        // UpperCaseTextWatcher.UpperText(binding.textColor)
 
     }
     fun initLoading(){
-        //ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        //ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        //ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddViaje
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
     fun limpiarCampos() {
         /*requireActivity().runOnUiThread {
@@ -106,11 +128,31 @@ class AddViajeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    fun setValues(){
-       // binding.textNombre.setText(ADD_PACIENTE.nombre)
+
+    fun setValues() {
+        val fullName = "${ADD_CLIENTE_VIAJE.nombre} ${ADD_CLIENTE_VIAJE.apellidoPaterno} ${ADD_CLIENTE_VIAJE.apellidoMaterno}"
+        binding.textCliente.text = Editable.Factory.getInstance().newEditable(fullName)
+        val domicilio = "${ADD_CLIENTE_VIAJE.calle} #${ADD_CLIENTE_VIAJE.numero}, ${ADD_CLIENTE_VIAJE.colonia} ${ADD_CLIENTE_VIAJE.municipio}"
+        if(ADD_CLIENTE_VIAJE.calle != ""){
+            binding.textDomicilio.text = Editable.Factory.getInstance().newEditable(domicilio)
+        }
+        binding.textKilometros.text =  Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.kilometrosCasa)
+        binding.textLinkMaps.text = Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.urlGoogleMaps)
+        binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
     }
     fun setPacienteModel(){
-        //ADD_PACIENTE.nombre = binding.textNombre.text.toString()
+        ADD_VIAJE.nombreDomicilio = binding.nombreDomicilio.text.toString()
+        ADD_VIAJE.categoria = binding.textCategoria.text.toString()
+        ADD_VIAJE.domicilio = binding.textDomicilio.text.toString()
+        ADD_VIAJE.kilometros = binding.textKilometros.text.toString()
+        ADD_VIAJE.linkMaps = binding.textLinkMaps.text.toString()
+        ADD_VIAJE.fecha = binding.textFechaDetalle.text.toString()
+
+        if (ADD_CLIENTE_VIAJE.id != ""){
+            ADD_VIAJE.nombreCliente = binding.textCliente.text.toString()
+            ADD_VIAJE.idCliente = ADD_CLIENTE_VIAJE.id
+        }
+
     }
 
     override fun onResume() {
@@ -120,7 +162,7 @@ class AddViajeFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), PacienteFragment(), TAG)
+                    UtilFragment.changeFragment(requireContext(), ViajesDetalleV2Fragment(), TAG)
                 }
             })
     }

@@ -72,6 +72,7 @@
 
 
     <string name="txtField_nombre">Nombre</string>
+    <string name="txtField_nombre_domicilio">Nombre Domicilio</string>
     <string name="txtField_apellido_paterno">Apellido Paterno</string>
     <string name="txtField_apellido_materno">Apellido Materno</string>
     <string name="txtField_especie">Especie</string>

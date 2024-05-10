@@ -13,6 +13,7 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
 import com.example.katzen.databinding.ViajesDetalleV2FragmentBinding
@@ -121,6 +122,8 @@ class ViajesDetalleV2Fragment : Fragment() {
             //UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
         }
         binding.btnAddViaje.setOnClickListener {
+            AddViajeFragment.ADD_VIAJE = VentaMesDetalleModel()
+            AddViajeFragment.ADD_CLIENTE_VIAJE = ClienteModel()
             UtilFragment.changeFragment(requireContext(), AddViajeFragment(),TAG)
             //DialogHelper.dialogAddDomicilio(requireActivity())
         }
