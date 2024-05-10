@@ -13,6 +13,7 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Fragment.Cliente.AddClienteFragment
 import com.example.katzen.Fragment.Cliente.EditClienteFragment
+import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
@@ -21,7 +22,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-class SeleccionarPacienteFragment(val flagVentanaEdit : Boolean) : Fragment( ) {
+class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
     val TAG : String  = "ClienteFragment"
 
     private var _binding: ClienteFragmentBinding? = null
@@ -57,15 +58,27 @@ class SeleccionarPacienteFragment(val flagVentanaEdit : Boolean) : Fragment( ) {
         binding.lisMenuClientes.divider = null
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
 
-            if(flagVentanaEdit){
-                EditarPacienteFragment.PACIENTE_EDIT.idCliente = clientesList[i].id
-                EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
-                UtilFragment.changeFragment(requireActivity() , EditarPacienteFragment() ,TAG)
-            }else{
-                AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
-                AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
-                UtilFragment.changeFragment(requireActivity() , AddPacienteFragment() ,TAG)
-            }
+                when (flagVentana) {
+                    "ADD_PACIENTE" -> {
+                        EditarPacienteFragment.PACIENTE_EDIT.idCliente = clientesList[i].id
+                        EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
+                    }
+                    "EDIT_PACIENTE" -> {
+                        AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
+                        AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
+                    }
+                    "ADD_VIAJE" -> {
+                        AddViajeFragment.ADD_VIAJE.idCliente = clientesList[i].id
+                        AddViajeFragment.ADD_VIAJE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
+                    }
+                    else -> {
+                        // En caso de que flagVentanaEdit no sea ni true ni false
+                    }
+                }
+
 
         }
 
@@ -140,10 +153,19 @@ class SeleccionarPacienteFragment(val flagVentanaEdit : Boolean) : Fragment( ) {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(flagVentanaEdit){
-                    UtilFragment.changeFragment(requireContext() , EditarPacienteFragment() ,TAG)
-                }else{
-                    UtilFragment.changeFragment(requireContext() , AddPacienteFragment() ,TAG)
+                when (flagVentana) {
+                    "ADD_PACIENTE" -> {
+                        UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
+                    }
+                    "EDIT_PACIENTE" -> {
+                        UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
+                    }
+                    "ADD_VIAJE" -> {
+                        UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
+                    }
+                    else -> {
+                        // En caso de que flagVentanaEdit no sea ni true ni false
+                    }
                 }
 
             }

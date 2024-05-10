@@ -78,13 +78,13 @@ class AddPacienteFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
-            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment(false) ,TAG)
+            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment("ADD_PACIENTE") ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
                 setPacienteModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment(false), TAG)
+                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_PACIENTE"), TAG)
             }
         }
     }

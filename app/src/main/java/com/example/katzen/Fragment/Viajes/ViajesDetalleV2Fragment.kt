@@ -121,7 +121,8 @@ class ViajesDetalleV2Fragment : Fragment() {
             //UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
         }
         binding.btnAddViaje.setOnClickListener {
-            DialogHelper.dialogAddDomicilio(requireActivity())
+            UtilFragment.changeFragment(requireContext(), AddViajeFragment(),TAG)
+            //DialogHelper.dialogAddDomicilio(requireActivity())
         }
 
     }
