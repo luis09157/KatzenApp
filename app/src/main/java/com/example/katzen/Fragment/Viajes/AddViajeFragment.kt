@@ -9,21 +9,32 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
+import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
+import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Paciente.SeleccionarPacienteFragment
 import com.example.katzen.Helper.DialogHelper
+import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
+import com.example.katzen.Model.VentaMesDetalleModel.Companion.validarViaje
 import com.example.katzen.databinding.AddViajeFragmentBinding
 import com.google.android.material.datepicker.MaterialDatePicker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
+import kotlin.math.cos
 
 class AddViajeFragment : Fragment() {
     val TAG = "AddMascotaFragment"
@@ -64,21 +75,22 @@ class AddViajeFragment : Fragment() {
 
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            UtilFragment.changeFragment(requireContext() , PacienteFragment() ,TAG)
+            UtilFragment.changeFragment(requireContext() , ViajesDetalleV2Fragment() ,TAG)
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
-            //guardarMascota()
+            setViajeModel()
+            guardarViaje(ADD_VIAJE)
         }
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
-            setPacienteModel()
+            setViajeModel()
             UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment("ADD_VIAJE") ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
-                setPacienteModel()
+                setViajeModel()
                 UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_VIAJE"), TAG)
             }
         }
@@ -96,10 +108,13 @@ class AddViajeFragment : Fragment() {
         datePicker.addOnPositiveButtonClickListener {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.time = Date(it)
-            var fecha = "${calendar.get(Calendar.DAY_OF_MONTH)}-" +
-                    "${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.YEAR)}"
-            binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(fecha)
+            val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = String.format("%02d", calendar.get(Calendar.MONTH) + 1)
+            val year = calendar.get(Calendar.YEAR)
+            val fecha = "$dayOfMonth-$month-$year"
+            binding.textFechaDetalle.text = Editable.Factory.getInstance().newEditable(fecha)
         }
+
 
     }
     fun init(){
@@ -117,12 +132,17 @@ class AddViajeFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
     fun limpiarCampos() {
-        /*requireActivity().runOnUiThread {
+        requireActivity().runOnUiThread {
             binding.apply {
-                textNombre.text?.clear()
-                spSexo.text?.clear()
+                nombreDomicilio.text?.clear()
+                textCliente.text?.clear()
+                textCategoria.text?.clear()
+                textDomicilio.text?.clear()
+                textKilometros.text?.clear()
+                textLinkMaps.text?.clear()
+                textFechaDetalle.text = Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
             }
-        }*/
+        }
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -136,11 +156,12 @@ class AddViajeFragment : Fragment() {
         if(ADD_CLIENTE_VIAJE.calle != ""){
             binding.textDomicilio.text = Editable.Factory.getInstance().newEditable(domicilio)
         }
+        binding.nombreDomicilio.text =  Editable.Factory.getInstance().newEditable(ADD_VIAJE.nombreDomicilio)
         binding.textKilometros.text =  Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.kilometrosCasa)
         binding.textLinkMaps.text = Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.urlGoogleMaps)
         binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
     }
-    fun setPacienteModel(){
+    fun setViajeModel(){
         ADD_VIAJE.nombreDomicilio = binding.nombreDomicilio.text.toString()
         ADD_VIAJE.categoria = binding.textCategoria.text.toString()
         ADD_VIAJE.domicilio = binding.textDomicilio.text.toString()
@@ -153,11 +174,48 @@ class AddViajeFragment : Fragment() {
             ADD_VIAJE.idCliente = ADD_CLIENTE_VIAJE.id
         }
 
+        if(ADD_VIAJE.kilometros != "" && ADD_VIAJE.categoria != ""){
+            val (costo,ganancia,venta) =  GasHelper.calcular(ADD_VIAJE.kilometros.toDouble(), ADD_VIAJE.categoria)
+
+            ADD_VIAJE.costo = costo
+            ADD_VIAJE.ganancia = ganancia
+            ADD_VIAJE.venta = venta
+        }
+
+    }
+
+
+    fun guardarViaje(ventaMesDetalleModel: VentaMesDetalleModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val validationResult = VentaMesDetalleModel.validarViaje(requireContext(),ventaMesDetalleModel)
+            if (validationResult.isValid) {
+                limpiarCampos()
+                val resultado = withContext(Dispatchers.IO) {
+                    FirebaseViajesUtil.guardarCargosViajes(ventaMesDetalleModel)
+                }
+
+                if (resultado.first) {
+                    // Se insertó el viaje correctamente
+
+                    ADD_VIAJE = VentaMesDetalleModel()
+                    ADD_CLIENTE_VIAJE = ClienteModel()
+                    DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), resultado.second)
+                    // Aquí puedes manejar el flujo de tu aplicación después de que se inserte el viaje
+                } else {
+                    // Hubo un error al insertar el viaje
+                    DialogMaterialHelper.mostrarErrorDialog(requireActivity(), resultado.second)
+                    // Aquí puedes manejar el error, por ejemplo, mostrar un mensaje de error al usuario
+                }
+            } else {
+                // Mostrar mensaje de error de validación
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        setPacienteModel()
+        setViajeModel()
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {

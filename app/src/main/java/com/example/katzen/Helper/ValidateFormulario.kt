@@ -25,7 +25,7 @@ class ValidateFormulario {
                 flag = false
                 message = "Debes seleccionar una categoria."
             }else{
-                if(vMDM.isEdit){
+               /* if(vMDM.isEdit){
                     //val (costo,ganancia,venta) = GasHelper.calcularKm(vMDM.venta.toDouble(),vMDM.categoria)
                     vMDM.ganancia = vMDM.ganancia
                     vMDM.costo = vMDM.costo
@@ -42,7 +42,7 @@ class ValidateFormulario {
                     vMDM.ganancia = ganancia
                     vMDM.costo = costo
                     vMDM.venta = venta
-                }
+                }*/
 
             }
 

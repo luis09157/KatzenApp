@@ -94,14 +94,18 @@ class AddPacienteFragment : Fragment() {
         val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
         binding.spEspecie.setAdapter(adapterESPECIE)
 
-        UpperCaseTextWatcher.UpperText(binding.textColor)
+        /*UpperCaseTextWatcher.UpperText(binding.textColor)
         UpperCaseTextWatcher.UpperText(binding.textPeso)
         UpperCaseTextWatcher.UpperText(binding.textNombre)
         UpperCaseTextWatcher.UpperText(binding.textEdad)
         UpperCaseTextWatcher.UpperText(binding.spEspecie)
         UpperCaseTextWatcher.UpperText(binding.spRaza)
         UpperCaseTextWatcher.UpperText(binding.spSexo)
-        UpperCaseTextWatcher.UpperText(binding.textCliente)
+        UpperCaseTextWatcher.UpperText(binding.textCliente)*/
+
+        UpperCaseTextWatcher.UpperText(binding.spEspecie)
+        UpperCaseTextWatcher.UpperText(binding.spRaza)
+        UpperCaseTextWatcher.UpperText(binding.spSexo)
 
     }
     fun initLoading(){

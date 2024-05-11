@@ -67,7 +67,7 @@ class DialogHelper {
                 vMDM.categoria = txt_categoria.text.toString()
                 vMDM.domicilio = txt_domicilio.text.toString()
                 vMDM.linkMaps = txt_link_maps.text.toString()
-                vMDM.isEdit = false
+                //vMDM.isEdit = false
                 //dialogConfirm(builder,activity,vMDM)
             }
             txt_fecha_detalle.setOnClickListener {
@@ -139,7 +139,7 @@ class DialogHelper {
                 vMDM.domicilio = txt_domicilio.text.toString()
                 vMDM.linkMaps = txt_link_maps.text.toString()
                 vMDM.venta = text_precio_venta.text.toString()
-                vMDM.isEdit = true
+                //vMDM.isEdit = true
                 dialogConfirmEdit(builder,activity,vMDM,myTopPostsQuery,loadingHelper)
             }
             txt_fecha_detalle.setOnClickListener {
@@ -184,11 +184,11 @@ class DialogHelper {
                     val (message, flag) = validarFormulario(vMDM)
                     if(flag){
 
-                        if (vMDM.isEdit){
+                       /* if (vMDM.isEdit){
                             FirebaseHelper.editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
                         }else{
                             FirebaseHelper.newAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
-                        }
+                        }*/
                     }else{
                         Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
                     }
@@ -239,9 +239,9 @@ class DialogHelper {
                 .setPositiveButton(activity.resources.getString(R.string.btn_edit)) { dialog, which ->
                     val (message, flag) = validarFormulario(vMDM)
                     if(flag){
-                        if (vMDM.isEdit){
+                       /* if (vMDM.isEdit){
                             FirebaseHelper.editAdress(alertDialog,vMDM,activity,myTopPostsQuery,loadingHelper)
-                        }
+                        }*/
                     }else{
                         Toast.makeText(activity,message, Toast.LENGTH_SHORT).show()
                     }

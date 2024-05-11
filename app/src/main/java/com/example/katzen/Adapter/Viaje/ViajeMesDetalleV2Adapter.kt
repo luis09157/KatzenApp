@@ -60,7 +60,7 @@ class ViajeMesDetalleV2Adapter (
         holder.txt_ganancia?.text = ""
         holder.txt_venta?.text = ""
 
-        holder.txt_paciente!!.text = viaje.domicilio
+        holder.txt_paciente!!.text = viaje.nombreDomicilio
         holder.txt_categoria!!.text = viaje.categoria
         holder.txt_domicilio!!.text = viaje.domicilio
         holder.txt_kilometros!!.text = viaje.kilometros

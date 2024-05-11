@@ -80,15 +80,22 @@ class ViajesDetalleV2Fragment : Fragment() {
                 val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
                     ?: continue
 
-                if (ventaMesDetalleModel.key_date.isEmpty()) {
-                    ventaMesDetalleModel.key_date = key_date
-                }
-
                 Config.COSTO += ventaMesDetalleModel.costo.toDouble()
                 Config.VENTA += ventaMesDetalleModel.venta.toDouble()
                 Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
 
                 viajesDetalleList.add(ventaMesDetalleModel)
+            }
+            val resultado = FirebaseViajesUtil.editarResumenViajes()
+
+            if (resultado.first) {
+                // La edición fue exitosa
+                // Manejar el flujo de tu aplicación en consecuencia
+                println(resultado.second)
+            } else {
+                // Ocurrió un error durante la edición
+                // Manejar el error, por ejemplo, mostrar un mensaje de error al usuario
+                println(resultado.second)
             }
         }
 

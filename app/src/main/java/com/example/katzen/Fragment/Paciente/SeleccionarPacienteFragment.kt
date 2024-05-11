@@ -59,12 +59,12 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
 
                 when (flagVentana) {
-                    "ADD_PACIENTE" -> {
+                    "EDIT_PACIENTE" -> {
                         EditarPacienteFragment.PACIENTE_EDIT.idCliente = clientesList[i].id
                         EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
                         UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
                     }
-                    "EDIT_PACIENTE" -> {
+                    "ADD_PACIENTE" -> {
                         AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
                         AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
                         UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
@@ -153,10 +153,10 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 when (flagVentana) {
-                    "ADD_PACIENTE" -> {
+                    "EDIT_PACIENTE" -> {
                         UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
                     }
-                    "EDIT_PACIENTE" -> {
+                    "ADD_PACIENTE" -> {
                         UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
                     }
                     "ADD_VIAJE" -> {

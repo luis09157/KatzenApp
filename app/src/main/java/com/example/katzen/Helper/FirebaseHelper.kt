@@ -32,9 +32,9 @@ class FirebaseHelper {
                       activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
             try {
                 val key = getIdFirebase()
-                vMDM.key = key
+                //vMDM.key = key
 
-                vMDM.key_fecha_hora = UtilHelper.getDate()
+                //vMDM.key_fecha_hora = UtilHelper.getDate()
                 myTopPostsQuery!!.child(getDateNow()).child(key).setValue(vMDM)
                 Toast.makeText(activity,"Direccion Guardada.", Toast.LENGTH_LONG).show()
                 alertDialog.hide()
@@ -49,7 +49,7 @@ class FirebaseHelper {
         fun editAdress(alertDialog: AlertDialog, vMDM : VentaMesDetalleModel,
                       activity: Activity,myTopPostsQuery: DatabaseReference,loadingHelper: LoadingHelper) {
             try {
-                myTopPostsQuery!!.child(vMDM.key_date).child(vMDM.key).setValue(vMDM)
+              //  myTopPostsQuery!!.child(vMDM.key_date).child(vMDM.key).setValue(vMDM)
                 Toast.makeText(activity,"Direccion editada.", Toast.LENGTH_LONG).show()
                 alertDialog.hide()
             }
