@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,10 @@ import com.example.katzen.databinding.ViajesDetalleV2FragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
 class ViajesDetalleV2Fragment : Fragment() {
@@ -69,39 +74,43 @@ class ViajesDetalleV2Fragment : Fragment() {
     }
 
     private fun getData(dataSnapshot: DataSnapshot) {
-        viajesDetalleList.clear()
-        Config.COSTO = 0.00
-        Config.GANANCIA = 0.00
-        Config.VENTA = 0.00
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                viajesDetalleList.clear()
+                Config.COSTO = 0.00
+                Config.GANANCIA = 0.00
+                Config.VENTA = 0.00
 
-        for (postSnapshot in dataSnapshot.children) {
-            val key_date = postSnapshot.key.toString()
-            for (data in postSnapshot.children) {
-                val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
-                    ?: continue
+                for (postSnapshot in dataSnapshot.children) {
+                    val key_date = postSnapshot.key.toString()
+                    for (data in postSnapshot.children) {
+                        val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
+                            ?: continue
 
-                Config.COSTO += ventaMesDetalleModel.costo.toDouble()
-                Config.VENTA += ventaMesDetalleModel.venta.toDouble()
-                Config.GANANCIA += ventaMesDetalleModel.ganancia.toDouble()
+                        val decimalFormat = DecimalFormat("#.##")
+                        Config.COSTO += decimalFormat.format(ventaMesDetalleModel.costo.toDouble()).toDouble()
+                        Config.VENTA += decimalFormat.format(ventaMesDetalleModel.venta.toDouble()).toDouble()
+                        Config.GANANCIA += decimalFormat.format(ventaMesDetalleModel.ganancia.toDouble()).toDouble()
 
-                viajesDetalleList.add(ventaMesDetalleModel)
+                        viajesDetalleList.add(ventaMesDetalleModel)
+                    }
+                }
             }
+
             val resultado = FirebaseViajesUtil.editarResumenViajes()
 
             if (resultado.first) {
-                // La edición fue exitosa
-                // Manejar el flujo de tu aplicación en consecuencia
                 println(resultado.second)
             } else {
-                // Ocurrió un error durante la edición
-                // Manejar el error, por ejemplo, mostrar un mensaje de error al usuario
                 println(resultado.second)
             }
-        }
 
-        viajesDetalleAdapter.notifyDataSetChanged()
-        ConfigLoading.hideLoadingAnimation()
+            viajesDetalleAdapter.notifyDataSetChanged()
+            ConfigLoading.hideLoadingAnimation()
+        }
     }
+
+
 
 
     fun filterClientes(text: String) {

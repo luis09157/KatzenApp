@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import okhttp3.internal.Util
+import java.text.DecimalFormat
 
 class FirebaseViajesUtil {
     companion object {
@@ -41,15 +42,18 @@ class FirebaseViajesUtil {
                 false to "Error al insertar el viaje: ${e.message}"
             }
         }
+
         fun editarResumenViajes(): Pair<Boolean, String> {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
                 .child(UtilHelper.getDateYear())
                 .child(Config.MES_DETALLE)
 
+            val decimalFormat = DecimalFormat("#.##")
+
             val datosActualizados = mapOf(
-                "costo" to Config.COSTO.toString(),
-                "ganancia" to Config.GANANCIA.toString(),
-                "venta" to Config.GANANCIA.toString()
+                "costo" to decimalFormat.format(Config.COSTO).toString(),
+                "ganancia" to decimalFormat.format(Config.GANANCIA).toString(),
+                "venta" to decimalFormat.format(Config.VENTA).toString()
             )
 
             return try {
@@ -58,6 +62,7 @@ class FirebaseViajesUtil {
                 false to "Error al editar los datos del viaje: ${e.message}"
             }
         }
+
 
 
     }
