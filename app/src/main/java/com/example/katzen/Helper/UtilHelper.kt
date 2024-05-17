@@ -32,6 +32,66 @@ class UtilHelper {
 
             return formatter.format(time).toString()
         }
+        fun getMontsThisYears() : ArrayList<String>{
+            var listMonts = arrayListOf<String>()
+
+            listMonts.add("01-${getDateYear()}")
+            listMonts.add("02-${getDateYear()}")
+            listMonts.add("03-${getDateYear()}")
+            listMonts.add("04-${getDateYear()}")
+            listMonts.add("05-${getDateYear()}")
+            listMonts.add("06-${getDateYear()}")
+            listMonts.add("07-${getDateYear()}")
+            listMonts.add("08-${getDateYear()}")
+            listMonts.add("09-${getDateYear()}")
+            listMonts.add("10-${getDateYear()}")
+            listMonts.add("11-${getDateYear()}")
+            listMonts.add("12-${getDateYear()}")
+
+            return listMonts
+        }
+        fun getMonthYear(position: Int) : String {
+            var mes = ""
+            when(position){
+                1 -> {
+                    mes = "ENE"
+                }
+                2 -> {
+                    mes = "FEB"
+                }
+                3 -> {
+                    mes = "MAR"
+                }
+                4 -> {
+                    mes = "ABR"
+                }
+                5 -> {
+                    mes = "MAY"
+                }
+                6 -> {
+                    mes = "JUN"
+                }
+                7 -> {
+                    mes = "JUL"
+                }
+                8 -> {
+                    mes = "AGO"
+                }
+                9 -> {
+                    mes = "SEP"
+                }
+                10 -> {
+                    mes = "OCT"
+                }
+                11 -> {
+                    mes = "NOV"
+                }
+                12 -> {
+                    mes = "DIC"
+                }
+            }
+            return mes
+        }
         fun getDate() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
@@ -48,6 +108,7 @@ class UtilHelper {
             val anio = partes[2]
             return "${mes}-${anio}"
         }
+
         fun hideKeyBoardWorld(activity : Activity,view : View){
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)

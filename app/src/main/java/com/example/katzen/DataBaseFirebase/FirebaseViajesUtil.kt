@@ -5,6 +5,7 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.VentaMesDetalleModel
+import com.example.katzen.Model.VentaMesModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
@@ -20,7 +21,7 @@ class FirebaseViajesUtil {
         fun obtenerListaViajes(listener: ValueEventListener) {
             referenciaViaje.child(UtilHelper.getDateYear()).addValueEventListener(listener)
         }
-        fun obtenerListaCargosViajes(mes: String, listener: ValueEventListener) {
+        fun obtenerListaCargosViajes( listener: ValueEventListener) {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
                 .child(UtilHelper.getDateYear())
                 .child(Config.MES_DETALLE)
@@ -109,7 +110,17 @@ class FirebaseViajesUtil {
             }
         }
 
+        fun guardarListaMeses(mes : String ,ventaMesModel: VentaMesModel): Pair<Boolean, String> {
+            val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
+                .child(UtilHelper.getDateYear())
+                .child(mes)
 
+            return try {
+                referenciaViajesCargos.setValue(ventaMesModel).isComplete to "Se insertó el viaje correctamente."
+            } catch (e: Exception) {
+                false to "Error al insertar el viaje: ${e.message}"
+            }
+        }
 
     }
 }

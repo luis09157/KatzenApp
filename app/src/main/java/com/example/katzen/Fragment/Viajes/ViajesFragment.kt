@@ -108,6 +108,11 @@ class ViajesFragment : Fragment() {
                     viajesList.add(ventaMesModel)
                 }
 
+                if (viajesList.size != 12){
+                    initYearFirebase()
+                    obtenerViajes()
+                }
+
 
 
                 // Notificar al adaptador que los datos han cambiado
@@ -125,6 +130,24 @@ class ViajesFragment : Fragment() {
                 // Por ejemplo, mostrar un mensaje de error
             }
         })
+    }
+
+    fun initYearFirebase(){
+        var listMonths = UtilHelper.getMontsThisYears()
+        var ventaMesModel = VentaMesModel()
+
+
+        for(i in 0..listMonths.size - 1){
+            ventaMesModel.venta = "0.00"
+            ventaMesModel.costo = "0.00"
+            ventaMesModel.ganancia = "0.00"
+            ventaMesModel.anio = UtilHelper.getDateYear()
+            ventaMesModel.mes = UtilHelper.getMonthYear(listMonths.get(i).split("-")[0].toInt())
+            ventaMesModel.fecha = UtilHelper.getDate()
+
+            FirebaseViajesUtil.guardarListaMeses(listMonths.get(i), ventaMesModel)
+        }
+
     }
 
     override fun onDestroyView() {
