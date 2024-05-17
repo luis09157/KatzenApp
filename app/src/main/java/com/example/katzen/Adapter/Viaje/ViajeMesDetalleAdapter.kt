@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
+import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
@@ -45,6 +47,7 @@ class ViajeMesDetalleAdapter (
             holder.txt_venta = itemView.findViewById(R.id.txt_venta)
 
             holder.btnEditar = itemView.findViewById(R.id.btn_edit)
+            holder.btnEliminar = itemView.findViewById(R.id.btn_eliminar)
 
 
             itemView.tag = holder
@@ -81,6 +84,15 @@ class ViajeMesDetalleAdapter (
             AddViajeFragment.EDIT_VIAJE = viaje
             UtilFragment.changeFragment(activity, AddViajeFragment(),TAG)
         }
+        holder.btnEliminar!!.setOnClickListener {
+            val mensaje = "¿Estás seguro de que deseas eliminar este elemento?"
+            DialogMaterialHelper.mostrarConfirmDeleteDialog(activity, mensaje) { confirmed ->
+                if (confirmed) {
+                    FirebaseViajesUtil.eliminarViaje(viaje)
+                } else {
+                }
+            }
+        }
 
 
         return itemView!!
@@ -113,6 +125,7 @@ class ViajeMesDetalleAdapter (
         var txt_venta: TextView? = null
 
         var btnEditar: CardView? = null
+        var btnEliminar: CardView? = null
 
     }
 }

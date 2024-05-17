@@ -116,14 +116,18 @@ class ViajesDetalleFragment : Fragment() {
                 }
 
                 viajesDetalleAdapter.notifyDataSetChanged()
-                ConfigLoading.hideLoadingAnimation()
+                if (viajesDetalleList.size > 0) {
+                    ConfigLoading.hideLoadingAnimation()
+                } else {
+                    ConfigLoading.showNodata()
+                }
             }
         }
     }
 
     fun filterClientes(text: String) {
         val filteredList = viajesDetalleList.filter { viaje ->
-            viaje.domicilio.contains(text, ignoreCase = true)
+            viaje.nombreDomicilio.contains(text, ignoreCase = true)
         }
         viajesDetalleAdapter.updateList(filteredList)
     }

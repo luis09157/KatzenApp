@@ -26,7 +26,23 @@ class FirebaseViajesUtil {
                 .child(Config.MES_DETALLE)
                 .child("cargos")
 
-            referenciaViajesCargos.addValueEventListener(listener)
+            referenciaViajesCargos.orderByChild("fecha").limitToLast(5).addValueEventListener(listener)
+
+        }
+
+        fun eliminarViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
+            val referenciaViajeCargo = database.getReference(VIAJES_PATH)
+                .child(UtilHelper.getDateYear())
+                .child(Config.MES_DETALLE)
+                .child("cargos")
+                .child(ventaMesDetalleModel.fecha)
+                .child(ventaMesDetalleModel.id)
+
+            return try {
+                referenciaViajeCargo.removeValue().isComplete to "Se eliminó el cargo de viaje correctamente."
+            } catch (e: Exception) {
+                false to "Error al eliminar el cargo de viaje: ${e.message}"
+            }
         }
 
         fun editarCargoViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {

@@ -82,6 +82,18 @@
                             android:src="@drawable/ic_edit_blanco"/>
                     </androidx.cardview.widget.CardView>
 
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btn_eliminar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:background="@color/katzen_verde"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="15dp"
+                            android:src="@drawable/ic_delete"/>
+                    </androidx.cardview.widget.CardView>
+
 
                 </LinearLayout>
 
