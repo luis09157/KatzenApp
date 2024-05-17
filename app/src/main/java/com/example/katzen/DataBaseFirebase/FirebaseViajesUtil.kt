@@ -26,7 +26,7 @@ class FirebaseViajesUtil {
                 .child(Config.MES_DETALLE)
                 .child("cargos")
 
-            referenciaViajesCargos.orderByChild("fecha").limitToLast(5).addValueEventListener(listener)
+            referenciaViajesCargos.orderByChild("fecha").limitToLast(100).addValueEventListener(listener)
 
         }
 
