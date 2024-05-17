@@ -17,6 +17,40 @@ class DialogMaterialHelper {
                     .show()
             }
         }
+        fun mostrarConfirmEditDialog(
+            activity: Activity,
+            mensaje: String,
+            onConfirm: () -> Unit
+        ) {
+            activity.runOnUiThread {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle("Confirmar")
+                    .setMessage(mensaje)
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        onConfirm()
+                    }
+                    .show()
+            }
+        }
+        fun mostrarConfirmDeleteDialog(
+            activity: Activity,
+            mensaje: String,
+            callback: (confirmed: Boolean) -> Unit
+        ) {
+            activity.runOnUiThread {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle("Confirmar")
+                    .setMessage(mensaje)
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        callback(true)
+                    }
+                    .setNegativeButton("Cancelar") { _, _ ->
+                        callback(false)
+                    }
+                    .show()
+            }
+        }
+
 
         fun mostrarErrorDialog(activity: Activity, mensaje: String) {
             activity.runOnUiThread {

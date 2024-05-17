@@ -28,6 +28,36 @@ class FirebaseViajesUtil {
 
             referenciaViajesCargos.addValueEventListener(listener)
         }
+
+        fun editarCargoViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
+            val referenciaViajeCargo = database.getReference(VIAJES_PATH)
+                .child(UtilHelper.getDateYear())
+                .child(Config.MES_DETALLE)
+                .child("cargos")
+                .child(ventaMesDetalleModel.fecha)
+                .child(ventaMesDetalleModel.id)
+
+            return try {
+                referenciaViajeCargo.setValue(ventaMesDetalleModel).isComplete to "Se editó el cargo de viaje correctamente."
+            } catch (e: Exception) {
+                false to "Error al editar el cargo de viaje: ${e.message}"
+            }
+        }
+        fun eliminarCargoViaje(fecha: String, idViaje: String): Pair<Boolean, String> {
+            val referenciaViajeCargo = database.getReference(VIAJES_PATH)
+                .child(UtilHelper.getDateYear())
+                .child(Config.MES_DETALLE)
+                .child("cargos")
+                .child(fecha)
+                .child(idViaje)
+
+            return try {
+                referenciaViajeCargo.removeValue().isComplete to "Se editó el cargo de viaje correctamente."
+            } catch (e: Exception) {
+                false to "Error al eliminar el cargo de viaje: ${e.message}"
+            }
+        }
+
         fun guardarCargosViajes(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
                 .child(UtilHelper.getDateYear())

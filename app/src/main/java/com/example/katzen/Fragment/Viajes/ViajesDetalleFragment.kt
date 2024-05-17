@@ -1,23 +1,21 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Viaje.ViajeMesDetalleV2Adapter
+import com.example.katzen.Adapter.Viaje.ViajeMesDetalleAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
-import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
-import com.example.katzen.databinding.ViajesDetalleV2FragmentBinding
+import com.example.katzen.databinding.ViajesDetalleFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -25,22 +23,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
 
-class ViajesDetalleV2Fragment : Fragment() {
-    val TAG : String  = "ViajesDetalleV2Fragment"
+class ViajesDetalleFragment : Fragment() {
+    val TAG : String  = "ViajesDetalleFragment"
 
-    private var _binding: ViajesDetalleV2FragmentBinding? = null
+    private var _binding: ViajesDetalleFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var viajesDetalleList: MutableList<VentaMesDetalleModel>
-    private lateinit var viajesDetalleAdapter: ViajeMesDetalleV2Adapter
+    private lateinit var viajesDetalleAdapter: ViajeMesDetalleAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ViajesDetalleV2FragmentBinding.inflate(inflater, container, false)
+        _binding = ViajesDetalleFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         requireActivity().title = getString(R.string.menu_viajes)
@@ -55,7 +52,7 @@ class ViajesDetalleV2Fragment : Fragment() {
     fun init(){
         ConfigLoading.showLoadingAnimation()
         viajesDetalleList = mutableListOf()
-        viajesDetalleAdapter = ViajeMesDetalleV2Adapter(requireActivity(), viajesDetalleList)
+        viajesDetalleAdapter = ViajeMesDetalleAdapter(requireActivity(), viajesDetalleList)
         binding.lisMenuViaje.adapter = viajesDetalleAdapter
         binding.lisMenuViaje.divider = null
 
@@ -72,46 +69,57 @@ class ViajesDetalleV2Fragment : Fragment() {
             }
         })
     }
+    private data class ResultadoDatos(
+        val lista: List<VentaMesDetalleModel>,
+        val costoTotal: Double,
+        val gananciaTotal: Double,
+        val ventaTotal: Double
+    )
 
     private fun getData(dataSnapshot: DataSnapshot) {
         CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                viajesDetalleList.clear()
-                Config.COSTO = 0.00
-                Config.GANANCIA = 0.00
-                Config.VENTA = 0.00
+            val result: ResultadoDatos = withContext(Dispatchers.Default) {
+                var tempList = mutableListOf<VentaMesDetalleModel>()
+                var costoTotal = 0.00
+                var gananciaTotal = 0.00
+                var ventaTotal = 0.00
 
                 for (postSnapshot in dataSnapshot.children) {
-                    val key_date = postSnapshot.key.toString()
                     for (data in postSnapshot.children) {
                         val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
                             ?: continue
 
-                        val decimalFormat = DecimalFormat("#.##")
-                        Config.COSTO += decimalFormat.format(ventaMesDetalleModel.costo.toDouble()).toDouble()
-                        Config.VENTA += decimalFormat.format(ventaMesDetalleModel.venta.toDouble()).toDouble()
-                        Config.GANANCIA += decimalFormat.format(ventaMesDetalleModel.ganancia.toDouble()).toDouble()
+                        costoTotal += ventaMesDetalleModel.costo.toDouble()
+                        ventaTotal += ventaMesDetalleModel.venta.toDouble()
+                        gananciaTotal += ventaMesDetalleModel.ganancia.toDouble()
 
-                        viajesDetalleList.add(ventaMesDetalleModel)
+                        tempList.add(ventaMesDetalleModel)
                     }
                 }
+
+                ResultadoDatos(tempList, costoTotal, gananciaTotal, ventaTotal)
             }
 
-            val resultado = FirebaseViajesUtil.editarResumenViajes()
+            withContext(Dispatchers.Main) {
+                viajesDetalleList.clear()
+                viajesDetalleList.addAll(result.lista)
+                Config.COSTO = result.costoTotal
+                Config.GANANCIA = result.gananciaTotal
+                Config.VENTA = result.ventaTotal
 
-            if (resultado.first) {
-                println(resultado.second)
-            } else {
-                println(resultado.second)
+                val resultado = FirebaseViajesUtil.editarResumenViajes()
+
+                if (resultado.first) {
+                    println(resultado.second)
+                } else {
+                    println(resultado.second)
+                }
+
+                viajesDetalleAdapter.notifyDataSetChanged()
+                ConfigLoading.hideLoadingAnimation()
             }
-
-            viajesDetalleAdapter.notifyDataSetChanged()
-            ConfigLoading.hideLoadingAnimation()
         }
     }
-
-
-
 
     fun filterClientes(text: String) {
         val filteredList = viajesDetalleList.filter { viaje ->
@@ -140,6 +148,7 @@ class ViajesDetalleV2Fragment : Fragment() {
         binding.btnAddViaje.setOnClickListener {
             AddViajeFragment.ADD_VIAJE = VentaMesDetalleModel()
             AddViajeFragment.ADD_CLIENTE_VIAJE = ClienteModel()
+            AddViajeFragment.EDIT_VIAJE = VentaMesDetalleModel()
             UtilFragment.changeFragment(requireContext(), AddViajeFragment(),TAG)
             //DialogHelper.dialogAddDomicilio(requireActivity())
         }

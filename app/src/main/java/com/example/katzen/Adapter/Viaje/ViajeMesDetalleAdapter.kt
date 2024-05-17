@@ -7,18 +7,21 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.example.katzen.Fragment.Viajes.AddViajeFragment
+import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.R
 
-class ViajeMesDetalleV2Adapter (
+class ViajeMesDetalleAdapter (
     activity: Activity,
     private var viajeDetalleList: List<VentaMesDetalleModel>
 ) : ArrayAdapter<VentaMesDetalleModel>(activity, R.layout.vista_viajes_detalle, viajeDetalleList) {
 
     private var originalList: List<VentaMesDetalleModel> = viajeDetalleList.toList()
     var activity : Activity = activity
-    var TAG : String = "ViajeMesDetalleV2Adapter"
+    var TAG : String = "ViajeMesDetalleAdapter"
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
@@ -75,7 +78,8 @@ class ViajeMesDetalleV2Adapter (
             UtilHelper.abrirGoogleMaps(activity, viaje.linkMaps)
         }
         holder.btnEditar!!.setOnClickListener {
-            //DialogHelper.dialogEditDomicilio(activity,viajeDetalleList[position],myTopPostsQuery,loadingHelper )
+            AddViajeFragment.EDIT_VIAJE = viaje
+            UtilFragment.changeFragment(activity, AddViajeFragment(),TAG)
         }
 
 

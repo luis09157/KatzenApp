@@ -3,6 +3,7 @@ package com.example.katzen.Fragment.Viajes
 import android.R
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
-import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
-import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Paciente.SeleccionarPacienteFragment
 import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.DialogMaterialHelper
@@ -24,17 +23,14 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.Model.VentaMesDetalleModel.Companion.validarViaje
 import com.example.katzen.databinding.AddViajeFragmentBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
-import kotlin.math.cos
 
 class AddViajeFragment : Fragment() {
     val TAG = "AddMascotaFragment"
@@ -50,7 +46,10 @@ class AddViajeFragment : Fragment() {
     companion object{
         val PICK_IMAGE_REQUEST = 1
         var ADD_VIAJE : VentaMesDetalleModel = VentaMesDetalleModel()
+        var EDIT_VIAJE : VentaMesDetalleModel = VentaMesDetalleModel()
         var ADD_CLIENTE_VIAJE : ClienteModel = ClienteModel()
+        var FLAG_FECHA = false
+        var FECHA_ANTIGUA = ""
     }
 
     override fun onCreateView(
@@ -66,16 +65,38 @@ class AddViajeFragment : Fragment() {
         init()
         listeners()
         setValues()
+        setValuesEdit()
         view.setOnClickListener { it.hideKeyboard() }
 
         return view
     }
 
+    fun setValuesEdit(){
+        if(EDIT_VIAJE.nombreDomicilio != ""){
+            binding.btnEditar.visibility = View.VISIBLE
+            binding.btnGuardar.visibility = View.GONE
+
+
+            binding.textCliente.text = Editable.Factory.getInstance().newEditable(EDIT_VIAJE.nombreCliente)
+            binding.textDomicilio.text = Editable.Factory.getInstance().newEditable(EDIT_VIAJE.domicilio)
+            binding.nombreDomicilio.text =  Editable.Factory.getInstance().newEditable(EDIT_VIAJE.nombreDomicilio)
+            binding.textKilometros.text =  Editable.Factory.getInstance().newEditable(EDIT_VIAJE.kilometros)
+            binding.textLinkMaps.text = Editable.Factory.getInstance().newEditable(EDIT_VIAJE.linkMaps)
+            binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(EDIT_VIAJE.fecha)
+            binding.textCategoria.text =  Editable.Factory.getInstance().newEditable(EDIT_VIAJE.categoria)
+        }else{
+            binding.btnEditar.visibility = View.GONE
+            binding.btnGuardar.visibility = View.VISIBLE
+        }
+    }
     fun listeners(){
+        binding.textCategoria.setOnFocusChangeListener { view, b ->
+            binding.textCategoria.text.clear()
+        }
 
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            UtilFragment.changeFragment(requireContext() , ViajesDetalleV2Fragment() ,TAG)
+            UtilFragment.changeFragment(requireContext() , ViajesDetalleFragment() ,TAG)
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -105,6 +126,12 @@ class AddViajeFragment : Fragment() {
             }
         }
 
+        binding.btnEditar.setOnClickListener {
+            it.hideKeyboard()
+            setViajeEditModel()
+            guardarViaje(EDIT_VIAJE)
+        }
+
         datePicker.addOnPositiveButtonClickListener {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.time = Date(it)
@@ -118,6 +145,9 @@ class AddViajeFragment : Fragment() {
 
     }
     fun init(){
+        FLAG_FECHA = false
+        FECHA_ANTIGUA = ""
+
         val adapter = ArrayAdapter(
             requireContext(),
             R.layout.simple_list_item_1, Config.CATEGORIAS)
@@ -148,7 +178,6 @@ class AddViajeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
     fun setValues() {
         val fullName = "${ADD_CLIENTE_VIAJE.nombre} ${ADD_CLIENTE_VIAJE.apellidoPaterno} ${ADD_CLIENTE_VIAJE.apellidoMaterno}"
         binding.textCliente.text = Editable.Factory.getInstance().newEditable(fullName)
@@ -160,6 +189,37 @@ class AddViajeFragment : Fragment() {
         binding.textKilometros.text =  Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.kilometrosCasa)
         binding.textLinkMaps.text = Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.urlGoogleMaps)
         binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
+    }
+    fun setViajeEditModel(){
+        Log.e("asknfkjasnfk", EDIT_VIAJE.fecha)
+        Log.e("asknfkjasnfk", binding.textFechaDetalle.text.toString())
+        if(EDIT_VIAJE.fecha != binding.textFechaDetalle.text.toString()){
+            FLAG_FECHA = true
+            FECHA_ANTIGUA = EDIT_VIAJE.fecha
+        }
+
+
+        EDIT_VIAJE.nombreDomicilio = binding.nombreDomicilio.text.toString()
+        EDIT_VIAJE.categoria = binding.textCategoria.text.toString()
+        EDIT_VIAJE.domicilio = binding.textDomicilio.text.toString()
+        EDIT_VIAJE.kilometros = binding.textKilometros.text.toString()
+        EDIT_VIAJE.linkMaps = binding.textLinkMaps.text.toString()
+        EDIT_VIAJE.fecha = binding.textFechaDetalle.text.toString()
+
+
+        if (EDIT_VIAJE.id != ""){
+            EDIT_VIAJE.nombreCliente = binding.textCliente.text.toString()
+            EDIT_VIAJE.idCliente = ADD_CLIENTE_VIAJE.id
+        }
+
+        if(EDIT_VIAJE.kilometros != "" && EDIT_VIAJE.categoria != ""){
+            val (costo,ganancia,venta) =  GasHelper.calcular(EDIT_VIAJE.kilometros.toDouble(), EDIT_VIAJE.categoria)
+
+            EDIT_VIAJE.costo = costo
+            EDIT_VIAJE.ganancia = ganancia
+            EDIT_VIAJE.venta = venta
+        }
+
     }
     fun setViajeModel(){
         ADD_VIAJE.nombreDomicilio = binding.nombreDomicilio.text.toString()
@@ -183,27 +243,43 @@ class AddViajeFragment : Fragment() {
         }
 
     }
-
-
     fun guardarViaje(ventaMesDetalleModel: VentaMesDetalleModel) {
         viewLifecycleOwner.lifecycleScope.launch {
-            val validationResult = VentaMesDetalleModel.validarViaje(requireContext(),ventaMesDetalleModel)
+            val validationResult = VentaMesDetalleModel.validarViaje(requireContext(), ventaMesDetalleModel)
             if (validationResult.isValid) {
-                limpiarCampos()
-                val resultado = withContext(Dispatchers.IO) {
-                    FirebaseViajesUtil.guardarCargosViajes(ventaMesDetalleModel)
-                }
 
+                val resultado = withContext(Dispatchers.IO) {
+                    if (ventaMesDetalleModel.id.isNotEmpty()) {
+                        // Si el ID del viaje no está vacío, significa que ya existe y queremos editar el cargo del viaje
+                        FirebaseViajesUtil.editarCargoViaje(ventaMesDetalleModel)
+                    } else {
+                        limpiarCampos()
+                        // Si el ID del viaje está vacío, significa que queremos guardar un nuevo cargo de viaje
+                        FirebaseViajesUtil.guardarCargosViajes(ventaMesDetalleModel)
+                    }
+                }
                 if (resultado.first) {
-                    // Se insertó el viaje correctamente
+                    // Se insertó o editó el viaje correctamente
+                    // Aquí puedes manejar el flujo de tu aplicación después de que se inserte o edite el viaje
 
                     ADD_VIAJE = VentaMesDetalleModel()
                     ADD_CLIENTE_VIAJE = ClienteModel()
-                    DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), resultado.second)
-                    // Aquí puedes manejar el flujo de tu aplicación después de que se inserte el viaje
+
+                    DialogMaterialHelper.mostrarConfirmEditDialog(requireActivity(), resultado.second) {
+                        backFragment()
+                    }
+
                 } else {
-                    // Hubo un error al insertar el viaje
-                    DialogMaterialHelper.mostrarErrorDialog(requireActivity(), resultado.second)
+                    // Hubo un error al insertar o editar el viaje
+
+                    if(FLAG_FECHA){
+                        eliminarViaje(FECHA_ANTIGUA, EDIT_VIAJE.id)
+                    }else{
+                        DialogMaterialHelper.mostrarConfirmEditDialog(requireActivity(), resultado.second) {
+                            backFragment()
+                        }
+                    }
+
                     // Aquí puedes manejar el error, por ejemplo, mostrar un mensaje de error al usuario
                 }
             } else {
@@ -212,7 +288,21 @@ class AddViajeFragment : Fragment() {
             }
         }
     }
+    fun eliminarViaje(fecha: String, idViaje: String) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val resultado = withContext(Dispatchers.IO) {
+                FirebaseViajesUtil.eliminarCargoViaje(fecha, idViaje)
+            }
+            DialogMaterialHelper.mostrarConfirmEditDialog(requireActivity(), resultado.second) {
+                backFragment()
+            }
+        }
+    }
 
+
+    fun backFragment(){
+        UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(), TAG)
+    }
     override fun onResume() {
         super.onResume()
         setViajeModel()
@@ -220,7 +310,7 @@ class AddViajeFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), ViajesDetalleV2Fragment(), TAG)
+                    backFragment()
                 }
             })
     }

@@ -78,7 +78,7 @@ class ViajesFragment : Fragment() {
         })
         binding.lisMenuViaje.setOnItemClickListener { adapterView, view, i, l ->
             Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesList[i].mes)}-${viajesList[i].anio}"
-            UtilFragment.changeFragment(requireContext(), ViajesDetalleV2Fragment(),TAG)
+            UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
         }
 
     }
