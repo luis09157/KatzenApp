@@ -61,13 +61,13 @@ class AddClienteFragment : Fragment() {
     fun init(){
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 
-        UpperCaseTextWatcher.UpperText(binding.textNombre)
+        /*UpperCaseTextWatcher.UpperText(binding.textNombre)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoPaterno)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoMaterno)
         UpperCaseTextWatcher.UpperText(binding.textCalle)
         UpperCaseTextWatcher.UpperText(binding.textMunicipio)
         UpperCaseTextWatcher.UpperText(binding.textTelefono)
-        UpperCaseTextWatcher.UpperText(binding.textColonia)
+        UpperCaseTextWatcher.UpperText(binding.textColonia)*/
     }
     fun initListeners(){
         binding.btnCancelar.setOnClickListener {
