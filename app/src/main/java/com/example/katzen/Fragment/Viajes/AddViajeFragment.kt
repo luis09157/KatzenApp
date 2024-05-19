@@ -15,10 +15,10 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Fragment.Paciente.SeleccionarPacienteFragment
-import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
@@ -117,12 +117,12 @@ class AddViajeFragment : Fragment() {
         }
         binding.textFechaDetalle.setOnClickListener {
             it.hideKeyboard()
-            datePicker.show((activity as MainActivity).supportFragmentManager, DialogHelper.TAG);
+            datePicker.show((activity as MainActivity).supportFragmentManager, TAG);
         }
         binding.textFechaDetalle.setOnFocusChangeListener { view, b ->
             if(b){
                 view.hideKeyboard()
-                datePicker.show((activity as MainActivity).supportFragmentManager, DialogHelper.TAG);
+                datePicker.show((activity as MainActivity).supportFragmentManager, TAG);
             }
         }
 
@@ -170,7 +170,7 @@ class AddViajeFragment : Fragment() {
                 textDomicilio.text?.clear()
                 textKilometros.text?.clear()
                 textLinkMaps.text?.clear()
-                textFechaDetalle.text = Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
+                textFechaDetalle.text = Editable.Factory.getInstance().newEditable(UtilHelper.getDateNow())
             }
         }
     }
@@ -188,7 +188,7 @@ class AddViajeFragment : Fragment() {
         binding.nombreDomicilio.text =  Editable.Factory.getInstance().newEditable(ADD_VIAJE.nombreDomicilio)
         binding.textKilometros.text =  Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.kilometrosCasa)
         binding.textLinkMaps.text = Editable.Factory.getInstance().newEditable(ADD_CLIENTE_VIAJE.urlGoogleMaps)
-        binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(DialogHelper.getDateNow())
+        binding.textFechaDetalle.text =  Editable.Factory.getInstance().newEditable(UtilHelper.getDateNow())
     }
     fun setViajeEditModel(){
         Log.e("asknfkjasnfk", EDIT_VIAJE.fecha)

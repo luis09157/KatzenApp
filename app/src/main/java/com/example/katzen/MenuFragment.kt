@@ -22,8 +22,8 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.databinding.MenuFragmentBinding
-import com.example.katzen.ui.card.PaymetCardFragment
-import com.example.katzen.ui.gasolina.FuellFragment
+import com.example.katzen.Fragment.Card.PaymetCardFragment
+import com.example.katzen.Fragment.Gasolina.FuellFragment
 
 class MenuFragment : Fragment() {
     val TAG : String  = "MenuFragment"

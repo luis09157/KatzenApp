@@ -32,6 +32,10 @@ class UtilHelper {
 
             return formatter.format(time).toString()
         }
+        fun getDateNow(): String{
+            val dateFormatter = SimpleDateFormat("dd-MM-yyyy")
+            return dateFormatter.format(Date())
+        }
         fun getMontsThisYears() : ArrayList<String>{
             var listMonts = arrayListOf<String>()
 

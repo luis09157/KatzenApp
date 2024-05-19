@@ -1,15 +1,12 @@
 package com.example.katzen.DataBaseFirebase
 
-import android.util.Log
 import com.example.katzen.Config.Config
-import com.example.katzen.Helper.DialogHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.example.katzen.Model.VentaMesModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import okhttp3.internal.Util
 import java.text.DecimalFormat
 
 class FirebaseViajesUtil {

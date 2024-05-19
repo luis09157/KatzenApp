@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/nav_fuel"
-        android:name="com.example.katzen.ui.gasolina.FuellFragment"
+        android:name="com.example.katzen.Fragment.Gasolina.FuellFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gasolina" />
 
     <fragment
         android:id="@+id/nav_payment_card"
-        android:name="com.example.katzen.ui.card.PaymetCardFragment"
+        android:name="com.example.katzen.Fragment.Card.PaymetCardFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_card" />
 
