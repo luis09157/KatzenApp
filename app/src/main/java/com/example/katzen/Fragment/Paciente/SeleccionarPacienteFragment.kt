@@ -60,17 +60,17 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
 
                 when (flagVentana) {
                     "EDIT_PACIENTE" -> {
-                        EditarPacienteFragment.PACIENTE_EDIT.idCliente = clientesList[i].id
-                        EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        EditarPacienteFragment.PACIENTE_EDIT.idCliente = seleccionClienteAdapter.getItem(i).toString()
+                        EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
                         UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
                     }
                     "ADD_PACIENTE" -> {
-                        AddPacienteFragment.ADD_PACIENTE.idCliente = clientesList[i].id
-                        AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${clientesList[i].nombre} ${clientesList[i].apellidoPaterno} ${clientesList[i].apellidoMaterno}"
+                        AddPacienteFragment.ADD_PACIENTE.idCliente = seleccionClienteAdapter.getItem(i)!!.id
+                        AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
                         UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
                     }
                     "ADD_VIAJE" -> {
-                        AddViajeFragment.ADD_CLIENTE_VIAJE = clientesList[i]
+                        AddViajeFragment.ADD_CLIENTE_VIAJE = seleccionClienteAdapter.getItem(i)!!
                         UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
                     }
                     else -> {

@@ -75,7 +75,7 @@ class PacienteFragment : Fragment() {
             }
         })
         binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
-            EditarPacienteFragment.PACIENTE_EDIT = mascotasList[i]
+            EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
             UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(),TAG)
         }
     }

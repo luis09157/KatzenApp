@@ -157,8 +157,16 @@ class AddClienteFragment : Fragment() {
 
                     if (flag) {
                         limpiarCampos()
-                        requireActivity().runOnUiThread {  ConfigLoading.hideLoadingAnimation() }
-                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El cliente se guardó exitosamente.")
+                        requireActivity().runOnUiThread {
+                            DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
+                                if (confirmed) {
+                                    ConfigLoading.hideLoadingAnimation()
+                                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
+                                } else {
+                                    // El usuario canceló la operación
+                                }
+                            }
+                        }
                     } else {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()

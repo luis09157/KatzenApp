@@ -31,7 +31,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/img_gato_perfil"></ImageView>
+                        android:src="@drawable/ic_person"></ImageView>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
             <LinearLayout

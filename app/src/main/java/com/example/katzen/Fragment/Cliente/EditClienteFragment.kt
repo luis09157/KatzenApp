@@ -63,13 +63,13 @@ class EditClienteFragment : Fragment() {
     fun init(){
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 
-        UpperCaseTextWatcher.UpperText(binding.textNombre)
+       /* UpperCaseTextWatcher.UpperText(binding.textNombre)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoPaterno)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoMaterno)
         UpperCaseTextWatcher.UpperText(binding.textCalle)
         UpperCaseTextWatcher.UpperText(binding.textMunicipio)
         UpperCaseTextWatcher.UpperText(binding.textTelefono)
-        UpperCaseTextWatcher.UpperText(binding.textColonia)
+        UpperCaseTextWatcher.UpperText(binding.textColonia)*/
     }
     fun initValues() {
         // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
@@ -93,6 +93,7 @@ class EditClienteFragment : Fragment() {
             binding.textTelefono.setText(cliente.telefono)
             binding.textCorreo.setText(cliente.correo)
             binding.textGoogleMaps.setText(cliente.urlGoogleMaps)
+            binding.textKilometrosCasa.setText(cliente.kilometrosCasa)
         }
     }
 

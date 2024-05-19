@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Cliente.ClienteAdapter
@@ -52,8 +53,8 @@ class ClienteFragment : Fragment() {
         binding.lisMenuClientes.divider = null
         binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
             EditClienteFragment.CLIENTE_EDIT = ClienteModel()
-            EditClienteFragment.CLIENTE_EDIT = clientesList[i]
-            //UtilFragment.changeFragment(requireActivity() , EditClienteFragment() ,TAG)
+            EditClienteFragment.CLIENTE_EDIT = clientesAdapter.getItem(i)!!
+
             UtilFragment.changeFragment(requireActivity() , ClienteDetalleFragment() ,TAG)
         }
 
@@ -64,7 +65,8 @@ class ClienteFragment : Fragment() {
             val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
             fullName.contains(text, ignoreCase = true)
         }
-        clientesAdapter.updateList(filteredList)
+         clientesAdapter.updateList(filteredList)
+         clientesAdapter.notifyDataSetChanged()
     }
     fun listeners(){
         binding.btnAddCliente.setOnClickListener {

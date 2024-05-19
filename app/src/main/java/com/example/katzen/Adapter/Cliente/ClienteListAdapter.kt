@@ -52,16 +52,16 @@ class ClienteListAdapter (
 
         holder.nombreCliente?.text = ""
         holder.descripcion?.text = ""
-        holder.imgPerfil?.setImageResource(R.drawable.ic_perfil)
+        holder.imgPerfil?.setImageResource(R.drawable.ic_person)
 
         if (paciente.imageUrl.isNotEmpty()) {
             Picasso.get()
                 .load(paciente.imageUrl)
-                .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
+                .error(R.drawable.ic_person)
                 .into(holder.imgPerfil)
         } else {
-            holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
+            holder.imgPerfil?.setImageResource(R.drawable.ic_person)
         }
 
         holder.nombreCliente?.text = "${paciente.nombre}"

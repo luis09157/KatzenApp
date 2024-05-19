@@ -167,6 +167,14 @@
     <string name="error_empty_kilometros">Los kilómetros no pueden estar vacíos</string>
     <string name="error_empty_link_maps">El enlace de Maps no puede estar vacío</string>
 
+    <string name="error_empty_nombre">El nombre no puede estar vacío</string>
+    <string name="error_empty_telefono">El teléfono no puede estar vacío</string>
+    <string name="error_empty_calle">La calle no puede estar vacía</string>
+    <string name="error_empty_numero">El número no puede estar vacío</string>
+    <string name="error_empty_colonia">La colonia no puede estar vacía</string>
+    <string name="error_empty_municipio">El municipio no puede estar vacío</string>
+
+    <string name="error_no_proporcionado">No proporcionado</string>
     <!-- VALIDADOR PRODUCTO -->
 
     <!-- UPDATE PRODUCTO -->

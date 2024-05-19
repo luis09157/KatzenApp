@@ -50,18 +50,18 @@ class SeleccionClienteAdapter (
 
         holder.btnEliminar!!.visibility = View.GONE
         holder.nombreCompletoTextView?.text = ""
-        holder.imgPerfil?.setImageResource(R.drawable.ic_perfil)
+        holder.imgPerfil?.setImageResource(R.drawable.ic_person)
 
         holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
 
         if (cliente.imageUrl.isNotEmpty()) {
             Picasso.get()
                 .load(cliente.imageUrl)
-                .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
+                .error(R.drawable.ic_person) // Opcional: establecer una imagen en caso de error al cargar
                 .into(holder.imgPerfil)
         } else {
-            holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
+            holder.imgPerfil?.setImageResource(R.drawable.ic_person)
         }
 
         holder.fondoTelefono!!.setOnClickListener {

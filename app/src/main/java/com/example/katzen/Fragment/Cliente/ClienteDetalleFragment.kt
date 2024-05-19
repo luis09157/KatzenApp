@@ -54,7 +54,8 @@ class ClienteDetalleFragment : Fragment() {
         if(EditClienteFragment.CLIENTE_EDIT.nombre == ""){
             ConfigLoading.showNodata()
         }else{
-            binding.textNombreCliente.text = EditClienteFragment.CLIENTE_EDIT.nombre
+
+            binding.textNombreCliente.text = "${EditClienteFragment.CLIENTE_EDIT.nombre} ${EditClienteFragment.CLIENTE_EDIT.apellidoPaterno} ${EditClienteFragment.CLIENTE_EDIT.apellidoMaterno}"
             binding.textCorreo.text = EditClienteFragment.CLIENTE_EDIT.correo
             binding.textTelefono.text = EditClienteFragment.CLIENTE_EDIT.telefono
             binding.textCorreo.text = EditClienteFragment.CLIENTE_EDIT.correo
