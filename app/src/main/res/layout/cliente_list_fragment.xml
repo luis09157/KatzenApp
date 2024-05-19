@@ -53,7 +53,7 @@
                     android:text="Luis Alfonso Niño Mtz"
                     android:textStyle="bold"
                     app:autoSizeMaxTextSize="18sp"
-                    app:autoSizeMinTextSize="14sp"
+                    app:autoSizeMinTextSize="10sp"
                     app:autoSizeTextType="uniform" />
 
                 <LinearLayout

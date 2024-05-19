@@ -108,16 +108,9 @@ class ViajesDetalleFragment : Fragment() {
                     Config.GANANCIA = result.gananciaTotal
                     Config.VENTA = result.ventaTotal
 
-                    val resultado = FirebaseViajesUtil.editarResumenViajes()
-
-                    if (resultado.first) {
-                        println(resultado.second)
-                    } else {
-                        println(resultado.second)
-                    }
-
-                    viajesDetalleAdapter.notifyDataSetChanged()
                     if (viajesDetalleList.size > 0) {
+                        FirebaseViajesUtil.editarResumenViajes()
+                        viajesDetalleAdapter.notifyDataSetChanged()
                         ConfigLoading.hideLoadingAnimation()
                     } else {
                         ConfigLoading.showNodata()

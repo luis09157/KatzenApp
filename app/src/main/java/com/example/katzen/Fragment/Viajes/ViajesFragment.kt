@@ -109,7 +109,7 @@ class ViajesFragment : Fragment() {
                 }
 
                 if (viajesList.size != 12){
-                    initYearFirebase()
+                    initYearFirebase(viajesList)
                     obtenerViajes()
                 }
 
@@ -131,23 +131,25 @@ class ViajesFragment : Fragment() {
             }
         })
     }
+    fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
+        val listMonths = UtilHelper.getMontsThisYears()
 
-    fun initYearFirebase(){
-        var listMonths = UtilHelper.getMontsThisYears()
-        var ventaMesModel = VentaMesModel()
+        for (i in 0 until listMonths.size) {
+            val ventaMesModel = VentaMesModel().apply {
+                venta = "0.00"
+                costo = "0.00"
+                ganancia = "0.00"
+                anio = UtilHelper.getDateYear()
+                mes = UtilHelper.getMonthYear(listMonths[i].split("-")[0].toInt())
+                fecha = UtilHelper.getDate()
+            }
 
+            val exists = viajesList.any { it.mes == ventaMesModel.mes && it.anio == ventaMesModel.anio }
 
-        for(i in 0..listMonths.size - 1){
-            ventaMesModel.venta = "0.00"
-            ventaMesModel.costo = "0.00"
-            ventaMesModel.ganancia = "0.00"
-            ventaMesModel.anio = UtilHelper.getDateYear()
-            ventaMesModel.mes = UtilHelper.getMonthYear(listMonths.get(i).split("-")[0].toInt())
-            ventaMesModel.fecha = UtilHelper.getDate()
-
-            FirebaseViajesUtil.guardarListaMeses(listMonths.get(i), ventaMesModel)
+            if (!exists) {
+                FirebaseViajesUtil.guardarListaMeses(listMonths[i], ventaMesModel)
+            }
         }
-
     }
 
     override fun onDestroyView() {
