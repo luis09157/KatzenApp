@@ -20,14 +20,21 @@ data class VentaMesDetalleModel(
 ) {
     companion object {
         fun validarViaje(context: Context, viaje: VentaMesDetalleModel): ValidationResult {
-            if (viaje.nombreDomicilio.isEmpty() || viaje.categoria.isEmpty() ||
-                viaje.domicilio.isEmpty() ||
-                viaje.fecha.isEmpty() || viaje.kilometros.isEmpty() ||
-                viaje.linkMaps.isEmpty() ||
-                viaje.nombreCliente.isEmpty() || viaje.idCliente.isEmpty()
-            ) {
-                return ValidationResult(false, context.getString(R.string.error_empty_fields))
+
+            if (viaje.nombreDomicilio.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_nombre_domicilio))
+            } else if (viaje.categoria.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_categoria))
+            } else if (viaje.domicilio.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_domicilio))
+            } else if (viaje.fecha.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_fecha))
+            } else if (viaje.kilometros.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_kilometros))
+            } else if (viaje.linkMaps.isEmpty()) {
+                return ValidationResult(false, context.getString(R.string.error_empty_link_maps))
             }
+
 
             // Si todas las validaciones pasan, retornar un resultado válido
             return ValidationResult(true)

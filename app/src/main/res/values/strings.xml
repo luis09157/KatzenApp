@@ -159,6 +159,14 @@
     <string name="error_invalid_number">Los campos Precio de Venta y Costo deben ser números válidos</string>
     <string name="error_future_date">La fecha ingresada no puede ser en el futuro.</string>
     <string name="error_no_image_selected">Por favor, seleccione una imagen para el producto.</string>
+
+    <string name="error_empty_nombre_domicilio">El nombre del domicilio no puede estar vacío</string>
+    <string name="error_empty_categoria">La categoría no puede estar vacía</string>
+    <string name="error_empty_domicilio">El domicilio no puede estar vacío</string>
+    <string name="error_empty_fecha">La fecha no puede estar vacía</string>
+    <string name="error_empty_kilometros">Los kilómetros no pueden estar vacíos</string>
+    <string name="error_empty_link_maps">El enlace de Maps no puede estar vacío</string>
+
     <!-- VALIDADOR PRODUCTO -->
 
     <!-- UPDATE PRODUCTO -->

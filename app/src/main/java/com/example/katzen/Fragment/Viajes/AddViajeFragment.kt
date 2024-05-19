@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -90,8 +91,12 @@ class AddViajeFragment : Fragment() {
         }
     }
     fun listeners(){
-        binding.textCategoria.setOnFocusChangeListener { view, b ->
-            binding.textCategoria.text.clear()
+        binding.textCategoria.setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                // Acción a ejecutar cuando se abre el spinner
+                binding.textCategoria.text.clear()
+            }
+            false
         }
 
         binding.btnCancelar.setOnClickListener {
