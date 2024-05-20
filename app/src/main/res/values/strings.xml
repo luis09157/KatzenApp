@@ -20,8 +20,8 @@
     <string name="menu_add_travel">Agregar Domicilio</string>
 
 
-    <string name="menu_paciente">Paciente</string>
-    <string name="menu_cliente">Cliente</string>
+    <string name="menu_paciente">Pacientes</string>
+    <string name="menu_cliente">Clientes</string>
     <string name="menu_cliente_detalle">Detalle del Cliente</string>
     <string name="menu_gasolina">Gasolina</string>
     <string name="menu_pago_tarjeta">Pago Con Tarjeta</string>

@@ -13,6 +13,7 @@ class FirebaseViajesUtil {
     companion object {
         private const val VIAJES_PATH = "Katzen/Gasolina"
         private const val VIAJES_IMAGES_PATH = "Viajes"
+        val decimalFormat = DecimalFormat("#.00")
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val referenciaViaje: DatabaseReference = database.getReference(VIAJES_PATH)
         fun obtenerListaViajes(listener: ValueEventListener) {
@@ -87,17 +88,24 @@ class FirebaseViajesUtil {
             }
         }
 
+
+
+        fun formatValue(value: Double): String {
+            return if (value == 0.00) {
+                "0.00"
+            } else {
+                decimalFormat.format(value)
+            }
+        }
         fun editarResumenViajes(): Pair<Boolean, String> {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
                 .child(UtilHelper.getDateYear())
                 .child(Config.MES_DETALLE)
 
-            val decimalFormat = DecimalFormat("#.##")
-
             val datosActualizados = mapOf(
-                "costo" to decimalFormat.format(Config.COSTO).toString(),
-                "ganancia" to decimalFormat.format(Config.GANANCIA).toString(),
-                "venta" to decimalFormat.format(Config.VENTA).toString()
+                "costo" to formatValue(Config.COSTO),
+                "ganancia" to formatValue(Config.GANANCIA),
+                "venta" to formatValue(Config.VENTA)
             )
 
             return try {

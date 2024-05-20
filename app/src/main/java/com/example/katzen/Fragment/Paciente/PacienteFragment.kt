@@ -104,6 +104,7 @@ class PacienteFragment : Fragment() {
                 // Notificar al adaptador que los datos han cambiado
                 pacienteListAdapter.notifyDataSetChanged()
                 if (mascotasList.size > 0){
+                    requireActivity().title = "${getString(R.string.menu_paciente)} (${mascotasList.size})"
                     ConfigLoading.hideLoadingAnimation()
                 }else{
                     ConfigLoading.showNodata()

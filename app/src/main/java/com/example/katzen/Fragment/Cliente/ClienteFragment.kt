@@ -106,6 +106,7 @@ class ClienteFragment : Fragment() {
                 // Notificar al adaptador que los datos han cambiado
                 clientesAdapter.notifyDataSetChanged()
                 if (clientesList.size > 0){
+                    requireActivity().title = "${getString(R.string.menu_cliente)} (${clientesList.size})"
                     ConfigLoading.hideLoadingAnimation()
                 }else{
                     ConfigLoading.showNodata()

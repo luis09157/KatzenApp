@@ -77,51 +77,58 @@ class ViajesDetalleFragment : Fragment() {
     )
 
     private fun getData(dataSnapshot: DataSnapshot) {
-        try {
-            CoroutineScope(Dispatchers.Main).launch {
-                val result: ResultadoDatos = withContext(Dispatchers.Default) {
-                    var tempList = mutableListOf<VentaMesDetalleModel>()
-                    var costoTotal = 0.00
-                    var gananciaTotal = 0.00
-                    var ventaTotal = 0.00
-
-                    for (postSnapshot in dataSnapshot.children) {
-                        for (data in postSnapshot.children) {
-                            val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
-                                ?: continue
-
-                            costoTotal += ventaMesDetalleModel.costo.toDouble()
-                            ventaTotal += ventaMesDetalleModel.venta.toDouble()
-                            gananciaTotal += ventaMesDetalleModel.ganancia.toDouble()
-
-                            tempList.add(ventaMesDetalleModel)
-                        }
-                    }
-
-                    ResultadoDatos(tempList, costoTotal, gananciaTotal, ventaTotal)
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val result = withContext(Dispatchers.Default) {
+                    processSnapshotData(dataSnapshot)
                 }
-
-                withContext(Dispatchers.Main) {
-                    viajesDetalleList.clear()
-                    viajesDetalleList.addAll(result.lista)
-                    Config.COSTO = result.costoTotal
-                    Config.GANANCIA = result.gananciaTotal
-                    Config.VENTA = result.ventaTotal
-
-                    if (viajesDetalleList.size > 0) {
-                        FirebaseViajesUtil.editarResumenViajes()
-                        viajesDetalleAdapter.notifyDataSetChanged()
-                        ConfigLoading.hideLoadingAnimation()
-                    } else {
-                        ConfigLoading.showNodata()
-                    }
-                }
+                updateUI(result)
+            } catch (e: Exception) {
+                ConfigLoading.showNodata()
             }
-        }catch (e : Exception){
+        }
+    }
+
+    private suspend fun processSnapshotData(dataSnapshot: DataSnapshot): ResultadoDatos {
+        var tempList = mutableListOf<VentaMesDetalleModel>()
+        var costoTotal = 0.00
+        var gananciaTotal = 0.00
+        var ventaTotal = 0.00
+
+        for (postSnapshot in dataSnapshot.children) {
+            for (data in postSnapshot.children) {
+                val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
+                    ?: continue
+
+                costoTotal += ventaMesDetalleModel.costo.toDouble()
+                ventaTotal += ventaMesDetalleModel.venta.toDouble()
+                gananciaTotal += ventaMesDetalleModel.ganancia.toDouble()
+
+                tempList.add(ventaMesDetalleModel)
+            }
+        }
+
+        return ResultadoDatos(tempList, costoTotal, gananciaTotal, ventaTotal)
+    }
+
+    private fun updateUI(result: ResultadoDatos) {
+
+        viajesDetalleList.clear()
+        viajesDetalleList.addAll(result.lista)
+        Config.COSTO = result.costoTotal
+        Config.GANANCIA = result.gananciaTotal
+        Config.VENTA = result.ventaTotal
+
+        if (viajesDetalleList.isNotEmpty()) {
+            FirebaseViajesUtil.editarResumenViajes()
+            viajesDetalleAdapter.notifyDataSetChanged()
+            ConfigLoading.hideLoadingAnimation()
+        } else {
             ConfigLoading.showNodata()
         }
 
     }
+
 
     fun filterClientes(text: String) {
         val filteredList = viajesDetalleList.filter { viaje ->
