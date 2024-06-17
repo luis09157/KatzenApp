@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,29 +96,39 @@ class ViajesFragment : Fragment() {
                 viajesList.clear()
 
                 for (viajeSnapshot in snapshot.children) {
-                    val genericTypeIndicator = object : GenericTypeIndicator<Map<String, Any>>() {}
-                    val ventaMesMap: Map<String, Any> = viajeSnapshot.getValue(genericTypeIndicator) ?: continue
-                    val ventaMesModel = VentaMesModel(
-                        venta = ventaMesMap["venta"].toString(),
-                        costo = ventaMesMap["costo"].toString(),
-                        mes = ventaMesMap["mes"].toString(),
-                        anio = ventaMesMap["anio"].toString(),
-                        fecha = ventaMesMap["fecha"].toString(),
-                        ganancia = ventaMesMap["ganancia"].toString()
-                    )
-                    viajesList.add(ventaMesModel)
+                    try {
+                        // Ensure the snapshot is of the expected type (Map<String, Any>)
+                        if (viajeSnapshot.value !is Map<*, *>) {
+                            continue
+                        }
+
+                        val genericTypeIndicator = object : GenericTypeIndicator<Map<String, Any>>() {}
+                        val ventaMesMap: Map<String, Any> = viajeSnapshot.getValue(genericTypeIndicator) ?: continue
+
+                        val ventaMesModel = VentaMesModel(
+                            venta = ventaMesMap["venta"].toString(),
+                            costo = ventaMesMap["costo"].toString(),
+                            mes = ventaMesMap["mes"].toString(),
+                            anio = ventaMesMap["anio"].toString(),
+                            fecha = ventaMesMap["fecha"].toString(),
+                            ganancia = ventaMesMap["ganancia"].toString()
+                        )
+                        viajesList.add(ventaMesModel)
+                    } catch (e: Exception) {
+                        // Log the error for debugging
+                        Log.e("DataParsingError", "Error parsing snapshot", e)
+                        continue
+                    }
                 }
 
-                if (viajesList.size != 12){
+                if (viajesList.size != 12) {
                     initYearFirebase(viajesList)
                     obtenerViajes()
                 }
 
-
-
                 // Notificar al adaptador que los datos han cambiado
                 viajesAdapter.notifyDataSetChanged()
-                if (viajesList.size > 0) {
+                if (viajesList.isNotEmpty()) {
                     ConfigLoading.hideLoadingAnimation()
                 } else {
                     ConfigLoading.showNodata()
@@ -131,6 +142,7 @@ class ViajesFragment : Fragment() {
             }
         })
     }
+
     fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
         val listMonths = UtilHelper.getMontsThisYears()
 

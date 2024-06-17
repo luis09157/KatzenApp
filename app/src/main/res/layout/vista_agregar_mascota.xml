@@ -187,7 +187,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/text_peso"
-                            android:text="2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
@@ -195,22 +194,22 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                             android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+
+
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/editTextFecha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:enabled="true"
                         android:hint="@string/txtField_edad"
-                        app:startIconDrawable="@drawable/ic_pet">
+                        app:startIconDrawable="@drawable/ic_calendario">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/text_edad"
-                            android:text="2"
+                            android:id="@+id/editTextFecha2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/white"
-                            android:digits="0123456789."
-                            android:inputType="numberDecimal" />
+                            android:inputType="date" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout

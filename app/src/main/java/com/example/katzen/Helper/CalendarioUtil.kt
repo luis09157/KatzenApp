@@ -2,11 +2,15 @@ package com.example.katzen.Helper
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.os.Build
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TimePicker
+import androidx.annotation.RequiresApi
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Period
 import java.util.*
 
 class CalendarioUtil {
@@ -34,6 +38,43 @@ class CalendarioUtil {
 
             // Mostrar el DatePickerDialog
             datePickerDialog.show()
+        }
+        fun mostrarCalendarioFecha(context: Context, editTextFecha: TextInputLayout) {
+            // Obtener la fecha actual
+            val calendario = Calendar.getInstance()
+            val anio = calendario.get(Calendar.YEAR)
+            val mes = calendario.get(Calendar.MONTH)
+            val dia = calendario.get(Calendar.DAY_OF_MONTH)
+
+            // Crear una instancia de DatePickerDialog y configurar la fecha actual como predeterminada
+            val datePickerDialog = DatePickerDialog(context, { _: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                // Actualizar el EditTextFecha con la fecha seleccionada
+                val fechaSeleccionada = "$dayOfMonth/${monthOfYear + 1}/$year"
+                editTextFecha.editText!!.setText(fechaSeleccionada)
+            }, anio, mes, dia)
+
+            // Mostrar el DatePickerDialog
+            datePickerDialog.show()
+        }
+
+        fun calcularEdadMascota(fechaNacimiento: String): Pair<Int, Int> {
+            // Formato de fecha esperado
+            val formato = SimpleDateFormat("dd/MM/yyyy")
+
+            // Convertir la fecha de nacimiento de la mascota a Date
+            val fechaNacimientoMascota: Date = formato.parse(fechaNacimiento)
+
+            // Obtener la fecha actual
+            val calendarioActual = Calendar.getInstance()
+            val fechaActual: Date = calendarioActual.time
+
+            // Calcular la diferencia entre las fechas
+            val diferenciaMillis: Long = fechaActual.time - fechaNacimientoMascota.time
+            val diferenciaDias = diferenciaMillis / (1000 * 60 * 60 * 24)
+            val anios = (diferenciaDias / 365).toInt()
+            val meses = ((diferenciaDias % 365) / 30).toInt()
+
+            return Pair(anios, meses)
         }
         fun obtenerFechaHoraActual(): String {
             // Obtener la fecha y hora actual

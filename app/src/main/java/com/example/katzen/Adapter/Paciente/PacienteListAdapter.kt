@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
+import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
+import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.R
 import com.squareup.picasso.Picasso
@@ -60,7 +62,12 @@ class PacienteListAdapter (
         }
 
         holder.nombrePaciente?.text = "${paciente.nombre}"
-        holder.descripcion?.text = "${paciente.especie}, ${paciente.edad} años"
+        try {
+            val (anios, meses) = CalendarioUtil.calcularEdadMascota(paciente.edad)
+            holder.descripcion?.text =  "${paciente.especie}, ${anios} años y ${meses} meses"
+        }catch (e : Exception){
+            print(e.message)
+        }
 
 
         holder.btnEliminar?.setOnClickListener {

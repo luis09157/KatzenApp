@@ -33,7 +33,7 @@ class GasHelper {
                 Config.CATEGORIAS[3] -> {
                     //RUTA
                     kmV = km * 2
-                    porcentaje = 1.31
+                    porcentaje = 1.32
 
                 }
                 Config.CATEGORIAS[4] -> {

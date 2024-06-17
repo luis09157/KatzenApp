@@ -17,6 +17,7 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Fragment.Cliente.ClienteFragment
+import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
@@ -87,6 +88,18 @@ class AddPacienteFragment : Fragment() {
                 UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_PACIENTE"), TAG)
             }
         }
+        binding.editTextFecha2.setOnClickListener {
+            it.hideKeyboard()
+            CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
+        }
+        binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
+            UtilHelper.hideKeyBoardWorld(requireActivity(), view)
+            if (isFocus) {
+                view.hideKeyboard()
+                CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
+
+            }
+        }
     }
     fun init(){
         val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
@@ -94,18 +107,17 @@ class AddPacienteFragment : Fragment() {
         val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
         binding.spEspecie.setAdapter(adapterESPECIE)
 
-        /*UpperCaseTextWatcher.UpperText(binding.textColor)
-        UpperCaseTextWatcher.UpperText(binding.textPeso)
-        UpperCaseTextWatcher.UpperText(binding.textNombre)
-        UpperCaseTextWatcher.UpperText(binding.textEdad)
-        UpperCaseTextWatcher.UpperText(binding.spEspecie)
-        UpperCaseTextWatcher.UpperText(binding.spRaza)
-        UpperCaseTextWatcher.UpperText(binding.spSexo)
-        UpperCaseTextWatcher.UpperText(binding.textCliente)*/
 
         UpperCaseTextWatcher.UpperText(binding.spEspecie)
         UpperCaseTextWatcher.UpperText(binding.spRaza)
         UpperCaseTextWatcher.UpperText(binding.spSexo)
+
+        /*UpperCaseTextWatcher.UpperText(binding.textColor)
+        UpperCaseTextWatcher.UpperText(binding.textPeso)
+        UpperCaseTextWatcher.UpperText(binding.textNombre)
+        UpperCaseTextWatcher.UpperText(binding.textEdad)
+        UpperCaseTextWatcher.UpperText(binding.textCliente)*/
+
 
     }
     fun initLoading(){
@@ -179,7 +191,7 @@ class AddPacienteFragment : Fragment() {
                 spEspecie.text?.clear()
                 spRaza.text?.clear()
                 textPeso.text?.clear()
-                textEdad.text?.clear()
+                editTextFecha2.text?.clear()
                 textColor.text?.clear()
                 textCliente.text?.clear()
                 fotoMascota.setImageResource(R.drawable.ic_imagen)
@@ -206,7 +218,7 @@ class AddPacienteFragment : Fragment() {
         binding.textPeso.setText(ADD_PACIENTE.peso)
         binding.spRaza.setText(ADD_PACIENTE.raza)
         binding.spEspecie.setText(ADD_PACIENTE.especie)
-        binding.textEdad.setText(ADD_PACIENTE.edad)
+        binding.editTextFecha2.setText(ADD_PACIENTE.edad)
         binding.textColor.setText(ADD_PACIENTE.color)
         binding.spSexo.setText(ADD_PACIENTE.sexo)
         binding.textCliente.setText(ADD_PACIENTE.nombreCliente)
@@ -216,7 +228,7 @@ class AddPacienteFragment : Fragment() {
         ADD_PACIENTE.peso = binding.textPeso.text.toString()
         ADD_PACIENTE.raza = binding.spRaza.text.toString()
         ADD_PACIENTE.especie = binding.spEspecie.text.toString()
-        ADD_PACIENTE.edad = binding.textEdad.text.toString()
+        ADD_PACIENTE.edad = binding.editTextFecha2.text.toString()
         ADD_PACIENTE.color = binding.textColor.text.toString()
         ADD_PACIENTE.sexo = binding.spSexo.text.toString()
         ADD_PACIENTE.nombreCliente = binding.textCliente.text.toString()

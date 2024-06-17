@@ -69,14 +69,14 @@ class EditarPacienteFragment : Fragment() {
 
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 
-        UpperCaseTextWatcher.UpperText(binding.textNombre)
+        /*UpperCaseTextWatcher.UpperText(binding.textNombre)
         UpperCaseTextWatcher.UpperText(binding.textCliente)
         UpperCaseTextWatcher.UpperText(binding.textEdad)
         UpperCaseTextWatcher.UpperText(binding.textPeso)
         UpperCaseTextWatcher.UpperText(binding.textColor)
         UpperCaseTextWatcher.UpperText(binding.spRaza)
         UpperCaseTextWatcher.UpperText(binding.spEspecie)
-        UpperCaseTextWatcher.UpperText(binding.spSexo)
+        UpperCaseTextWatcher.UpperText(binding.spSexo)*/
     }
     fun initValues() {
         // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
@@ -92,7 +92,7 @@ class EditarPacienteFragment : Fragment() {
             }
             binding.textNombre.setText(paciente.nombre)
             binding.textPeso.setText(paciente.peso)
-            binding.textEdad.setText(paciente.edad)
+            //binding.textEdad.setText(paciente.edad)
             binding.textColor.setText(paciente.color)
             binding.textCliente.setText(paciente.nombreCliente)
             binding.spSexo.setText(paciente.sexo)
@@ -146,7 +146,7 @@ class EditarPacienteFragment : Fragment() {
         PACIENTE_EDIT.raza =  binding.spRaza.text.toString()
         PACIENTE_EDIT.especie = binding.spEspecie.text.toString()
         PACIENTE_EDIT.sexo = binding.spSexo.text.toString()
-        PACIENTE_EDIT.edad = binding.textEdad.text.toString()
+        //PACIENTE_EDIT.edad = binding.textEdad.text.toString()
         PACIENTE_EDIT.color = binding.textColor.text.toString()
         PACIENTE_EDIT.nombreCliente = binding.textCliente.text.toString()
     }
@@ -214,7 +214,7 @@ class EditarPacienteFragment : Fragment() {
         requireActivity().runOnUiThread {
             binding.apply {
                 textNombre.text!!.clear()
-                textEdad.text!!.clear()
+                //textEdad.text!!.clear()
                 textColor.text!!.clear()
                 textCliente.text!!.clear()
                 textPeso.text!!.clear()
