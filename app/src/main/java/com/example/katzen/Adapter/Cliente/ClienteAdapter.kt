@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ClienteAdapter(
+class ClienteAdapter (
     activity: Activity,
     private var clienteList: List<ClienteModel>
 ) : ArrayAdapter<ClienteModel>(activity, R.layout.cliente_list_fragment, clienteList) {

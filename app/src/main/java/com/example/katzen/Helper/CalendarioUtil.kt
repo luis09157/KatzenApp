@@ -84,5 +84,14 @@ class CalendarioUtil {
             // Formatear la fecha y hora actual como una cadena de texto
             return formatoFechaHora.format(calendario.time)
         }
+
+        fun obtenerAñoActual(): String {
+            // Obtener la fecha y hora actual
+            val calendario = Calendar.getInstance()
+            val formatoFechaHora = SimpleDateFormat("yyyy", Locale.getDefault())
+
+            // Formatear la fecha y hora actual como una cadena de texto
+            return formatoFechaHora.format(calendario.time)
+        }
     }
 }

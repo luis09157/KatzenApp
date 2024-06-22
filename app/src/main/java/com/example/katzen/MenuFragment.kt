@@ -12,6 +12,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Config.Config
+import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
@@ -54,7 +55,8 @@ class MenuFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.menu_pago_tarjeta), R.drawable.img_pago_tarjeta),
             MenuModel(requireActivity().getString(R.string.menu_paciente), R.drawable.img_paciente),
             MenuModel(requireActivity().getString(R.string.menu_cliente), R.drawable.img_cliente),
-            MenuModel(requireActivity().getString(R.string.menu_viajes), R.drawable.img_viajes)
+            MenuModel(requireActivity().getString(R.string.menu_viajes), R.drawable.img_viajes),
+            MenuModel(requireActivity().getString(R.string.menu_campania), R.drawable.img_campania)
         )
         val adapter = MenuAdapter(requireContext(), menuList)
         binding.lisMenu.adapter = adapter
@@ -94,6 +96,9 @@ class MenuFragment : Fragment() {
                 requireActivity().getString(R.string.menu_viajes) -> {
                     //UtilFragment.changeFragment(requireActivity(), ViajesFragment(),TAG)
                     UtilFragment.changeFragment(requireActivity(), ViajesFragment(),TAG)
+                }
+                requireActivity().getString(R.string.menu_campania) -> {
+                    UtilFragment.changeFragment(requireActivity(), CampañaFragment(),TAG)
                 }
             }
         }
