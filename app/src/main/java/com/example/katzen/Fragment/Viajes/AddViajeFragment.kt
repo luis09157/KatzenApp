@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
-import com.example.katzen.Fragment.Paciente.SeleccionarPacienteFragment
+import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilFragment
@@ -111,13 +111,14 @@ class AddViajeFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setViajeModel()
-            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment("ADD_VIAJE") ,TAG)
+            UtilFragment.changeFragment(requireContext() ,
+                SeleccionarClienteFragment("ADD_VIAJE") ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
                 setViajeModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_VIAJE"), TAG)
+                UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("ADD_VIAJE"), TAG)
             }
         }
         binding.textFechaDetalle.setOnClickListener {

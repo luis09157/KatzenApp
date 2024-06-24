@@ -16,8 +16,8 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
+import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.R
@@ -130,13 +130,14 @@ class EditarPacienteFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
-            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment("EDIT_PACIENTE") ,TAG)
+            UtilFragment.changeFragment(requireContext() ,
+                SeleccionarClienteFragment("EDIT_PACIENTE") ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
                 setPacienteModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("EDIT_PACIENTE"), TAG)
+                UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("EDIT_PACIENTE"), TAG)
             }
         }
     }

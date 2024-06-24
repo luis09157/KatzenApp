@@ -52,10 +52,17 @@
             android:layout_height="wrap_content"
             android:gravity="right">
             <Button
-                android:id="@+id/btn_add_paciente"
+                android:id="@+id/btn_add_paciente_campaña"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Paciente"
+                android:drawableLeft="@drawable/ic_mas_blanco"
+                android:layout_margin="10dp"/>
+            <Button
+                android:id="@+id/btn_add_campania"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Campaña"
                 android:drawableLeft="@drawable/ic_mas_blanco"
                 android:layout_margin="10dp"/>
         </LinearLayout>

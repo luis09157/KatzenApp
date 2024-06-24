@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment.Paciente
+package com.example.katzen.Fragment.Seleccionadores
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,21 +8,23 @@ import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Cliente.SeleccionClienteAdapter
-import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.Fragment.Campaña.AddCampañaFragment
+import com.example.katzen.Fragment.Campaña.AddPacienteCampañaFragment
+import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Fragment.Cliente.AddClienteFragment
-import com.example.katzen.Fragment.Cliente.EditClienteFragment
+import com.example.katzen.Fragment.Paciente.AddPacienteFragment
+import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.databinding.ClienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
+class SeleccionarClienteFragment(val flagVentana : String) : Fragment( ) {
     val TAG : String  = "ClienteFragment"
 
     private var _binding: ClienteFragmentBinding? = null
@@ -72,6 +74,11 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
                     "ADD_VIAJE" -> {
                         AddViajeFragment.ADD_CLIENTE_VIAJE = seleccionClienteAdapter.getItem(i)!!
                         UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
+                    }
+                    "ADD_CAMPAÑA" -> {
+                        CampañaFragment.ADD_CAMPAÑA.idCliente = seleccionClienteAdapter.getItem(i)!!.id
+                        CampañaFragment.ADD_CAMPAÑA.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
+                        UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
                     }
                     else -> {
                         // En caso de que flagVentanaEdit no sea ni true ni false
@@ -161,6 +168,9 @@ class SeleccionarPacienteFragment(val flagVentana : String) : Fragment( ) {
                     }
                     "ADD_VIAJE" -> {
                         UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
+                    }
+                    "ADD_CAMPAÑA" -> {
+                        UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
                     }
                     else -> {
                         // En caso de que flagVentanaEdit no sea ni true ni false

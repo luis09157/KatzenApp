@@ -3,7 +3,6 @@ package com.example.katzen.Fragment.Paciente
 import PacienteModel
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Cliente.ClienteFragment
+import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
@@ -79,13 +78,14 @@ class AddPacienteFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
-            UtilFragment.changeFragment(requireContext() ,SeleccionarPacienteFragment("ADD_PACIENTE") ,TAG)
+            UtilFragment.changeFragment(requireContext() ,
+                SeleccionarClienteFragment("ADD_PACIENTE") ,TAG)
         }
         binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 view.hideKeyboard()
                 setPacienteModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarPacienteFragment("ADD_PACIENTE"), TAG)
+                UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("ADD_PACIENTE"), TAG)
             }
         }
         binding.editTextFecha2.setOnClickListener {

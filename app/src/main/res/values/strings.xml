@@ -99,6 +99,7 @@
     <string name="txtField_producto">Producto</string>
     <string name="txtField_categoria">Categoria</string>
     <string name="txtField_seleccion_cliente">Selecciona Cliente...</string>
+    <string name="txtField_seleccion_paciente">Selecciona Paciente...</string>
     <string name="txtField_costo">Costo</string>
     <string name="txtField_venta">Venta</string>
 

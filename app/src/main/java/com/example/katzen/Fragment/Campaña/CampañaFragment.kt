@@ -27,6 +27,10 @@ class CampañaFragment : Fragment() {
     private lateinit var campañaList: MutableList<CampañaModel>
     private lateinit var campañaListAdapter: CampañaAdapter
 
+    companion object{
+        var ADD_CAMPAÑA : CampañaModel = CampañaModel()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,6 +66,8 @@ class CampañaFragment : Fragment() {
 
     fun listeners() {
         binding.lisMenuCampaA.setOnItemClickListener { adapterView, view, i, l ->
+            ADD_CAMPAÑA.año = CalendarioUtil.obtenerAñoActual()
+            ADD_CAMPAÑA.mes = String.format("%02d", (i + 1))
             UtilFragment.changeFragment(requireActivity(), CampañaEventoFragment(),TAG)
         }
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

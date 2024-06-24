@@ -93,5 +93,20 @@ class CalendarioUtil {
             // Formatear la fecha y hora actual como una cadena de texto
             return formatoFechaHora.format(calendario.time)
         }
+        fun obtenerDiaDesdeString(fechaString: String): String {
+            try {
+                val formato = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                val fecha = formato.parse(fechaString)
+                val calendario = Calendar.getInstance()
+                calendario.time = fecha ?: Date()
+
+                // Obtener el día del mes
+                return calendario.get(Calendar.DAY_OF_MONTH).toString()
+
+            } catch (e: Exception) {
+                println("Error al obtener el día desde el string de fecha: ${e.message}")
+                return "0" // En caso de error, retorna un valor indicativo (puede ser 0, -1, etc.)
+            }
+        }
     }
 }
