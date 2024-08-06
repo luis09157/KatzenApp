@@ -18,8 +18,10 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
+import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.R
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
@@ -93,7 +95,7 @@ class EditarPacienteFragment : Fragment() {
 
             binding.textNombre.setText(paciente.nombre)
             binding.textPeso.setText(paciente.peso)
-            //binding.textEdad.setText(paciente.edad)
+            binding.editTextFecha2.setText(paciente.edad)
             binding.textColor.setText(paciente.color)
             binding.textCliente.setText(paciente.nombreCliente)
             binding.spSexo.setText(paciente.sexo)
@@ -141,6 +143,18 @@ class EditarPacienteFragment : Fragment() {
                 UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("EDIT_PACIENTE"), TAG)
             }
         }
+        binding.editTextFecha2.setOnClickListener {
+            it.hideKeyboard()
+            CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
+        }
+        binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
+            UtilHelper.hideKeyBoardWorld(requireActivity(), view)
+            if (isFocus) {
+                view.hideKeyboard()
+                CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
+
+            }
+        }
     }
     fun setPacienteModel(){
 
@@ -148,7 +162,7 @@ class EditarPacienteFragment : Fragment() {
         PACIENTE_EDIT.raza =  binding.spRaza.text.toString()
         PACIENTE_EDIT.especie = binding.spEspecie.text.toString()
         PACIENTE_EDIT.sexo = binding.spSexo.text.toString()
-        //PACIENTE_EDIT.edad = binding.textEdad.text.toString()
+        PACIENTE_EDIT.edad = binding.editTextFecha2.text.toString()
         PACIENTE_EDIT.color = binding.textColor.text.toString()
         PACIENTE_EDIT.nombreCliente = binding.textCliente.text.toString()
     }
@@ -216,7 +230,7 @@ class EditarPacienteFragment : Fragment() {
         requireActivity().runOnUiThread {
             binding.apply {
                 textNombre.text!!.clear()
-                //textEdad.text!!.clear()
+                editTextFecha2.text!!.clear()
                 textColor.text!!.clear()
                 textCliente.text!!.clear()
                 textPeso.text!!.clear()
