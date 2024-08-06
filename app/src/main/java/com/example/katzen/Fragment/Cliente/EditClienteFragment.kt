@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
@@ -21,7 +22,6 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.example.katzen.databinding.AddClienteFragmentBinding
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -75,17 +75,19 @@ class EditClienteFragment : Fragment() {
         // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
         CLIENTE_EDIT?.let { cliente ->
             if (cliente.imageUrl.isNotEmpty()) {
-                Picasso.get()
+                Glide.with(binding.imgPerfil.context)
                     .load(cliente.imageUrl)
                     .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                    .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                    .error(R.drawable.no_disponible_rosa) // Establecer una imagen en caso de error al cargar
                     .into(binding.imgPerfil)
             } else {
                 binding.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
             }
+
             binding.textNombre.setText(cliente.nombre)
             binding.textAppellidoPaterno.setText(cliente.apellidoPaterno)
             binding.textAppellidoMaterno.setText(cliente.apellidoMaterno)
+            binding.textExpediente.setText(cliente.expediente)
             binding.textCalle.setText(cliente.calle)
             binding.textNumero.setText(cliente.numero)
             binding.textColonia.setText(cliente.colonia)
@@ -128,6 +130,7 @@ class EditClienteFragment : Fragment() {
         val nombre = binding.textNombre.text.toString()
         val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
         val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
+        val expediente = binding.textExpediente.text.toString()
         val correo = binding.textCorreo.text.toString()
         val telefono = binding.textTelefono.text.toString()
         val calle = binding.textCalle.text.toString()
@@ -139,6 +142,7 @@ class EditClienteFragment : Fragment() {
         CLIENTE_EDIT.nombre = nombre
         CLIENTE_EDIT.apellidoPaterno = apellidoPaterno
         CLIENTE_EDIT.apellidoMaterno = apellidoMaterno
+        CLIENTE_EDIT.expediente = expediente
         CLIENTE_EDIT.correo = correo
         CLIENTE_EDIT.telefono = telefono
         CLIENTE_EDIT.calle = calle
@@ -213,6 +217,7 @@ class EditClienteFragment : Fragment() {
                 textNombre.text!!.clear()
                 textAppellidoPaterno.text!!.clear()
                 textAppellidoMaterno.text!!.clear()
+                textExpediente.text!!.clear()
                 textCorreo.text!!.clear()
                 textTelefono.text!!.clear()
                 textCalle.text!!.clear()

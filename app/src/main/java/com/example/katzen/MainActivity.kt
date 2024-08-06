@@ -27,6 +27,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity() {
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
         checkPermission(android.Manifest.permission.POST_NOTIFICATIONS, "Notification", codeNotification)
         logRegToken()
+        subscribeToTopic("all_users")
         UtilFragment.changeFragment(this, MenuFragment(),TAG)
 
     }
@@ -157,6 +159,18 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun subscribeToTopic(topic: String) {
+        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+            .addOnCompleteListener { task ->
+                val msg = if (task.isSuccessful) {
+                    "Suscrito al tópico: $topic"
+                } else {
+                    "Suscripción fallida"
+                }
+                Log.d("MainActivity", msg)
+            }
     }
 
     companion object {

@@ -39,7 +39,7 @@ class CampañaFragment : Fragment() {
         _binding = CampaniaFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = getString(R.string.menu_paciente)
+        requireActivity().title = getString(R.string.menu_campaña)
 
         initLoading()
         init()

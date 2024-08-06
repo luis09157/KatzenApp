@@ -7,7 +7,7 @@ import java.text.DecimalFormat
 class GasHelper {
     companion object{
         val kmLitro = 10
-        val litroGasolina = 23
+        val litroGasolina = 24.50
         fun calcular(km : Double , categoria : String) :  Triple<String, String, String> {
             val df = DecimalFormat("#.##")
             df.roundingMode = RoundingMode.DOWN

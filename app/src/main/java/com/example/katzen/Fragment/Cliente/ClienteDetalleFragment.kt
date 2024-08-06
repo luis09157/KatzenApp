@@ -56,6 +56,7 @@ class ClienteDetalleFragment : Fragment() {
         }else{
 
             binding.textNombreCliente.text = "${EditClienteFragment.CLIENTE_EDIT.nombre} ${EditClienteFragment.CLIENTE_EDIT.apellidoPaterno} ${EditClienteFragment.CLIENTE_EDIT.apellidoMaterno}"
+            binding.textExpediente.text = EditClienteFragment.CLIENTE_EDIT.expediente
             binding.textCorreo.text = EditClienteFragment.CLIENTE_EDIT.correo
             binding.textTelefono.text = EditClienteFragment.CLIENTE_EDIT.telefono
             binding.textCorreo.text = EditClienteFragment.CLIENTE_EDIT.correo

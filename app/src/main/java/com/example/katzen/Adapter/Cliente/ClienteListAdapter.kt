@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.OnCompleteListener
@@ -16,7 +17,6 @@ import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
 import com.google.firebase.database.DatabaseReference
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,16 +55,17 @@ class ClienteListAdapter (
         holder.imgPerfil?.setImageResource(R.drawable.ic_person)
 
         if (paciente.imageUrl.isNotEmpty()) {
-            Picasso.get()
+            Glide.with(holder.imgPerfil!!.context)
                 .load(paciente.imageUrl)
                 .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
-                .error(R.drawable.ic_person)
-                .into(holder.imgPerfil)
+                .error(R.drawable.ic_person) // Imagen en caso de error al cargar
+                .into(holder.imgPerfil!!)
         } else {
             holder.imgPerfil?.setImageResource(R.drawable.ic_person)
         }
 
-        holder.nombreCliente?.text = "${paciente.nombre}"
+
+        holder.nombreCliente?.text = "${paciente.nombre} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}"
         holder.descripcion?.text = "Tel: ${paciente.telefono}"
 
         holder.descripcion!!.setOnClickListener {

@@ -10,13 +10,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,11 +57,12 @@ class ClienteAdapter (
         holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
 
         if (cliente.imageUrl.isNotEmpty()) {
-            Picasso.get()
+            Glide.with(activity)
                 .load(cliente.imageUrl)
-                .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
-                .error(R.drawable.ic_person) // Opcional: establecer una imagen en caso de error al cargar
-                .into(holder.imgPerfil)
+                .apply(RequestOptions()
+                    .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
+                    .error(R.drawable.ic_person)) // Opcional: establecer una imagen en caso de error al cargar
+                .into(holder.imgPerfil!!)
         } else {
             holder.imgPerfil?.setImageResource(R.drawable.ic_person)
         }

@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Campaña
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +21,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 class CampañaEventoFragment : Fragment() {
-    val TAG: String = "CampañaFragment"
+    private val TAG: String = "CampañaFragment"
 
     private var _binding: CampaniaEventoFragmentBinding? = null
     private val binding get() = _binding!!
@@ -42,7 +39,7 @@ class CampañaEventoFragment : Fragment() {
         _binding = CampaniaEventoFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = getString(R.string.menu_paciente)
+        requireActivity().title = getString(R.string.menu_campaña)
 
         initLoading()
         init()
@@ -60,21 +57,18 @@ class CampañaEventoFragment : Fragment() {
         }
     }
 
-    fun init() {
+    private fun init() {
         ConfigLoading.hideLoadingAnimation()
 
-        // Inicializar lista y adaptador
         campañaList = mutableListOf()
         campañaListAdapter = CampañaEventoAdapter(requireActivity(), campañaList)
         binding.lisMenuMascota.adapter = campañaListAdapter
         binding.lisMenuMascota.divider = null
 
-        GlobalScope.launch(Dispatchers.Main) {
-            obtenerCampañas()
-        }
+        obtenerCampañas()
     }
 
-    fun listeners() {
+    private fun listeners() {
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -85,21 +79,26 @@ class CampañaEventoFragment : Fragment() {
                 return true
             }
         })
+        binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
+            CampañaFragment.ADD_CAMPAÑA.id = campañaList.get(i).id
+            UtilFragment.changeFragment(requireContext(),CampañaPacienteFragment(),TAG)
+        }
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
         }
+
         binding.btnAddPacienteCampaA.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddPacienteCampañaFragment(), TAG)
         }
     }
 
-    fun initLoading() {
+    private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 
-    fun filterMascotas(text: String) {
+    private fun filterMascotas(text: String) {
         val filteredList = campañaList.filter { campaña ->
             campaña.mes.contains(text, ignoreCase = true)
         }
@@ -111,44 +110,41 @@ class CampañaEventoFragment : Fragment() {
         _binding = null
     }
 
-    private suspend fun obtenerCampañas() {
-        try {
-            FirebaseCampañaUtil.obtenerListaCampañas(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val campañas = mutableListOf<CampañaModel>()
+    private fun obtenerCampañas() {
+        FirebaseCampañaUtil.obtenerListaCampañas(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val campañas = mutableListOf<CampañaModel>()
 
+                CoroutineScope(Dispatchers.Main).launch {
                     for (campañaSnapshot in snapshot.children) {
                         val campaña = campañaSnapshot.getValue(CampañaModel::class.java)
-
-                        campaña?.let { campañas.add(it) }
+                        campaña?.let {
+                            try {
+                                it.año = CampañaFragment.ADD_CAMPAÑA.año
+                                it.mes = CampañaFragment.ADD_CAMPAÑA.mes
+                                it.cantidadPacientes = FirebaseCampañaUtil.obtenerCantidadPacientes(it).toString()
+                                campañas.add(it)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error al obtener cantidad de pacientes: ${e.message}")
+                            }
+                        }
                     }
 
-                    // Actualizar lista de campañas y notificar cambios al adaptador
-                    campañaList.clear()
-                    campañaList.addAll(campañas)
-                    campañaListAdapter.notifyDataSetChanged()
+                    requireActivity().runOnUiThread {
+                        campañaList.clear()
+                        campañaList.addAll(campañas)
+                        campañaListAdapter.notifyDataSetChanged()
 
-                    // Actualizar título de la actividad si hay campañas
-                   /* if (campañas.isNotEmpty()) {
-                        requireActivity().title = "${getString(R.string.menu_campañas)} (${campañas.size})"
-                    } else {
-                        requireActivity().title = getString(R.string.menu_campañas)
-                    }*/
-
-                    // Ocultar la animación de carga si hay datos
-                    ConfigLoading.hideLoadingAnimation()
+                        ConfigLoading.hideLoadingAnimation()
+                    }
                 }
+            }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Manejar errores de la consulta a la base de datos
-                    println("Error al obtener campañas: ${error.message}")
-                    ConfigLoading.showNodata()
-                }
-            })
-        } catch (e: Exception) {
-            // Manejar cualquier excepción que pueda ocurrir
-            println("Error en obtenerCampañas(): ${e.message}")
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Error al obtener campañas: ${error.message}")
+                ConfigLoading.showNodata()
+            }
+        })
     }
 
     override fun onResume() {
@@ -160,4 +156,3 @@ class CampañaEventoFragment : Fragment() {
         })
     }
 }
-

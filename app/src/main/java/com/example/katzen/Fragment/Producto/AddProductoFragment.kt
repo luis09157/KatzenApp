@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.CalendarioUtil
@@ -26,7 +27,6 @@ import com.example.katzen.Model.ProductoModel
 import com.example.katzen.Model.ValidationResult
 import com.example.katzen.R
 import com.example.katzen.databinding.AddProductoFragmentBinding
-import com.squareup.picasso.Picasso
 
 class AddProductoFragment : Fragment() {
     val TAG : String  = "AddProductoFragment"
@@ -59,7 +59,10 @@ class AddProductoFragment : Fragment() {
                 editTextFecha.editText?.setText(prod.fecha)
                 editTextCategoria.editText?.setText(prod.categoria)
                 editTextProveedor.editText?.setText(prod.proveedor)
-                Picasso.get().load(prod.rutaImagen).into(imageViewProducto)
+                Glide.with(imageViewProducto.context)
+                    .load(prod.rutaImagen)
+                    .into(imageViewProducto)
+
             }
         }
         enableBtnEditar()

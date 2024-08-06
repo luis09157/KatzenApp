@@ -42,7 +42,7 @@ class PacienteDetalleFragment : Fragment() {
         _binding = PacienteDetalleFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = getString(R.string.menu_cliente_detalle)
+        requireActivity().title = getString(R.string.menu_paciente_detalle)
 
         initLoading()
         init()

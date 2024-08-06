@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
@@ -17,7 +18,6 @@ import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
 import com.example.katzen.databinding.AddPiezaProductoFragmentBinding
-import com.squareup.picasso.Picasso
 
 class AddProductoInventarioFragment : Fragment() {
     val TAG : String  = "AddProductoInventarioFragment"
@@ -125,7 +125,10 @@ class AddProductoInventarioFragment : Fragment() {
     fun init(){
         try {
             ConfigLoading.showLoadingAnimation()
-            Picasso.get().load(productoModel.rutaImagen).into(binding.imageViewProducto)
+            Glide.with(binding.imageViewProducto.context)
+                .load(productoModel.rutaImagen)
+                .into(binding.imageViewProducto)
+
             binding.editTextNombre.editText!!.setText(productoModel.nombre)
 
             val adapter = ArrayAdapter(requireActivity(),

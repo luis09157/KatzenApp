@@ -8,9 +8,9 @@ import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
-import com.squareup.picasso.Picasso
 
 class MenuProductosInventarioAdapter(
     context: Context,
@@ -42,15 +42,16 @@ class MenuProductosInventarioAdapter(
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
             // Si hay una URL de imagen disponible, cargar desde la URL
-            Picasso.get()
+            Glide.with(holder.imageView!!.context)
                 .load(producto.rutaImagen)
-                .placeholder(R.drawable.ic_imagen)
-                .error(R.drawable.ic_imagen)
-                .into(holder.imageView)
+                .placeholder(R.drawable.ic_imagen) // Establecer la imagen predeterminada mientras se carga
+                .error(R.drawable.ic_imagen) // Establecer una imagen en caso de error al cargar
+                .into(holder.imageView!!)
         } else {
             // Si no hay una URL de imagen, cargar desde el recurso drawable
             holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)
         }
+
 
         return itemView!!
     }

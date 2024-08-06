@@ -84,6 +84,7 @@ class AddClienteFragment : Fragment() {
             val nombre = binding.textNombre.text.toString()
             val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
             val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
+            val expediente = binding.textExpediente.text.toString()
             val correo = binding.textCorreo.text.toString()
             val telefono = binding.textTelefono.text.toString()
             val calle = binding.textCalle.text.toString()
@@ -97,6 +98,7 @@ class AddClienteFragment : Fragment() {
                 nombre = nombre,
                 apellidoPaterno = apellidoPaterno,
                 apellidoMaterno = apellidoMaterno,
+                expediente = expediente,
                 correo = correo,
                 telefono = telefono,
                 calle = calle,

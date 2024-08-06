@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
@@ -22,7 +23,6 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.R
 import com.example.katzen.databinding.VistaAgregarMascotaBinding
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -81,15 +81,16 @@ class EditarPacienteFragment : Fragment() {
     fun initValues() {
         // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
         PACIENTE_EDIT?.let { paciente ->
-           if (paciente.imageUrl.isNotEmpty()) {
-                Picasso.get()
+            if (paciente.imageUrl.isNotEmpty()) {
+                Glide.with(binding.fotoMascota.context)
                     .load(paciente.imageUrl)
                     .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                    .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                    .error(R.drawable.no_disponible_rosa) // Establecer una imagen en caso de error al cargar
                     .into(binding.fotoMascota)
             } else {
-                binding.fotoMascota?.setImageResource(R.drawable.no_disponible_rosa)
+                binding.fotoMascota.setImageResource(R.drawable.no_disponible_rosa)
             }
+
             binding.textNombre.setText(paciente.nombre)
             binding.textPeso.setText(paciente.peso)
             //binding.textEdad.setText(paciente.edad)

@@ -10,12 +10,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.bumptech.glide.Glide
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.R
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,14 +52,15 @@ class PacienteListAdapter (
         holder.imgPerfil?.setImageResource(R.drawable.ic_perfil)
 
         if (paciente.imageUrl.isNotEmpty()) {
-            Picasso.get()
+            Glide.with(holder.imgPerfil!!.context)
                 .load(paciente.imageUrl)
                 .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
-                .into(holder.imgPerfil)
+                .error(R.drawable.no_disponible_rosa) // Imagen en caso de error al cargar
+                .into(holder.imgPerfil!!)
         } else {
             holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
         }
+
 
         holder.nombrePaciente?.text = "${paciente.nombre}"
         try {

@@ -44,7 +44,7 @@ class CampañaEventoAdapter(
 
 
         holder.fechaTextView?.text =  campaña.fecha
-        holder.cantidadPacientesTextView?.text = campaña.id
+        holder.cantidadPacientesTextView?.text = "${campaña.cantidadPacientes} Pacientes"
         holder.diaTextView?.text = CalendarioUtil.obtenerDiaDesdeString(campaña.fecha)
 
 

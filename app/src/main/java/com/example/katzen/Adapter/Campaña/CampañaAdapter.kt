@@ -15,7 +15,6 @@ import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.CampañaModel
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.R
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

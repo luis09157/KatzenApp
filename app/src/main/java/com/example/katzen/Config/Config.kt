@@ -10,9 +10,9 @@ class Config {
         val UNIDAD_MEDIDA = listOf("Piezas","Mililitros", "Litros")
         val CATEGORIAS_PRODUCTO = listOf("MEDICAMENTO","ALIMENTO", "PET SHOP")
         val PROVEEDORES = listOf("GOPET")
-        val SEXO = listOf("MACHO","HEMBRA")
+        val SEXO = listOf("Macho Entero","Hembra Entera","Macho Operado","Hembra Operada")
         val METODOS_PAGO = listOf("EFECTIVO","TARJETA","TRANSFERENCIA")
-        val ESPECIE = listOf("CANINO","FELINO")
+        val ESPECIE = listOf("Canino","Felino","Ave","Roedor","Lagomorfo","Reptil")
 
 
         var MES_DETALLE = ""

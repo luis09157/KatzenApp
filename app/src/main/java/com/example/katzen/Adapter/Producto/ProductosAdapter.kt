@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.R
-import com.squareup.picasso.Picasso
 
 class ProductosAdapter(context: Context, private val productList: List<ProductoModel>) :
     ArrayAdapter<ProductoModel>(context, R.layout.producto_item_view, productList) {
@@ -45,11 +45,14 @@ class ProductosAdapter(context: Context, private val productList: List<ProductoM
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
             // Si hay una URL de imagen disponible, cargar desde la URL
-            Picasso.get().load(producto.rutaImagen).into(holder.imageView)
+            Glide.with(holder.imageView!!.context)
+                .load(producto.rutaImagen)
+                .into(holder.imageView!!)
         } else {
             // Si no hay una URL de imagen, cargar desde el recurso drawable
             holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)
         }
+
 
         return itemView!!
     }

@@ -21,9 +21,13 @@
     <string name="menu_add_travel">Agregar Domicilio</string>
 
 
+    <string name="menu_campaña">Campañas</string>
+
+
     <string name="menu_paciente">Pacientes</string>
     <string name="menu_cliente">Clientes</string>
     <string name="menu_cliente_detalle">Detalle del Cliente</string>
+    <string name="menu_paciente_detalle">Detalle del Paciente</string>
     <string name="menu_gasolina">Gasolina</string>
     <string name="menu_pago_tarjeta">Pago Con Tarjeta</string>
 
@@ -76,6 +80,7 @@
     <string name="txtField_nombre_domicilio">Nombre Domicilio</string>
     <string name="txtField_apellido_paterno">Apellido Paterno</string>
     <string name="txtField_apellido_materno">Apellido Materno</string>
+    <string name="txtField_expediente">Expediente</string>
     <string name="txtField_especie">Especie</string>
     <string name="txtField_raza">Raza</string>
     <string name="txtField_fecha_nacimiento">Fecha Nacimiento</string>
@@ -170,6 +175,7 @@
     <string name="error_empty_link_maps">El enlace de Maps no puede estar vacío</string>
 
     <string name="error_empty_nombre">El nombre no puede estar vacío</string>
+    <string name="error_empty_expediente">El expediente no puede estar vacío</string>
     <string name="error_empty_telefono">El teléfono no puede estar vacío</string>
     <string name="error_empty_calle">La calle no puede estar vacía</string>
     <string name="error_empty_numero">El número no puede estar vacío</string>
