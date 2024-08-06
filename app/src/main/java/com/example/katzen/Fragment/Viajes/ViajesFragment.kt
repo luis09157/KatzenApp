@@ -24,7 +24,7 @@ import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 
 class ViajesFragment : Fragment() {
-    val TAG : String  = "ViajesFragment"
+    private val TAG: String = "ViajesFragment"
 
     private var _binding: ViajesV2FragmentBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +48,7 @@ class ViajesFragment : Fragment() {
         return root
     }
 
-    fun init(){
+    private fun init() {
         ConfigLoading.showLoadingAnimation()
         viajesList = mutableListOf()
         viajesAdapter = ViajeAdapter(requireActivity(), viajesList)
@@ -57,14 +57,15 @@ class ViajesFragment : Fragment() {
 
         obtenerViajes()
     }
-    fun filterClientes(text: String) {
-        val filteredList = viajesList.filter { viaje ->
 
+    private fun filterClientes(text: String) {
+        val filteredList = viajesList.filter { viaje ->
             viaje.mes.contains(text, ignoreCase = true)
         }
         viajesAdapter.updateList(filteredList)
     }
-    fun listeners(){
+
+    private fun listeners() {
         binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
@@ -77,30 +78,27 @@ class ViajesFragment : Fragment() {
                 return true
             }
         })
-        binding.lisMenuViaje.setOnItemClickListener { adapterView, view, i, l ->
-            Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesList[i].mes)}-${viajesList[i].anio}"
-            UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
-        }
 
+        binding.lisMenuViaje.setOnItemClickListener { _, _, i, _ ->
+            Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesList[i].mes)}-${viajesList[i].anio}"
+            UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(), TAG)
+        }
     }
-    fun initLoading(){
+
+    private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 
-    fun obtenerViajes() {
+    private fun obtenerViajes() {
         FirebaseViajesUtil.obtenerListaViajes(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                // Limpiar la lista antes de agregar los nuevos datos
-                viajesList.clear()
+                try {
+                    viajesList.clear()
 
-                for (viajeSnapshot in snapshot.children) {
-                    try {
-                        // Ensure the snapshot is of the expected type (Map<String, Any>)
-                        if (viajeSnapshot.value !is Map<*, *>) {
-                            continue
-                        }
+                    for (viajeSnapshot in snapshot.children) {
+                        if (viajeSnapshot.value !is Map<*, *>) continue
 
                         val genericTypeIndicator = object : GenericTypeIndicator<Map<String, Any>>() {}
                         val ventaMesMap: Map<String, Any> = viajeSnapshot.getValue(genericTypeIndicator) ?: continue
@@ -114,52 +112,51 @@ class ViajesFragment : Fragment() {
                             ganancia = ventaMesMap["ganancia"].toString()
                         )
                         viajesList.add(ventaMesModel)
-                    } catch (e: Exception) {
-                        // Log the error for debugging
-                        Log.e("DataParsingError", "Error parsing snapshot", e)
-                        continue
                     }
-                }
 
-                if (viajesList.size != 12) {
-                    initYearFirebase(viajesList)
-                    obtenerViajes()
-                }
+                    if (viajesList.size != 12) {
+                        initYearFirebase(viajesList)
+                        obtenerViajes() // Consider refactoring to avoid recursion
+                    } else {
+                        // Notify the adapter and update UI if data is present
+                        viajesAdapter.notifyDataSetChanged()
+                        ConfigLoading.hideLoadingAnimation()
+                    }
 
-                // Notificar al adaptador que los datos han cambiado
-                viajesAdapter.notifyDataSetChanged()
-                if (viajesList.isNotEmpty()) {
-                    ConfigLoading.hideLoadingAnimation()
-                } else {
+                    if (viajesList.isEmpty()) {
+                        ConfigLoading.showNodata()
+                    }
+
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error al obtener los viajes: ${e.message}", e)
                     ConfigLoading.showNodata()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Error en la consulta a Firebase: ${error.message}")
                 ConfigLoading.showNodata()
-                // Manejar errores de la consulta a la base de datos
-                // Por ejemplo, mostrar un mensaje de error
             }
         })
     }
 
-    fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
+    private fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
         val listMonths = UtilHelper.getMontsThisYears()
 
-        for (i in 0 until listMonths.size) {
+        for (month in listMonths) {
             val ventaMesModel = VentaMesModel().apply {
                 venta = "0.00"
                 costo = "0.00"
                 ganancia = "0.00"
                 anio = UtilHelper.getDateYear()
-                mes = UtilHelper.getMonthYear(listMonths[i].split("-")[0].toInt())
+                mes = UtilHelper.getMonthYear(month.split("-")[0].toInt())
                 fecha = UtilHelper.getDate()
             }
 
             val exists = viajesList.any { it.mes == ventaMesModel.mes && it.anio == ventaMesModel.anio }
 
             if (!exists) {
-                FirebaseViajesUtil.guardarListaMeses(listMonths[i], ventaMesModel)
+                FirebaseViajesUtil.guardarListaMeses(month, ventaMesModel)
             }
         }
     }
@@ -174,9 +171,8 @@ class ViajesFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
             }
         })
     }
-
 }

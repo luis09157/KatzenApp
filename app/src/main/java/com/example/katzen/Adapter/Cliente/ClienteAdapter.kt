@@ -41,6 +41,7 @@ class ClienteAdapter (
             holder.imgPerfil = itemView.findViewById(R.id.imgPerfil)
             holder.nombreCompletoTextView = itemView.findViewById(R.id.textViewNombreCompleto)
 
+            holder.expediente = itemView.findViewById(R.id.textExpediente)
             holder.fondoTelefono = itemView.findViewById(R.id.fondoTelefono)
             holder.fondoCorreo = itemView.findViewById(R.id.fondoCorreo)
             holder.fondoUbicacion = itemView.findViewById(R.id.fondoUbicacion)
@@ -55,6 +56,7 @@ class ClienteAdapter (
         holder.imgPerfil?.setImageResource(R.drawable.ic_person)
 
         holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
+        holder.expediente?.text = cliente.expediente
 
         if (cliente.imageUrl.isNotEmpty()) {
             Glide.with(activity)
@@ -118,6 +120,7 @@ class ClienteAdapter (
     private class ViewHolder {
         var imgPerfil: ImageView? = null
         var nombreCompletoTextView: TextView? = null
+        var expediente: TextView? = null
         var fondoTelefono: ImageView? = null
         var fondoCorreo: ImageView? = null
         var fondoUbicacion: ImageView? = null

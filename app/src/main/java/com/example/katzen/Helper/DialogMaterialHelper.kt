@@ -17,6 +17,17 @@ class DialogMaterialHelper {
                     .show()
             }
         }
+        fun mostrarSuccessClickDialog(activity: Activity, mensaje: String, onAceptarClick: () -> Unit) {
+            activity.runOnUiThread {
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle("Éxito")
+                    .setMessage(mensaje)
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        onAceptarClick()
+                    }
+                    .show()
+            }
+        }
         fun mostrarConfirmEditDialog(
             activity: Activity,
             mensaje: String,

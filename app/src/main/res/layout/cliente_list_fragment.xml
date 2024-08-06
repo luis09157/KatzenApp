@@ -52,7 +52,7 @@
                     android:textColor="@color/black"
                     android:text="Luis Alfonso Niño Mtz"
                     android:textStyle="bold"
-                    app:autoSizeMaxTextSize="18sp"
+                    app:autoSizeMaxTextSize="16sp"
                     app:autoSizeMinTextSize="10sp"
                     app:autoSizeTextType="uniform" />
 
@@ -72,7 +72,7 @@
                         android:textColor="@color/black"
                         android:text="Expediente: "
                         android:textStyle="bold"
-                        app:autoSizeMaxTextSize="18sp"
+                        app:autoSizeMaxTextSize="16sp"
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeTextType="uniform" />
                     <com.google.android.material.textview.MaterialTextView
@@ -85,7 +85,7 @@
                         android:maxLines="1"
                         android:textColor="@color/red_A700"
                         android:textStyle="bold"
-                        app:autoSizeMaxTextSize="18sp"
+                        app:autoSizeMaxTextSize="16sp"
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeTextType="uniform" />
                 </LinearLayout>

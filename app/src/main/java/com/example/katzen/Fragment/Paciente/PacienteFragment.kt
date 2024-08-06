@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Paciente.PacienteAdapter
 import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
@@ -23,7 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 class PacienteFragment : Fragment() {
-    val TAG : String  = "PacienteFragment"
+    val TAG: String = "PacienteFragment"
 
     private var _binding: PacienteFragmentBinding? = null
     private val binding get() = _binding!!
@@ -47,8 +46,8 @@ class PacienteFragment : Fragment() {
         return root
     }
 
-    fun init(){
-        ConfigLoading.showLoadingAnimation()
+    private fun init() {
+        ConfigLoading.showLoadingAnimation() // Show loading animation
         mascotasList = mutableListOf()
         pacienteListAdapter = PacienteListAdapter(requireActivity(), mascotasList)
         binding.lisMenuMascota.adapter = pacienteListAdapter
@@ -56,11 +55,12 @@ class PacienteFragment : Fragment() {
 
         obtenerMascotas()
     }
-    fun listeners(){
+
+    private fun listeners() {
         binding.btnAddPaciente.setOnClickListener {
             AddPacienteFragment.ADD_PACIENTE = PacienteModel()
             FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
-            UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(),TAG)
+            UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
         }
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -74,12 +74,13 @@ class PacienteFragment : Fragment() {
                 return true
             }
         })
-        binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
+        binding.lisMenuMascota.setOnItemClickListener { _, _, i, _ ->
             EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
-            UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(),TAG)
+            UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(), TAG)
         }
     }
-    fun initLoading(){
+
+    private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
@@ -89,48 +90,64 @@ class PacienteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    fun obtenerMascotas(){
-        FirebasePacienteUtil.obtenerListaMascotas(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Limpiar la lista antes de agregar los nuevos datos
-                mascotasList.clear()
 
-                // Recorrer los datos obtenidos y agregarlos a la lista de productos
-                for (productoSnapshot in snapshot.children) {
-                    val producto = productoSnapshot.getValue(PacienteModel::class.java)
-                    producto?.let { mascotasList.add(it) }
+    private fun obtenerMascotas() {
+        try {
+            FirebasePacienteUtil.obtenerListaMascotas(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    try {
+                        // Limpiar la lista antes de agregar los nuevos datos
+                        mascotasList.clear()
+
+                        // Recorrer los datos obtenidos y agregarlos a la lista de productos
+                        for (productoSnapshot in snapshot.children) {
+                            val producto = productoSnapshot.getValue(PacienteModel::class.java)
+                            producto?.let { mascotasList.add(it) }
+                        }
+
+                        // Notificar al adaptador que los datos han cambiado
+                        pacienteListAdapter.notifyDataSetChanged()
+
+                        if (mascotasList.isNotEmpty()) {
+                            requireActivity().title = "${getString(R.string.menu_paciente)} (${mascotasList.size})"
+                            ConfigLoading.hideLoadingAnimation() // Hide loading animation
+                        } else {
+                            ConfigLoading.showNodata() // Show no data view
+                        }
+                    } catch (e: Exception) {
+                        ConfigLoading.hideLoadingAnimation() // Hide loading animation on exception
+                        ConfigLoading.showNodata() // Show no data view on exception
+                        e.printStackTrace() // Log exception
+                    }
                 }
 
-                // Notificar al adaptador que los datos han cambiado
-                pacienteListAdapter.notifyDataSetChanged()
-                if (mascotasList.size > 0){
-                    requireActivity().title = "${getString(R.string.menu_paciente)} (${mascotasList.size})"
-                    ConfigLoading.hideLoadingAnimation()
-                }else{
-                    ConfigLoading.showNodata()
+                override fun onCancelled(error: DatabaseError) {
+                    ConfigLoading.hideLoadingAnimation() // Hide loading animation on error
+                    ConfigLoading.showNodata() // Show no data view
+                    // Manejar errores de la consulta a la base de datos
+                    // Por ejemplo, mostrar un mensaje de error
+                    error.toException().printStackTrace() // Log database error
                 }
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                ConfigLoading.showNodata()
-                // Manejar errores de la consulta a la base de datos
-                // Por ejemplo, mostrar un mensaje de error
-            }
-        })
+            })
+        } catch (e: Exception) {
+            ConfigLoading.hideLoadingAnimation() // Hide loading animation on exception
+            ConfigLoading.showNodata() // Show no data view on exception
+            e.printStackTrace() // Log exception
+        }
     }
-    fun filterMascotas(text: String) {
+
+    private fun filterMascotas(text: String) {
         val filteredList = mascotasList.filter { mascota ->
             mascota.nombre.contains(text, ignoreCase = true)
         }
         pacienteListAdapter.updateList(filteredList)
     }
+
     override fun onResume() {
         super.onResume()
-        init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
             }
         })
     }

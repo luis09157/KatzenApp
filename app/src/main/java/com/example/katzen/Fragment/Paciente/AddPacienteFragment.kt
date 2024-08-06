@@ -109,8 +109,8 @@ class AddPacienteFragment : Fragment() {
 
 
         UpperCaseTextWatcher.UpperText(binding.spEspecie)
-        UpperCaseTextWatcher.UpperText(binding.spRaza)
-        UpperCaseTextWatcher.UpperText(binding.spSexo)
+        //UpperCaseTextWatcher.UpperText(binding.spRaza)
+        //UpperCaseTextWatcher.UpperText(binding.spSexo)
 
         /*UpperCaseTextWatcher.UpperText(binding.textColor)
         UpperCaseTextWatcher.UpperText(binding.textPeso)

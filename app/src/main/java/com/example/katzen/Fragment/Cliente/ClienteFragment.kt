@@ -61,7 +61,7 @@ class ClienteFragment : Fragment() {
     }
      fun filterClientes(text: String) {
         val filteredList = clientesList.filter { cliente ->
-            val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
+            val fullName = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno} ${cliente.expediente}"
             fullName.contains(text, ignoreCase = true)
         }
          clientesAdapter.updateList(filteredList)

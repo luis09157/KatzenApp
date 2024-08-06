@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Viajes
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ViajesDetalleFragment : Fragment() {
-    val TAG : String  = "ViajesDetalleFragment"
+    private val TAG: String = "ViajesDetalleFragment"
 
     private var _binding: ViajesDetalleFragmentBinding? = null
     private val binding get() = _binding!!
@@ -49,7 +50,7 @@ class ViajesDetalleFragment : Fragment() {
         return root
     }
 
-    fun init(){
+    private fun init() {
         ConfigLoading.showLoadingAnimation()
         viajesDetalleList = mutableListOf()
         viajesDetalleAdapter = ViajeMesDetalleAdapter(requireActivity(), viajesDetalleList)
@@ -57,18 +58,20 @@ class ViajesDetalleFragment : Fragment() {
         binding.lisMenuViaje.divider = null
 
         // Obtener los cargos de viaje
-        FirebaseViajesUtil.obtenerListaCargosViajes( object : ValueEventListener {
+        FirebaseViajesUtil.obtenerListaCargosViajes(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 getData(snapshot)
             }
 
             override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Error al obtener los datos de Firebase: ${error.message}")
                 ConfigLoading.showNodata()
                 // Manejar errores de la consulta a la base de datos
                 // Por ejemplo, mostrar un mensaje de error
             }
         })
     }
+
     private data class ResultadoDatos(
         val lista: List<VentaMesDetalleModel>,
         val costoTotal: Double,
@@ -84,6 +87,7 @@ class ViajesDetalleFragment : Fragment() {
                 }
                 updateUI(result)
             } catch (e: Exception) {
+                Log.e(TAG, "Error al procesar los datos: ${e.message}", e)
                 ConfigLoading.showNodata()
             }
         }
@@ -112,7 +116,6 @@ class ViajesDetalleFragment : Fragment() {
     }
 
     private fun updateUI(result: ResultadoDatos) {
-
         viajesDetalleList.clear()
         viajesDetalleList.addAll(result.lista)
         Config.COSTO = result.costoTotal
@@ -126,18 +129,16 @@ class ViajesDetalleFragment : Fragment() {
         } else {
             ConfigLoading.showNodata()
         }
-
     }
 
-
-    fun filterClientes(text: String) {
+    private fun filterClientes(text: String) {
         val filteredList = viajesDetalleList.filter { viaje ->
             viaje.nombreDomicilio.contains(text, ignoreCase = true)
         }
         viajesDetalleAdapter.updateList(filteredList)
     }
 
-    fun listeners(){
+    private fun listeners() {
         binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
@@ -150,21 +151,23 @@ class ViajesDetalleFragment : Fragment() {
                 return true
             }
         })
-        binding.lisMenuViaje.setOnItemClickListener { adapterView, view, i, l ->
-            //Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesDetalleList[i].mes)}-${viajesDetalleList[i].anio}"
-            //UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(),TAG)
+
+        binding.lisMenuViaje.setOnItemClickListener { _, _, i, _ ->
+            // Acción al hacer clic en un ítem de la lista
+            // Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesDetalleList[i].mes)}-${viajesDetalleList[i].anio}"
+            // UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(), TAG)
         }
+
         binding.btnAddViaje.setOnClickListener {
             AddViajeFragment.ADD_VIAJE = VentaMesDetalleModel()
             AddViajeFragment.ADD_CLIENTE_VIAJE = ClienteModel()
             AddViajeFragment.EDIT_VIAJE = VentaMesDetalleModel()
-            UtilFragment.changeFragment(requireContext(), AddViajeFragment(),TAG)
-            //DialogHelper.dialogAddDomicilio(requireActivity())
+            UtilFragment.changeFragment(requireContext(), AddViajeFragment(), TAG)
+            // DialogHelper.dialogAddDomicilio(requireActivity())
         }
-
     }
 
-    fun initLoading(){
+    private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
@@ -180,9 +183,8 @@ class ViajesDetalleFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , ViajesFragment() ,TAG)
+                UtilFragment.changeFragment(requireContext(), ViajesFragment(), TAG)
             }
         })
     }
-
 }

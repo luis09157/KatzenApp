@@ -62,22 +62,22 @@ class SeleccionarPacienteClienteFragment(val flagVentana: String) : Fragment() {
             val selectedCliente = seleccionPacienteAdapter.getItem(i)
             when (flagVentana) {
                 "EDIT_PACIENTE" -> {
-                    EditarPacienteFragment.PACIENTE_EDIT.idCliente = selectedCliente!!.id
-                    EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${selectedCliente.nombre}"
+                    EditarPacienteFragment.PACIENTE_EDIT.idCliente = selectedCliente?.id ?: ""
+                    EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${selectedCliente?.nombre ?: ""}"
                     UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
                 }
                 "ADD_PACIENTE" -> {
-                    AddPacienteFragment.ADD_PACIENTE.idCliente = selectedCliente!!.id
-                    AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${selectedCliente.nombre}"
+                    AddPacienteFragment.ADD_PACIENTE.idCliente = selectedCliente?.id ?: ""
+                    AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${selectedCliente?.nombre ?: ""}"
                     UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
                 }
                 "ADD_VIAJE" -> {
-                  //  AddViajeFragment.ADD_CLIENTE_VIAJE = selectedCliente!!
+                    // AddViajeFragment.ADD_CLIENTE_VIAJE = selectedCliente!!
                     UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
                 }
                 "ADD_CAMPAÑA" -> {
-                    CampañaFragment.ADD_CAMPAÑA.idPaciente = selectedCliente!!.id
-                    CampañaFragment.ADD_CAMPAÑA.nombrePaciente = "${selectedCliente.nombre}"
+                    CampañaFragment.ADD_CAMPAÑA.idPaciente = selectedCliente?.id ?: ""
+                    CampañaFragment.ADD_CAMPAÑA.nombrePaciente = "${selectedCliente?.nombre ?: ""}"
                     UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
                 }
                 else -> {
