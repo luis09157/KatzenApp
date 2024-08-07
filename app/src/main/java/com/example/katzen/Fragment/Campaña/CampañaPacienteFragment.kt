@@ -10,14 +10,18 @@ import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Paciente.PacienteAdapter
+import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
+import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.R
 import com.example.katzen.databinding.CampaniaEventoFragmentBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -27,7 +31,7 @@ class CampañaPacienteFragment : Fragment() {
     private var _binding: CampaniaEventoFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var pacienteList: MutableList<PacienteModel>
-    private lateinit var pacienteListAdapter: PacienteAdapter
+    private lateinit var pacienteListAdapter: PacienteListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +58,7 @@ class CampañaPacienteFragment : Fragment() {
         ConfigLoading.hideLoadingAnimation()
 
         pacienteList = mutableListOf()
-        pacienteListAdapter = PacienteAdapter(requireActivity(), pacienteList)
+        pacienteListAdapter = PacienteListAdapter(requireActivity(), pacienteList)
         binding.lisMenuMascota.adapter = pacienteListAdapter
         binding.lisMenuMascota.divider = null
     }
@@ -101,17 +105,43 @@ class CampañaPacienteFragment : Fragment() {
     }
 
     private suspend fun obtenerPacientes() {
-        val campaña = // obtener campaña actual de algún modo (puede ser a través de argumentos o de una variable global)
-            FirebaseCampañaUtil.obtenerPacientesCampaña(CampañaFragment.ADD_CAMPAÑA).let { pacientes ->
-                withContext(Dispatchers.Main) {
-                   /* pacienteList.clear()
-                    pacienteList.addAll(pacientes)
-                    pacienteListAdapter.notifyDataSetChanged()*/
+        try {
+            val pacientes = FirebaseCampañaUtil.obtenerListaPacientes(CampañaFragment.ADD_CAMPAÑA)
 
-                    ConfigLoading.hideLoadingAnimation()
+            // Usamos `withContext(Dispatchers.IO)` para realizar operaciones asíncronas en el contexto adecuado.
+            val pacienteDeferredList = withContext(Dispatchers.IO) {
+                pacientes.map { paciente ->
+                    async {
+                        val pacienteCompleto = FirebasePacienteUtil.obtenerPacientePorId(paciente.idPaciente)
+                        pacienteCompleto
+                    }
                 }
             }
+
+            // Esperamos a que todas las operaciones asíncronas terminen y recolectamos los resultados.
+            val pacientesCompletos = pacienteDeferredList.awaitAll()
+
+            // Filtramos los resultados nulos y los agregamos a la lista de pacientes.
+            pacienteList.clear()
+            pacienteList.addAll(pacientesCompletos.filterNotNull())
+
+            // Actualizamos la interfaz de usuario en el contexto principal.
+            withContext(Dispatchers.Main) {
+                pacienteListAdapter.notifyDataSetChanged()
+                ConfigLoading.hideLoadingAnimation()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al obtener pacientes: ${e.message}")
+            withContext(Dispatchers.Main) {
+                ConfigLoading.hideLoadingAnimation()
+                // Muestra un mensaje de error si es necesario.
+            }
+        }
     }
+
+
+
+
 
     override fun onResume() {
         super.onResume()

@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Model.CampañaModel
+import com.example.katzen.Model.PacienteCampañaModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -96,13 +97,13 @@ class FirebaseCampañaUtil {
                 })
             }
         }
-        suspend fun obtenerListaPacientes(campaña: CampañaModel): List<PacienteModel> {
+        suspend fun obtenerListaPacientes(campaña: CampañaModel): List<PacienteCampañaModel> {
             return suspendCancellableCoroutine { continuation ->
                 val referenciaPacientes: DatabaseReference = database.getReference("$CAMPANAS_PATH/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
 
                 referenciaPacientes.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val pacientes = snapshot.children.mapNotNull { it.getValue(PacienteModel::class.java) }
+                        val pacientes = snapshot.children.mapNotNull { it.getValue(PacienteCampañaModel::class.java) }
                         continuation.resume(pacientes)
                     }
 
@@ -114,25 +115,29 @@ class FirebaseCampañaUtil {
         }
 
         @JvmStatic
-        fun obtenerPacientesCampaña(campaña: CampañaModel) {
+        fun obtenerPacientesCampaña(campaña: CampañaModel, onSuccess: (List<PacienteCampañaModel>) -> Unit, onError: (DatabaseError) -> Unit) {
             val referenciaPacientes: DatabaseReference =
                 database.getReference("$CAMPANAS_PATH/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
             Log.d("FirebaseCampañaUtil", "$CAMPANAS_PATH/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
+
             referenciaPacientes.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    val listaPacientes = mutableListOf<PacienteCampañaModel>()
                     for (pacienteSnapshot in snapshot.children) {
-                        val idPaciente =
-                            pacienteSnapshot.child("idPaciente").getValue(String::class.java)
-                        if (idPaciente != null) {
-                            Log.d("FirebaseCampañaUtil", "idPaciente: $idPaciente")
+                        val paciente = pacienteSnapshot.getValue(PacienteCampañaModel::class.java)
+                        if (paciente != null) {
+                            listaPacientes.add(paciente)
                         }
                     }
+                    onSuccess(listaPacientes) // Retornar la lista de pacientes
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("FirebaseCampañaUtil", "Error al obtener los pacientes: ${error.message}")
+                    onError(error) // Manejar el error
                 }
             })
         }
+
     }
 }
