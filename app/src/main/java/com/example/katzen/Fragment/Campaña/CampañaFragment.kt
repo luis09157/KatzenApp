@@ -58,12 +58,11 @@ class CampañaFragment : Fragment() {
     }
 
     fun init() {
-        ConfigLoading.hideLoadingAnimation()
+        ConfigLoading.showLoadingAnimation()
         campañaList = mutableListOf()
         campañaListAdapter = CampañaAdapter(requireActivity(), campañaList)
         binding.lisMenuCampaA.adapter = campañaListAdapter
     }
-
     fun listeners() {
         binding.lisMenuCampaA.setOnItemClickListener { adapterView, view, i, l ->
             ADD_CAMPAÑA.año = CalendarioUtil.obtenerAñoActual()
@@ -81,13 +80,11 @@ class CampañaFragment : Fragment() {
             }
         })
     }
-
     fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-
     fun initCampañas() {
         campañaList.clear() // Limpiar la lista antes de agregar nuevos elementos
 
@@ -114,7 +111,6 @@ class CampañaFragment : Fragment() {
         // Notificar al adaptador que los datos han cambiado
         campañaListAdapter.notifyDataSetChanged()
     }
-
     suspend fun obtenerCantidadCampañasPorMes() {
         for (campañaModel in campañaList) {
             val mesKey = obtenerKeyDesdeNombreMes(campañaModel.mes) // Implementa esta función según tu lógica
@@ -124,25 +120,24 @@ class CampañaFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     campañaListAdapter.notifyDataSetChanged()
                 }
+                ConfigLoading.hideLoadingAnimation()
             } catch (e: Exception) {
+                ConfigLoading.showNodata()
                 println("Error al obtener cantidad de campañas para ${campañaModel.mes}: ${e.message}")
                 // Manejar el error si es necesario
             }
         }
     }
-
     fun filterMascotas(text: String) {
         val filteredList = campañaList.filter { campaña ->
             campaña.mes.contains(text, ignoreCase = true)
         }
         campañaListAdapter.updateList(filteredList)
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     // Función para obtener la clave del mes a partir de su nombre
     private fun obtenerKeyDesdeNombreMes(nombreMes: String): String {
         val nombresMeses = arrayOf(
@@ -156,7 +151,6 @@ class CampañaFragment : Fragment() {
             ""
         }
     }
-
     override fun onResume() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {

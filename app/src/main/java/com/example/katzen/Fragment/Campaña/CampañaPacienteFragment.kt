@@ -53,16 +53,17 @@ class CampañaPacienteFragment : Fragment() {
 
         return root
     }
-
     private fun init() {
-        ConfigLoading.hideLoadingAnimation()
+        ConfigLoading.showLoadingAnimation()
 
+        binding.btnAddPacienteCampaA.visibility = View.VISIBLE
+        binding.btnAddCampania.visibility = View.GONE
         pacienteList = mutableListOf()
         pacienteListAdapter = PacienteListAdapter(requireActivity(), pacienteList)
         binding.lisMenuMascota.adapter = pacienteListAdapter
         binding.lisMenuMascota.divider = null
+        PacienteListAdapter.FLAG_DELETE_PACIENTE = false
     }
-
     private fun listeners() {
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -80,30 +81,27 @@ class CampañaPacienteFragment : Fragment() {
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
         }
-
         binding.btnAddPacienteCampaA.setOnClickListener {
+            CampañaFragment.ADD_CAMPAÑA.nombreCliente = ""
+            CampañaFragment.ADD_CAMPAÑA.nombrePaciente = ""
             UtilFragment.changeFragment(requireContext(), AddPacienteCampañaFragment(), TAG)
         }
     }
-
     private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-
     private fun filterPacientes(text: String) {
         val filteredList = pacienteList.filter { paciente ->
             paciente.nombre.contains(text, ignoreCase = true)
         }
         pacienteListAdapter.updateList(filteredList)
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     private suspend fun obtenerPacientes() {
         try {
             val pacientes = FirebaseCampañaUtil.obtenerListaPacientes(CampañaFragment.ADD_CAMPAÑA)
@@ -128,26 +126,25 @@ class CampañaPacienteFragment : Fragment() {
             // Actualizamos la interfaz de usuario en el contexto principal.
             withContext(Dispatchers.Main) {
                 pacienteListAdapter.notifyDataSetChanged()
-                ConfigLoading.hideLoadingAnimation()
+                if (pacienteList.size > 0) {
+                    ConfigLoading.hideLoadingAnimation()
+                }else{
+                    ConfigLoading.showNodata()
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error al obtener pacientes: ${e.message}")
             withContext(Dispatchers.Main) {
-                ConfigLoading.hideLoadingAnimation()
+                ConfigLoading.showNodata()
                 // Muestra un mensaje de error si es necesario.
             }
         }
     }
-
-
-
-
-
     override fun onResume() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
             }
         })
     }

@@ -2,6 +2,7 @@ package com.example.katzen.Adapter.Paciente
 
 import PacienteModel
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +11,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
+import com.example.katzen.Fragment.Campaña.CampañaPacienteFragment
 import com.example.katzen.Fragment.Cliente.ClienteDetalleFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Model.CampañaModel
 import com.example.katzen.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +30,7 @@ class PacienteListAdapter(
     private var mascotaList: List<PacienteModel>
 ) : ArrayAdapter<PacienteModel>(activity, R.layout.view_list_paciente, mascotaList) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
         var holder: ViewHolder
         val itemView = convertView ?: LayoutInflater.from(activity).inflate(R.layout.view_list_paciente, parent, false).apply {
             holder = ViewHolder().apply {
@@ -76,22 +81,11 @@ class PacienteListAdapter(
 
     private fun showDeleteConfirmationDialog(pacienteId: String) {
         activity.runOnUiThread {
-            DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este paciente?") { confirmed ->
-                if (confirmed) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        val (success, message) = FirebasePacienteUtil.eliminarMascota(pacienteId)
-                        withContext(Dispatchers.Main) {
-                            if (success) {
-                                DialogMaterialHelper.mostrarSuccessClickDialog(activity, message) {
-                                    UtilFragment.changeFragment(activity , ClienteDetalleFragment(), "PacienteListAdapter")
-                                }
-                            } else {
-                                DialogMaterialHelper.mostrarErrorDialog(activity, message)
-                            }
-                        }
-                    }
-                }
-            }
+          if(FLAG_DELETE_PACIENTE){
+              deletePacienteDelCliente(pacienteId)
+          }else{
+              deletePacienteDeCampaña(pacienteId)
+          }
         }
     }
 
@@ -104,6 +98,57 @@ class PacienteListAdapter(
         notifyDataSetChanged()
     }
 
+    private fun deletePacienteDelCliente(pacienteId: String){
+        DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este paciente?") { confirmed ->
+            if (confirmed) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val (success, message) = FirebasePacienteUtil.eliminarMascota(pacienteId)
+                    withContext(Dispatchers.Main) {
+                        if (success) {
+                            DialogMaterialHelper.mostrarSuccessClickDialog(activity, message) {
+                                UtilFragment.changeFragment(activity , CampañaPacienteFragment(), "PacienteListAdapter")
+                            }
+                        } else {
+                            DialogMaterialHelper.mostrarErrorDialog(activity, message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deletePacienteDeCampaña(pacienteId: String) {
+        DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este paciente de la campaña?") { confirmed ->
+            if (confirmed) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        // Eliminar la referencia del paciente en la campaña específica en Firebase
+                        val success = FirebaseCampañaUtil.eliminarPacientePorIdPacienteCampaña(pacienteId)
+
+                        withContext(Dispatchers.Main) {
+                            if (success) {
+                                DialogMaterialHelper.mostrarSuccessClickDialog(activity, "Paciente eliminado de la campaña con éxito") {
+                                    notifyDataSetChanged()
+                                    UtilFragment.changeFragment(activity, CampañaPacienteFragment(), "PacienteListAdapter")
+                                }
+                            } else {
+                                DialogMaterialHelper.mostrarErrorDialog(activity, "No se pudo eliminar el paciente de la campaña")
+                            }
+                        }
+                    } catch (e: Exception) {
+                        withContext(Dispatchers.Main) {
+                            Log.e("PacienteListAdapter", "Error al eliminar paciente de campaña: ${e.message}")
+                            DialogMaterialHelper.mostrarErrorDialog(activity, "Ocurrió un error al intentar eliminar el paciente")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    companion object{
+        var FLAG_DELETE_PACIENTE : Boolean = true
+    }
     private class ViewHolder {
         var imgPerfil: ImageView? = null
         var nombrePaciente: TextView? = null

@@ -14,6 +14,7 @@ import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarPacienteClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.databinding.VistaAgregarPacienteCampaniaBinding
 import kotlinx.coroutines.launch
@@ -47,7 +48,6 @@ class AddPacienteCampañaFragment : Fragment() {
 
     fun init(){
         binding.editTextFecha2.setText(CalendarioUtil.obtenerFechaHoraActual())
-        ADD_CAMPAÑA.fecha = CalendarioUtil.obtenerFechaHoraActual()
     }
 
     fun initLoading(){
@@ -68,7 +68,7 @@ class AddPacienteCampañaFragment : Fragment() {
             result.fold(
                 onSuccess = {
                     // Handle success, e.g., navigate back to the campaign list
-                    UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+                    UtilFragment.changeFragment(requireContext(), CampañaPacienteFragment(), TAG)
                 },
                 onFailure = {
                     // Handle failure, e.g., show an error message
@@ -108,6 +108,18 @@ class AddPacienteCampañaFragment : Fragment() {
                 UtilFragment.changeFragment(requireContext(), SeleccionarPacienteClienteFragment("ADD_CAMPAÑA"), TAG)
             }
         }
+        binding.editTextFecha2.setOnClickListener {
+            it.hideKeyboard()
+            CalendarioUtil.mostrarCalendarioFechaCampaña(requireContext(), binding.editTextFecha)
+        }
+        binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
+            UtilHelper.hideKeyBoardWorld(requireActivity(), view)
+            if (isFocus) {
+                view.hideKeyboard()
+                CalendarioUtil.mostrarCalendarioFechaCampaña(requireContext(), binding.editTextFecha)
+
+            }
+        }
     }
 
     fun setCampañaModel(){
@@ -126,7 +138,7 @@ class AddPacienteCampañaFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+                    UtilFragment.changeFragment(requireContext(), CampañaPacienteFragment(), TAG)
                 }
             })
     }

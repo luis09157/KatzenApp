@@ -28,7 +28,6 @@ class FirebaseCampañaUtil {
 
             referenciaCampañas.addValueEventListener(listener)
         }
-
         suspend fun contarCampañasPorMes(mes: String): Int {
             return suspendCancellableCoroutine { continuation ->
                 referenciaCampaña.child(CalendarioUtil.obtenerAñoActual()).child(mes).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -44,7 +43,6 @@ class FirebaseCampañaUtil {
                 })
             }
         }
-
         suspend fun agregarCampaña(campaña: CampañaModel): Result<String> {
             return try {
                 val referenciaAddCampaña: DatabaseReference = database.getReference("${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}")
@@ -60,11 +58,10 @@ class FirebaseCampañaUtil {
                 Result.failure(e)
             }
         }
-
         suspend fun agregarPacienteCampaña(campaña: CampañaModel): Result<String> {
             return try {
-                Log.e("amonosperro","${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/eb901a42-fa5f-4458-bc7b-98b1cc4ebe5a/eventos")
-                val referenciaPacienteCampaña: DatabaseReference = database.getReference("${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/eb901a42-fa5f-4458-bc7b-98b1cc4ebe5a/pacientes")
+                Log.e("amonosperro","${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/eventos")
+                val referenciaPacienteCampaña: DatabaseReference = database.getReference("${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
                 val nuevoPacienteRef = referenciaPacienteCampaña.push()
                 val pacienteId = nuevoPacienteRef.key ?: return Result.failure(Exception("No se pudo generar un ID para el paciente"))
                 val pacienteData = mapOf(
@@ -113,31 +110,43 @@ class FirebaseCampañaUtil {
                 })
             }
         }
+        suspend fun eliminarPacientePorIdPacienteCampaña(idPaciente: String): Boolean {
+            return try {
+                val campaña = CampañaFragment.ADD_CAMPAÑA
+                val referenciaPacientes = FirebaseDatabase.getInstance()
+                    .getReference("Katzen/Campaña/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
 
-        @JvmStatic
-        fun obtenerPacientesCampaña(campaña: CampañaModel, onSuccess: (List<PacienteCampañaModel>) -> Unit, onError: (DatabaseError) -> Unit) {
-            val referenciaPacientes: DatabaseReference =
-                database.getReference("$CAMPANAS_PATH/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
-            Log.d("FirebaseCampañaUtil", "$CAMPANAS_PATH/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
+                val pacienteSnapshot = referenciaPacientes.orderByChild("idPaciente").equalTo(idPaciente).get().await()
 
-            referenciaPacientes.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val listaPacientes = mutableListOf<PacienteCampañaModel>()
-                    for (pacienteSnapshot in snapshot.children) {
-                        val paciente = pacienteSnapshot.getValue(PacienteCampañaModel::class.java)
-                        if (paciente != null) {
-                            listaPacientes.add(paciente)
-                        }
+                if (pacienteSnapshot.exists()) {
+                    for (snapshot in pacienteSnapshot.children) {
+                        snapshot.ref.removeValue().await()
                     }
-                    onSuccess(listaPacientes) // Retornar la lista de pacientes
+                    true
+                } else {
+                    Log.e("FirebaseCampañaUtil", "Paciente con idPaciente $idPaciente no encontrado en la campaña.")
+                    false
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("FirebaseCampañaUtil", "Error al obtener los pacientes: ${error.message}")
-                    onError(error) // Manejar el error
-                }
-            })
+            } catch (e: Exception) {
+                Log.e("FirebaseCampañaUtil", "Error al eliminar paciente de la campaña: ${e.message}")
+                false
+            }
         }
+        suspend fun eliminarCampaña(): Pair<Boolean, String> {
+            return suspendCancellableCoroutine { continuation ->
+                val referenciaCampaña: DatabaseReference = database.getReference("${CAMPANAS_PATH}/${CampañaFragment.ADD_CAMPAÑA.año}/${CampañaFragment.ADD_CAMPAÑA.mes}-${CampañaFragment.ADD_CAMPAÑA.año}")
+                referenciaCampaña.child(CampañaFragment.ADD_CAMPAÑA.id).removeValue()
+                    .addOnSuccessListener {
+                        continuation.resume(true to "Campaña eliminada exitosamente con ID: ${CampañaFragment.ADD_CAMPAÑA.id}")
+                    }
+                    .addOnFailureListener { exception ->
+                        println("Error al eliminar la campaña: ${exception.message}")
+                        continuation.resume(false to "Error al eliminar la campaña.")
+                    }
+            }
+        }
+
+
 
     }
 }

@@ -12,6 +12,7 @@ import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Fragment.Campaña.CampañaFragment.Companion.ADD_CAMPAÑA
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.databinding.VistaAgregarCampaniaBinding
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class AddCampañaFragment: Fragment() {
 
     fun init(){
         binding.editTextFecha2.setText(CalendarioUtil.obtenerFechaHoraActual())
-        ADD_CAMPAÑA.fecha = CalendarioUtil.obtenerFechaHoraActual()
+        ADD_CAMPAÑA.fecha = CalendarioUtil.obtenerFechaHoraActualCampaña()
     }
 
     fun initLoading(){
@@ -65,6 +66,18 @@ class AddCampañaFragment: Fragment() {
         }
         binding.btnCancelar.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+        }
+        binding.editTextFecha2.setOnClickListener {
+            it.hideKeyboard()
+            CalendarioUtil.mostrarCalendarioFechaCampaña(requireContext(), binding.editTextFecha)
+        }
+        binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
+            UtilHelper.hideKeyBoardWorld(requireActivity(), view)
+            if (isFocus) {
+                view.hideKeyboard()
+                CalendarioUtil.mostrarCalendarioFechaCampaña(requireContext(), binding.editTextFecha)
+
+            }
         }
     }
 

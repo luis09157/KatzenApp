@@ -12,6 +12,7 @@ class CampañaModel(
     var nombrePaciente: String = "",
     var año:String = "",
     var mes: String = "",
+    var dia: String = "",
     var fecha: String = ""
 
 

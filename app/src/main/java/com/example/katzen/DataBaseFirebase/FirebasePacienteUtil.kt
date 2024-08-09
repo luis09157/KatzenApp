@@ -19,7 +19,6 @@ class FirebasePacienteUtil {
         fun obtenerListaMascotas(listener: ValueEventListener) {
             referenciaMascota.addValueEventListener(listener)
         }
-
         suspend fun eliminarMascota(mascotaId: String): Pair<Boolean, String> {
             return suspendCancellableCoroutine { continuation ->
                 referenciaMascota.child(mascotaId).removeValue()
@@ -32,7 +31,6 @@ class FirebasePacienteUtil {
                     }
             }
         }
-
         suspend fun editarMascota(pacienteId: String, nuevoPaciente: PacienteModel): Result<String> {
             return withContext(Dispatchers.IO) {
                 suspendCancellableCoroutine { continuation ->
@@ -47,7 +45,6 @@ class FirebasePacienteUtil {
                 }
             }
         }
-
         suspend fun obtenerPacientesDeCliente(idCliente: String): List<PacienteModel> {
             return suspendCancellableCoroutine { continuation ->
                 referenciaMascota.orderByChild("idCliente").equalTo(idCliente)
@@ -68,7 +65,6 @@ class FirebasePacienteUtil {
                     })
             }
         }
-
         suspend fun eliminarPacientesDeCliente(clienteId: String): Boolean {
             return try {
                 val pacientes = obtenerPacientesDeCliente(clienteId)
@@ -107,12 +103,5 @@ class FirebasePacienteUtil {
                     })
             }
         }
-
-
-
-
-
-
-
     }
 }

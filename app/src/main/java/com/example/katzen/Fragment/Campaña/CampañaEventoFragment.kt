@@ -56,18 +56,18 @@ class CampañaEventoFragment : Fragment() {
             //obtenerCantidadCampañasPorMes()
         }
     }
-
     private fun init() {
-        ConfigLoading.hideLoadingAnimation()
-
+        ConfigLoading.showLoadingAnimation()
+        binding.btnAddPacienteCampaA.visibility = View.GONE
+        binding.btnAddCampania.visibility = View.VISIBLE
         campañaList = mutableListOf()
         campañaListAdapter = CampañaEventoAdapter(requireActivity(), campañaList)
         binding.lisMenuMascota.adapter = campañaListAdapter
         binding.lisMenuMascota.divider = null
 
+
         obtenerCampañas()
     }
-
     private fun listeners() {
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -80,36 +80,32 @@ class CampañaEventoFragment : Fragment() {
             }
         })
         binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
-            CampañaFragment.ADD_CAMPAÑA.id = campañaList.get(i).id
+            CampañaFragment.ADD_CAMPAÑA = campañaList.get(i)
             UtilFragment.changeFragment(requireContext(),CampañaPacienteFragment(),TAG)
         }
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
         }
-
         binding.btnAddPacienteCampaA.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddPacienteCampañaFragment(), TAG)
         }
-    }
 
+    }
     private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-
     private fun filterMascotas(text: String) {
         val filteredList = campañaList.filter { campaña ->
             campaña.mes.contains(text, ignoreCase = true)
         }
         campañaListAdapter.updateList(filteredList)
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     private fun obtenerCampañas() {
         FirebaseCampañaUtil.obtenerListaCampañas(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -135,7 +131,12 @@ class CampañaEventoFragment : Fragment() {
                         campañaList.addAll(campañas)
                         campañaListAdapter.notifyDataSetChanged()
 
-                        ConfigLoading.hideLoadingAnimation()
+                        if (campañaList.size > 0) {
+                            ConfigLoading.hideLoadingAnimation()
+                        }else{
+                            ConfigLoading.showNodata()
+                        }
+
                     }
                 }
             }
@@ -146,12 +147,11 @@ class CampañaEventoFragment : Fragment() {
             }
         })
     }
-
     override fun onResume() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                UtilFragment.changeFragment(requireContext(), CampañaFragment(), TAG)
             }
         })
     }
