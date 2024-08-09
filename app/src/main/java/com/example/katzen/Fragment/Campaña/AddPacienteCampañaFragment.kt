@@ -13,6 +13,7 @@ import com.example.katzen.Fragment.Campaña.CampañaFragment.Companion.ADD_CAMPA
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarPacienteClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
+import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
@@ -72,6 +73,7 @@ class AddPacienteCampañaFragment : Fragment() {
                 },
                 onFailure = {
                     // Handle failure, e.g., show an error message
+                    DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al agregar el paciente a la campaña: ${it.message}")
                     println("Error al agregar el paciente a la campaña: ${it.message}")
                 }
             )
@@ -79,7 +81,12 @@ class AddPacienteCampañaFragment : Fragment() {
     }
     fun initListeners(){
         binding.btnGuardar.setOnClickListener {
-           guardarPacienteCampaña()
+            if (validarCampos()) {
+                guardarPacienteCampaña()
+            }
+        }
+        binding.btnCancelar.setOnClickListener {
+            UtilFragment.changeFragment(requireContext(), CampañaPacienteFragment(), TAG)
         }
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
@@ -131,6 +138,28 @@ class AddPacienteCampañaFragment : Fragment() {
         binding.textCliente.setText(ADD_CAMPAÑA.nombreCliente)
         binding.textPaciente.setText(ADD_CAMPAÑA.nombrePaciente)
         binding.editTextFecha2.setText(ADD_CAMPAÑA.fecha)
+    }
+    fun validarCampos(): Boolean {
+        val nombreCliente = binding.textCliente.text.toString().trim()
+        val nombrePaciente = binding.textPaciente.text.toString().trim()
+        val fecha = binding.editTextFecha2.text.toString().trim()
+
+        if (nombreCliente.isEmpty()) {
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Por favor, selecciona un cliente.")
+            return false
+        }
+
+        if (nombrePaciente.isEmpty()) {
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Por favor, selecciona un paciente.")
+            return false
+        }
+
+        if (fecha.isEmpty()) {
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Por favor, selecciona una fecha.")
+            return false
+        }
+
+        return true
     }
     override fun onResume() {
         super.onResume()

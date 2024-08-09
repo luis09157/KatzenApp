@@ -60,8 +60,15 @@ class FirebaseCampañaUtil {
         }
         suspend fun agregarPacienteCampaña(campaña: CampañaModel): Result<String> {
             return try {
-                Log.e("amonosperro","${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/eventos")
                 val referenciaPacienteCampaña: DatabaseReference = database.getReference("${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")
+
+                // Verificar si el paciente ya existe
+                val existingPacienteSnapshot = referenciaPacienteCampaña.orderByChild("idPaciente").equalTo(campaña.idPaciente).get().await()
+                if (existingPacienteSnapshot.exists()) {
+                    return Result.failure(Exception("El paciente con ID: ${campaña.idPaciente} ya existe en la campaña."))
+                }
+
+                // Si no existe, proceder a agregar el nuevo paciente
                 val nuevoPacienteRef = referenciaPacienteCampaña.push()
                 val pacienteId = nuevoPacienteRef.key ?: return Result.failure(Exception("No se pudo generar un ID para el paciente"))
                 val pacienteData = mapOf(
@@ -71,12 +78,13 @@ class FirebaseCampañaUtil {
                     "fecha" to campaña.fecha
                 )
                 nuevoPacienteRef.setValue(pacienteData).await()
-                Result.success("Paciente agregado exitosamente a la campaña con ID: $pacienteId")
+                return Result.success("Paciente agregado exitosamente a la campaña con ID: $pacienteId")
             } catch (e: Exception) {
                 println("Error al agregar el paciente a la campaña: ${e.message}")
-                Result.failure(e)
+                return Result.failure(e)
             }
         }
+
         suspend fun obtenerCantidadPacientes(campaña: CampañaModel): Int {
             return suspendCancellableCoroutine { continuation ->
                 val referenciaPacientes = database.getReference("${CAMPANAS_PATH}/${campaña.año}/${campaña.mes}-${campaña.año}/${campaña.id}/pacientes")

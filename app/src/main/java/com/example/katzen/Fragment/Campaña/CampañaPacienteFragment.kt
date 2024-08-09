@@ -14,6 +14,8 @@ import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
+import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
+import com.example.katzen.Fragment.Paciente.PacienteDetalleFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.R
@@ -76,7 +78,8 @@ class CampañaPacienteFragment : Fragment() {
             }
         })
         binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
-
+            EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
+            UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(), TAG)
         }
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
