@@ -23,6 +23,7 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
+import com.example.katzen.PDF.ConvertPDF
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -150,14 +151,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == codeNotification) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+
+        when (requestCode) {
+            ConvertPDF.REQUEST_CODE_WRITE_STORAGE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permiso concedido, procede con la conversión
+                    Toast.makeText(this, "Permiso de almacenamiento concedido", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Permiso denegado
+                    Toast.makeText(this, "Permiso de almacenamiento denegado", Toast.LENGTH_SHORT).show()
+                }
             }
+            codeNotification -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+            // Manejo de otros permisos...
         }
     }
 

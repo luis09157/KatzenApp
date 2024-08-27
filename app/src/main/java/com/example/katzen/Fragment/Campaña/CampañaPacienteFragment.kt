@@ -1,15 +1,17 @@
 package com.example.katzen.Fragment.Campaña
 
 import PacienteModel
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Paciente.PacienteAdapter
+import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
@@ -18,9 +20,9 @@ import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Paciente.PacienteDetalleFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
+import com.example.katzen.PDF.ConvertPDF
 import com.example.katzen.R
 import com.example.katzen.databinding.CampaniaEventoFragmentBinding
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -49,12 +51,13 @@ class CampañaPacienteFragment : Fragment() {
         init()
         listeners()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             obtenerPacientes()
         }
 
         return root
     }
+
     private fun init() {
         ConfigLoading.showLoadingAnimation()
 
@@ -64,8 +67,9 @@ class CampañaPacienteFragment : Fragment() {
         pacienteListAdapter = PacienteListAdapter(requireActivity(), pacienteList)
         binding.lisMenuMascota.adapter = pacienteListAdapter
         binding.lisMenuMascota.divider = null
-        PacienteListAdapter.FLAG_DELETE_PACIENTE = false
+        PacienteListAdapter.FLAG_IN_PACIENTE = false
     }
+
     private fun listeners() {
         binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -77,39 +81,49 @@ class CampañaPacienteFragment : Fragment() {
                 return true
             }
         })
-        binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
+
+        binding.lisMenuMascota.setOnItemClickListener { _, _, i, _ ->
             EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
             UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(), TAG)
         }
+
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
         }
+
         binding.btnAddPacienteCampaA.setOnClickListener {
             CampañaFragment.ADD_CAMPAÑA.nombreCliente = ""
             CampañaFragment.ADD_CAMPAÑA.nombrePaciente = ""
             UtilFragment.changeFragment(requireContext(), AddPacienteCampañaFragment(), TAG)
         }
+
+        binding.btnPDF.setOnClickListener {
+
+        }
     }
+
     private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
+
     private fun filterPacientes(text: String) {
         val filteredList = pacienteList.filter { paciente ->
             paciente.nombre.contains(text, ignoreCase = true)
         }
         pacienteListAdapter.updateList(filteredList)
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
     private suspend fun obtenerPacientes() {
         try {
             val pacientes = FirebaseCampañaUtil.obtenerListaPacientes(CampañaFragment.ADD_CAMPAÑA)
 
-            // Usamos `withContext(Dispatchers.IO)` para realizar operaciones asíncronas en el contexto adecuado.
             val pacienteDeferredList = withContext(Dispatchers.IO) {
                 pacientes.map { paciente ->
                     async {
@@ -119,19 +133,15 @@ class CampañaPacienteFragment : Fragment() {
                 }
             }
 
-            // Esperamos a que todas las operaciones asíncronas terminen y recolectamos los resultados.
             val pacientesCompletos = pacienteDeferredList.awaitAll()
-
-            // Filtramos los resultados nulos y los agregamos a la lista de pacientes.
             pacienteList.clear()
             pacienteList.addAll(pacientesCompletos.filterNotNull())
 
-            // Actualizamos la interfaz de usuario en el contexto principal.
             withContext(Dispatchers.Main) {
                 pacienteListAdapter.notifyDataSetChanged()
-                if (pacienteList.size > 0) {
+                if (pacienteList.isNotEmpty()) {
                     ConfigLoading.hideLoadingAnimation()
-                }else{
+                } else {
                     ConfigLoading.showNodata()
                 }
             }
@@ -143,6 +153,7 @@ class CampañaPacienteFragment : Fragment() {
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {

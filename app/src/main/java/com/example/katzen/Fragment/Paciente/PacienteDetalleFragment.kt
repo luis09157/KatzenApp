@@ -13,6 +13,7 @@ import com.example.katzen.Adapter.Cliente.ClienteListAdapter
 import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.Fragment.Campaña.CampañaPacienteFragment
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Cliente.EditClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
@@ -124,7 +125,12 @@ class PacienteDetalleFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , PacienteFragment() ,TAG)
+                if(PacienteListAdapter.FLAG_IN_PACIENTE){
+                    UtilFragment.changeFragment(requireContext() , PacienteFragment() ,TAG)
+                }else{
+                    UtilFragment.changeFragment(requireContext() , CampañaPacienteFragment() ,TAG)
+                }
+
             }
         })
     }

@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Model.CampañaModel
+import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.PacienteCampañaModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -19,8 +20,12 @@ import kotlin.coroutines.resume
 class FirebaseCampañaUtil {
     companion object {
         private const val CAMPANAS_PATH = "Katzen/Campaña" // Ruta donde se guardan las campañas
+        private const val PACIENTES_PATH = "Katzen/Paciente"
+        private const val CLIENTES_PATH = "Katzen/Cliente"
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val referenciaCampaña: DatabaseReference = database.getReference(CAMPANAS_PATH)
+        val referenciaPaciente: DatabaseReference = database.getReference(PACIENTES_PATH)
+        val referenciaCliente: DatabaseReference = database.getReference(CLIENTES_PATH)
 
         @JvmStatic
         fun obtenerListaCampañas(listener: ValueEventListener) {
@@ -153,8 +158,21 @@ class FirebaseCampañaUtil {
                     }
             }
         }
-
-
+        suspend fun obtenerPacienteYCliente(idPaciente: String): Pair<PacienteModel?, ClienteModel?> {
+            return try {
+                val pacienteResult = FirebasePacienteUtil.obtenerPacientePorId(idPaciente)
+                if (pacienteResult != null) {
+                    val clienteResult = FirebaseClienteUtil.obtenerClientePorId(pacienteResult.idCliente)
+                    Pair(pacienteResult, clienteResult)
+                } else {
+                    Pair(null, null)
+                }
+            } catch (e: Exception) {
+                // Utiliza un logger en lugar de println para una mejor gestión de errores
+                Log.e("ErrorObteniendoDatos", "Error al obtener los datos: ${e.message}", e)
+                Pair(null, null)
+            }
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.katzen.Helper
 
+import PacienteModel
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -112,6 +113,13 @@ class UtilHelper {
             val anio = partes[2]
             return "${mes}-${anio}"
         }
+        fun setFechaACarpeta(fecha: String) : String{
+            val partes = fecha.split("/")
+            val dia = partes[0]
+            val mes = partes[1]
+            val anio = partes[2]
+            return "${dia}-${mes}-${anio}"
+        }
 
         fun hideKeyBoardWorld(activity : Activity,view : View){
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -208,6 +216,16 @@ class UtilHelper {
                 "NOV" -> "11"
                 "DIC" -> "12"
                 else -> throw IllegalArgumentException("Nombre de mes no válido: $mesAbreviado")
+            }
+        }
+        fun obtenerEdadPaciente(paciente: PacienteModel) : String{
+            return try {
+                val (anios, meses) = CalendarioUtil.calcularEdadMascota(paciente.edad)
+                val aniosTexto = anios.takeIf { it >= 0 } ?: 0
+                val mesesTexto = meses.takeIf { it >= 0 } ?: 0
+                "${aniosTexto} años y ${mesesTexto} meses"
+            } catch (e: Exception) {
+                "Información no disponible"
             }
         }
     }

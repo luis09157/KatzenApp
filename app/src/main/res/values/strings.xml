@@ -123,19 +123,21 @@
     <string name="no_results">No hay domicilios.</string>
 
     <string name="txt_direccion">Calle Zinc 318, Los Cristales 1er Sector, Gpe, N.L.</string>
-    <string name="txt_tel">Tel. 81 36 02 40 90</string>
+    <string name="txt_tel">Tel. 81 36 02 40 90 y 81 36 75 26 33</string>
 
 
     <string name="txt_acuerdo_1">Se me ha hecho de mi conocimiento que antes de realizar una esterilización es
-        indispensable que la mascota esté vacunada, desparasitada; además, tomando en cuenta que mi mascota
-    goza de plena salud, se me informo que la realización o no, de exámenes previos
-    (hematología, pruebas hepáticas y orina) se dejan totalmente a mi consideración; y en caso
-    de no realizarse, quedando solamente el historial anteriormente brindando por mi persona.</string>
+        indispensable que la mascota este vacunada, desparasitada; además, tomando en cuenta que
+        mi mascota goza de plena salud, se me informó que la realización o no, de exámenes
+        previos (hematología, pruebas hepáticas y orina) se dejan totalmente a mi consideración; y
+        en caso de no realizarse, quedando solamente el historial anteriormente brindado por mi
+        persona.</string>
 
     <string name="txt_acuerdo_2">Estoy enterado que el procedimiento quirúrgico será realizado bajo los efectos de anestesia
-    general y conozco los riesgos que por sí mismo conlleva, por lo cual externo de cualquier culpabilidad administrativa,
-    penal y civil al personal MÉDICO y ENCARGADOS DE ESTA VETERINARIA, ante cualquier eventualidad que se llegara a presentar
-    durante o después del proceso quirúrgico; por lo cual aceptó y firmo la siguiente autorización a los</string>
+        general y conozco los riesgos que por sí mismo conlleva, por lo cual externo de cualquier
+        culpabilidad administrativa, penal y civil al personal MÉDICO Y ENCARGADOS DE
+        ESTA VETERINARIA, ante cualquier eventualidad que se llegará a presentar durante o
+        después del proceso quirúrgico; por lo cual acepto y firmo la siguiente autorización a los</string>
     <string name="title_activity_viajes_detalle">ViajesDetalle</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

@@ -69,6 +69,28 @@
                     android:textStyle="bold" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/btnCompartir"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:background="@color/katzen_rosa"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_compartir"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/btnPDF"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:background="@color/katzen_verde"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_print"/>
+            </LinearLayout>
+            <LinearLayout
                 android:id="@+id/btnEliminar"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"

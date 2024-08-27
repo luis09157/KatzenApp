@@ -52,7 +52,7 @@ class PacienteFragment : Fragment() {
         pacienteListAdapter = PacienteListAdapter(requireActivity(), mascotasList)
         binding.lisMenuMascota.adapter = pacienteListAdapter
         binding.lisMenuMascota.divider = null
-        PacienteListAdapter.FLAG_DELETE_PACIENTE = true
+        PacienteListAdapter.FLAG_IN_PACIENTE = true
 
         obtenerMascotas()
     }
