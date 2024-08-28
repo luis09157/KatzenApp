@@ -73,8 +73,8 @@ class ConvertPDF(private val activity: Activity) {
                     configureTextViews(view, paciente, cliente)
 
                     // Definir las dimensiones del PDF en puntos (tamaño A4)
-                    val pageWidth = 695f
-                    val pageHeight = 942f
+                    val pageWidth = 595f
+                    val pageHeight = 842f
 
                     // Medir y ajustar la vista para que se ajuste a las dimensiones del PDF
                     measureAndLayoutView(view, pageWidth.toInt(), pageHeight.toInt())

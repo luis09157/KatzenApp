@@ -8,17 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:src="@drawable/logo_katzen" />
 
@@ -34,7 +33,7 @@
                     android:gravity="center"
                     android:text="KATZEN"
                     android:textColor="@color/katzen_rosa"
-                    android:textSize="10dp"
+                    android:textSize="8dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -43,7 +42,7 @@
                     android:gravity="center"
                     android:text="SERVICIOS VETERINARIOS"
                     android:textColor="@color/katzen_verde"
-                    android:textSize="7dp" />
+                    android:textSize="5dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -51,20 +50,20 @@
                     android:gravity="center"
                     android:text="Autorización de Esterilización"
                     android:textColor="#000000"
-                    android:textSize="7dp" />
+                    android:textSize="5dp" />
 
             </LinearLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
                 android:src="@drawable/mascota" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="160px"
+            android:layout_height="130px"
             android:layout_margin="10dp"
             android:orientation="vertical">
 
@@ -93,10 +92,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
                         android:autoLink="phone"
                         android:gravity="center|left"
                         android:text="2394894"
-                        android:textColor="@color/black"
                         android:textSize="@dimen/txt_pdf_dat"></TextView>
                 </LinearLayout>
 
@@ -119,6 +119,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:autoLink="phone"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:gravity="right|center"
                     android:text="24 / 09 / 2023 "
                     android:textSize="@dimen/txt_pdf_dat" />
@@ -145,8 +147,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:gravity="center|left"
                     android:text="Chocolate"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -164,7 +168,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
+                    android:textStyle="bold"
                     android:text="Canino"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -181,8 +187,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:gravity="center|left"
                     android:text="Macho"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -200,6 +208,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center|left"
                     android:text="10 Años"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -222,12 +232,14 @@
 
                 <TextView
                     android:id="@+id/txt_raza"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="2dp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:gravity="center|left"
                     android:text="Pitbul"
-                    android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -266,7 +278,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
-                    android:text="__________________________"
+                    android:text="_______________________________________________________________________"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -316,7 +328,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="_________________________"
+                    android:text="________________________________________________"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -337,11 +349,10 @@
                     android:textSize="@dimen/txt_pdf_dat" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="left|center"
-                    android:text=" 9:00 pm"
+                    android:gravity="center"
+                    android:text="____________________________________"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -366,7 +377,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="______________________________________________________________________________"
+                    android:text="_____________________________________________________________________________________________________________"
                     android:textColor="@color/black"
                     android:textSize="@dimen/txt_pdf_dat" />
 
@@ -374,8 +385,9 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70px"
-            android:layout_margin="10dp"
+            android:layout_height="50px"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -401,6 +413,7 @@
                     android:gravity="center"
                     android:text="Wicho Poncho Niño Martinez"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"></TextView>
                 <TextView
                     android:layout_width="wrap_content"
@@ -419,6 +432,7 @@
                     android:gravity="center"
                     android:text="San Jose #349, Santa Fe"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"></TextView>
             </LinearLayout>
             <LinearLayout
@@ -436,6 +450,7 @@
                     android:gravity="center|left"
                     android:text="Nuevo Leon"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"/>
                 <TextView
                     android:id="@+id/txt_municipio"
@@ -446,6 +461,7 @@
                     android:gravity="center|left"
                     android:text="Nuevo Leon"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"/>
                 <TextView
                     android:id="@+id/txt_estado"
@@ -456,6 +472,7 @@
                     android:gravity="center|left"
                     android:text="Nuevo Leon"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"/>
 
             </LinearLayout>
@@ -480,39 +497,38 @@
                     android:layout_weight="1"
                     android:autoLink="phone"
                     android:gravity="center|left"
+                    android:layout_marginLeft="2dp"
                     android:text="8123428343"
                     android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_pdf_dat"></TextView>
             </LinearLayout>
 
         </LinearLayout>
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:gravity="center"
-            android:layout_height="12dp">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="10dp"
+                android:textSize="6dp"
                 android:textColor="@color/black"
                 android:text="AUTORIZO"/>
         </LinearLayout>
-
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_margin="10dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center|left"
-                android:textStyle="bold"
                 android:textSize="@dimen/txt_pdf_dat"
                 android:textColor="@color/black"
                 android:text="Al personal médico y encargados de Katzen Servicios Veterinarios realizar la cirugía de"
@@ -532,10 +548,6 @@
 
 
             </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10px" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -597,12 +609,12 @@
 
 
         </LinearLayout>
-
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
-            android:layout_height="100px">
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_height="30dp">
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_weight="1"
@@ -611,19 +623,17 @@
                 android:layout_height="match_parent">
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:layout_weight="1"
-                    android:text="______________________________"/>
+                    android:text="______________"/>
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="FIRMA DEL PROPIETARIO"
                     android:gravity="center"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/txt_pdf_dat"
-                    android:layout_weight="1"/>
+                    android:textSize="@dimen/txt_pdf_dat"/>
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
@@ -633,34 +643,27 @@
                 android:layout_weight="1">
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="_____________________________________"/>
+                    android:text="______________"/>
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="MEDICO RESPONSABLE"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/txt_pdf_dat"
-                    android:layout_weight="1"/>
+                    android:textSize="@dimen/txt_pdf_dat"/>
             </LinearLayout>
         </LinearLayout>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="100px" />
-
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
-            android:layout_height="100px">
+            android:layout_height="35dp">
 
             <TextView
-                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
