@@ -47,6 +47,7 @@ class ClienteDetalleFragment : Fragment() {
     }
 
     fun init(){
+        PacienteListAdapter.FLAG_IN_PACIENTE = true
         ConfigLoading.showLoadingAnimation()
         setValues()
     }

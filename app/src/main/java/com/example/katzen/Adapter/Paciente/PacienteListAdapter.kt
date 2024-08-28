@@ -61,8 +61,10 @@ class PacienteListAdapter(
 
         if(FLAG_IN_PACIENTE){
             holder.btnPDF?.visibility = View.GONE
+            holder.btnCompartir?.visibility = View.GONE
         }else{
             holder.btnPDF?.visibility = View.VISIBLE
+            holder.btnCompartir?.visibility = View.VISIBLE
         }
 
         configureImage(holder.imgPerfil, paciente.imageUrl)
