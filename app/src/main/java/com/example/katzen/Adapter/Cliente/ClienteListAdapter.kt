@@ -30,8 +30,6 @@ class ClienteListAdapter (
     private var originalList: List<ClienteModel> = clienteList.toList()
     var activity : Activity = activity
     var TAG : String = "ClienteListAdapter"
-    private lateinit var clienteReference: DatabaseReference
-    private lateinit var pacienteReference: DatabaseReference
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
@@ -44,11 +42,16 @@ class ClienteListAdapter (
             holder.nombreCliente = itemView.findViewById(R.id.text_nombre)
             holder.descripcion = itemView.findViewById(R.id.text_descripcion)
             holder.btnEliminar = itemView.findViewById(R.id.btnEliminar)
+            holder.btnPDF = itemView.findViewById(R.id.btnPDF)
+            holder.btnCompartir = itemView.findViewById(R.id.btnCompartir)
             itemView.tag = holder
         } else {
             holder = itemView.tag as ViewHolder
         }
         val paciente = clienteList[position]
+
+        holder.btnPDF?.visibility = View.GONE
+        holder.btnCompartir?.visibility = View.GONE
 
         holder.nombreCliente?.text = ""
         holder.descripcion?.text = ""
@@ -106,6 +109,8 @@ class ClienteListAdapter (
         var nombreCliente: TextView? = null
         var descripcion: TextView? = null
         var btnEliminar: LinearLayout? = null
+        var btnPDF: LinearLayout? = null
+        var btnCompartir: LinearLayout? = null
 
     }
     private fun eliminarClienteYClientes(cliente: ClienteModel) {
