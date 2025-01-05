@@ -42,7 +42,7 @@
                     android:gravity="center"
                     android:text="SERVICIOS VETERINARIOS"
                     android:textColor="@color/katzen_verde"
-                    android:textSize="5dp" />
+                    android:textSize="4dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                     android:gravity="center"
                     android:text="Autorización de Esterilización"
                     android:textColor="#000000"
-                    android:textSize="5dp" />
+                    android:textSize="4dp" />
 
             </LinearLayout>
 
@@ -535,18 +535,17 @@
                 />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center"
+                android:layout_height="wrap_content">
                 <TextView
+                    android:id="@+id/txt_cirugia"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textSize="5dp"
                     android:textColor="@color/black"
-                    android:text="_________________________________________________________________________________________"
-                    android:textSize="@dimen/txt_pdf_dat"/>
-
-
+                    android:text=""/>
             </LinearLayout>
 
             <TextView
@@ -567,16 +566,17 @@
                 android:textSize="@dimen/txt_pdf_dat"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="left|center"
+                    android:id="@+id/txt_dia_fecha"
+                    android:layout_width="15dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:textColor="@color/black"
-                    android:text="__________________"
-                    android:textSize="@dimen/txt_pdf_dat"/>
+                    android:textStyle="bold"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -585,26 +585,28 @@
                     android:text=" días del mes de "
                     android:textSize="@dimen/txt_pdf_dat"/>
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/txt_mes_fecha"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:text="___________________"
-                    android:textSize="@dimen/txt_pdf_dat"/>
+                    android:textStyle="bold"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="left|center"
                     android:textColor="@color/black"
-                    android:text="del año 20"
+                    android:text="del año "
                     android:textSize="@dimen/txt_pdf_dat"/>
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:id="@+id/txt_anio_fecha"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/black"
-                    android:text="______________"
-                    android:textSize="@dimen/txt_pdf_dat"/>
+                    android:textStyle="bold"
+                    android:textSize="@dimen/txt_pdf_dat"></TextView>
             </LinearLayout>
 
 
@@ -619,13 +621,13 @@
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_margin="2dp"
+                android:gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="______________"/>
+                    android:layout_height="1dp"
+                    android:background="#000000" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -638,14 +640,14 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_margin="2dp"
+                android:gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1">
-                <TextView
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="______________"/>
+                    android:layout_height="1dp"
+                    android:background="#000000" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -661,23 +663,21 @@
             android:layout_width="match_parent"
             android:layout_marginRight="40dp"
             android:layout_marginLeft="40dp"
+            android:gravity="bottom"
             android:layout_height="35dp">
 
-            <TextView
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="_________________________________________________________"/>
+                android:layout_height="1dp"
+                android:background="#000000" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.5"
                     android:gravity="center"
                     android:textColor="@color/black"

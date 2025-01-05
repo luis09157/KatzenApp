@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.katzen.Config.Config
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.UtilHelper
@@ -28,6 +29,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ConvertPDF(private val activity: Activity) {
 
@@ -122,6 +125,10 @@ class ConvertPDF(private val activity: Activity) {
         val txtSexo = view.findViewById<TextView>(R.id.txt_sexo)
         val txtEdad = view.findViewById<TextView>(R.id.txt_edad)
         val txtRaza = view.findViewById<TextView>(R.id.txt_raza)
+        val txtCirugia = view.findViewById<TextView>(R.id.txt_cirugia)
+        val txtDia = view.findViewById<TextView>(R.id.txt_dia_fecha)
+        val txtMes = view.findViewById<TextView>(R.id.txt_mes_fecha)
+        val txtAnio = view.findViewById<TextView>(R.id.txt_anio_fecha)
 
         val txt_nombre_cliente = view.findViewById<TextView>(R.id.txt_nombre_cliente)
         val txt_calle_numero = view.findViewById<TextView>(R.id.txt_calle_numero)
@@ -131,18 +138,24 @@ class ConvertPDF(private val activity: Activity) {
 
         // Setear los valores obtenidos de Firebase
         txtExpediente.text = cliente.expediente
-        txtFecha.text = paciente.fecha
+        txtFecha.text = CampañaFragment.ADD_CAMPAÑA.fecha //paciente.fecha
         txtNombrePaciente.text = paciente.nombre
         txtEspecie.text = paciente.especie
         txtSexo.text = paciente.sexo
         txtEdad.text = UtilHelper.obtenerEdadPaciente(paciente)
         txtRaza.text = paciente.raza
+        txtCirugia.text = getProcedureBySex(paciente.sexo)
 
         txt_nombre_cliente.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
         txt_calle_numero.text = "${cliente.calle} #${cliente.numero}"
         txt_colonia.text = cliente.colonia
         txt_municipio.text = cliente.municipio
         txt_numero_telefono.text = cliente.telefono
+
+        val (dia, mes, año) = formatDate(CampañaFragment.ADD_CAMPAÑA.fecha)
+        txtDia.text = dia.toString()
+        txtMes.text = mes
+        txtAnio.text = año.toString()
     }
 
     private fun measureAndLayoutView(view: View, pageWidth: Int, pageHeight: Int) {
@@ -226,4 +239,32 @@ class ConvertPDF(private val activity: Activity) {
             Toast.makeText(activity, "Error al guardar el PDF", Toast.LENGTH_LONG).show()
         }
     }
+    fun getProcedureBySex(sex: String): String {
+        val foundSex = Config.SEXO.find { it.equals(sex, ignoreCase = true) }
+        return when {
+            foundSex != null -> {
+                when {
+                    foundSex.lowercase().contains("macho") -> "Castración"
+                    foundSex.lowercase().contains("hembra") -> "OvarioSalpingoHisterectomía (OSH)"
+                    else -> "Procedimiento no definido"
+                }
+            }
+            else -> "Sexo no válido"
+        }
+    }
+    fun formatDate(fecha: String): Triple<Int, String, Int> {
+        val formatoEntrada = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
+        val fechaParseada = formatoEntrada.parse(fecha)
+
+        val formatoDia = SimpleDateFormat("d", Locale("es", "ES"))
+        val formatoMes = SimpleDateFormat("MMMM", Locale("es", "ES"))
+        val formatoAño = SimpleDateFormat("yyyy", Locale("es", "ES"))
+
+        val dia = formatoDia.format(fechaParseada).toInt()
+        val mes = formatoMes.format(fechaParseada).replaceFirstChar { it.uppercase() } // Capitaliza el mes
+        val año = formatoAño.format(fechaParseada).toInt()
+
+        return Triple(dia, mes, año)
+    }
+
 }
