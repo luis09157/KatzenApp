@@ -83,6 +83,7 @@ class CampañaPacienteFragment : Fragment() {
         })
 
         binding.lisMenuMascota.setOnItemClickListener { _, _, i, _ ->
+            PacienteListAdapter.FLAG_IN_PACIENTE = false
             EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
             UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(), TAG)
         }

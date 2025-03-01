@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Mantener información genérica para Gson
+-keepattributes Signature
+
+# Prevenir la eliminación de TypeToken
+-keep class com.google.gson.reflect.TypeToken { *; }
+
+# Mantener cualquier modelo de datos que use Gson
+-keep class com.ninodev.rutasmagicas.Model.** { *; }

@@ -4,29 +4,37 @@ import PacienteModel
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ListView
-import androidx.core.content.ContextCompat.startActivity
-import com.example.katzen.Config.Config
-import com.example.katzen.Model.VentaMesModel
-import com.google.android.material.progressindicator.CircularProgressIndicator
-import java.math.RoundingMode
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.DecimalFormat
-import java.text.FieldPosition
+import com.example.katzen.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class UtilHelper {
-
     companion object{
+        fun showAlert(context: Context,message: String) {
+            MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
+                .setMessage(message)
+                .setPositiveButton(context.getString(R.string.btn_ok)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+        fun mostrarSnackbar(view: View, mensaje: String) {
+            Snackbar.make(view, mensaje, Snackbar.LENGTH_SHORT)
+                .setAction("Aceptar") { /* Acciones si se requiere */ }
+                .show()
+        }
+        fun isLocationEnabled(context: Context): Boolean {
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        }
         fun getDateYear() : String {
             val time = Calendar.getInstance().time
             val formatter = SimpleDateFormat("yyyy")

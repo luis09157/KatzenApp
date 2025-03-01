@@ -90,7 +90,10 @@ class ConvertPDF(private val activity: Activity) {
                         createPdfPage(document, view, pageWidth, pageHeight)
 
                         // Guardar el PDF en el almacenamiento
-                        savePdfToStorage(document, pacienteId)
+                        val pdfSaved = savePdfToStorage(document, pacienteId)
+                        if (!pdfSaved) {
+                            Log.i(TAG, "El archivo ya existía o ocurrió un error.")
+                        }
 
                         // Retornar true si la conversión fue exitosa
                         true
@@ -180,12 +183,12 @@ class ConvertPDF(private val activity: Activity) {
         document.finishPage(page)
     }
 
-    private fun savePdfToStorage(document: PdfDocument, idPaciente: String) {
+    private fun savePdfToStorage(document: PdfDocument, idPaciente: String): Boolean {
         val fecha = UtilHelper.setFechaACarpeta(CampañaFragment.ADD_CAMPAÑA.fecha)
         val fileName = "$idPaciente.pdf"
         val contentResolver = activity.contentResolver
 
-        try {
+        return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val relativePath = "${Environment.DIRECTORY_DOCUMENTS}/Katzen/$fecha/$idPaciente/"
                 val uriQuery = contentResolver.query(
@@ -198,8 +201,8 @@ class ConvertPDF(private val activity: Activity) {
 
                 uriQuery?.use {
                     if (it.moveToFirst()) {
-                        Log.i(TAG, "El archivo PDF ya existe en MediaStore, no se creará uno nuevo.")
-                        return
+                        Log.i(TAG, "El archivo PDF ya existe en MediaStore.")
+                        return false // Indica que ya existe y no fue necesario crear uno nuevo.
                     }
                 }
 
@@ -225,33 +228,39 @@ class ConvertPDF(private val activity: Activity) {
 
                 val filePath = File(targetDir, fileName)
                 if (filePath.exists()) {
-                    Log.i(TAG, "El archivo PDF ya existe en el sistema de archivos, no se creará uno nuevo.")
-                    return
+                    Log.i(TAG, "El archivo PDF ya existe en el sistema de archivos.")
+                    return false
                 }
 
                 FileOutputStream(filePath).use { fos ->
                     document.writeTo(fos)
                 }
             }
-            Toast.makeText(activity, "PDF guardado exitosamente", Toast.LENGTH_LONG).show()
+            true
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(activity, "Error al guardar el PDF", Toast.LENGTH_LONG).show()
+            false
         }
     }
+
     fun getProcedureBySex(sex: String): String {
-        val foundSex = Config.SEXO.find { it.equals(sex, ignoreCase = true) }
+        val normalizedSex = sex.trim().lowercase() // Elimina espacios y convierte a minúsculas
+        val foundSex = Config.SEXO.find { it.equals(normalizedSex, ignoreCase = true) }
+            ?: if (normalizedSex == "macho" || normalizedSex == "hembra") normalizedSex else null
+
         return when {
             foundSex != null -> {
                 when {
-                    foundSex.lowercase().contains("macho") -> "Castración"
-                    foundSex.lowercase().contains("hembra") -> "OvarioSalpingoHisterectomía (OSH)"
+                    foundSex.contains("macho") -> "Castración"
+                    foundSex.contains("hembra") -> "OvarioSalpingoHisterectomía (OSH)"
                     else -> "Procedimiento no definido"
                 }
             }
             else -> "Sexo no válido"
         }
     }
+
+
     fun formatDate(fecha: String): Triple<Int, String, Int> {
         val formatoEntrada = SimpleDateFormat("dd/MM/yyyy", Locale("es", "ES"))
         val fechaParseada = formatoEntrada.parse(fecha)

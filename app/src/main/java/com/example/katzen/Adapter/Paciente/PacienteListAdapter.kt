@@ -4,6 +4,7 @@ import PacienteModel
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +26,7 @@ import com.example.katzen.Fragment.Campaña.CampañaPacienteFragment
 import com.example.katzen.Fragment.Cliente.ClienteDetalleFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.PrintDocumentAdapter
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.CampañaModel
@@ -43,20 +45,19 @@ class PacienteListAdapter(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
         var holder: ViewHolder
-        val itemView = convertView ?: LayoutInflater.from(activity).inflate(R.layout.view_list_paciente, parent, false).apply {
+        val itemView = convertView ?: LayoutInflater.from(activity).inflate(R.layout.view_list_paciente, parent, false).also {
             holder = ViewHolder().apply {
-                imgPerfil = findViewById(R.id.imgPerfil)
-                nombrePaciente = findViewById(R.id.text_nombre)
-                descripcion = findViewById(R.id.text_descripcion)
-                btnEliminar = findViewById(R.id.btnEliminar)
-                btnPDF = findViewById(R.id.btnPDF)
-                btnCompartir = findViewById(R.id.btnCompartir)
+                imgPerfil = it.findViewById(R.id.imgPerfil)
+                nombrePaciente = it.findViewById(R.id.text_nombre)
+                descripcion = it.findViewById(R.id.text_descripcion)
+                btnEliminar = it.findViewById(R.id.btnEliminar)
+                btnPDF = it.findViewById(R.id.btnPDF)
+                btnCompartir = it.findViewById(R.id.btnCompartir)
             }
-            tag = holder
+            it.tag = holder
         }
-
-
         holder = itemView.tag as ViewHolder
+
         val paciente = mascotaList[position]
 
         if(FLAG_IN_PACIENTE){
@@ -75,58 +76,35 @@ class PacienteListAdapter(
         holder.btnEliminar?.setOnClickListener {
             showDeleteConfirmationDialog(paciente.id)
         }
+
+        // Integración en el botón btnPDF
         holder.btnPDF?.setOnClickListener {
             if (!FLAG_IN_PACIENTE) {
                 ConfigLoading.showLoadingAnimation()
-                val convertPDF = ConvertPDF(activity)
-                if (convertPDF.askPermissions()) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            // Llama a la función suspendida dentro de una corutina
-                            val success = convertPDF.convertXmlToPdf(paciente.id) // Pasa el ID del paciente
-                            withContext(Dispatchers.Main) {
-                                ConfigLoading.hideLoadingAnimation()
-                                if (success) {
-                                    Toast.makeText(activity, "Conversión de XML a PDF exitosa", Toast.LENGTH_SHORT).show()
-                                } else {
-                                    Toast.makeText(activity, "No se pudo convertir el XML a PDF", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        } catch (e: Exception) {
-                            withContext(Dispatchers.Main) {
-                                ConfigLoading.hideLoadingAnimation()
-                                Toast.makeText(activity, "Error al convertir el XML a PDF: ${e.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                CoroutineScope(Dispatchers.Main).launch {
+                    val success = convertXmlToPdfAndReplace(paciente.id)
+                    if (success) {
+                        printPdfFromFile(paciente.id)
+                    } else {
+                        Toast.makeText(activity, "No se pudo convertir el XML a PDF", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    // Muestra un diálogo o un mensaje indicando que el permiso no está concedido
-                    ConfigLoading.hideLoadingAnimation()
-                    convertPDF.showPermissionRationaleDialog()
                 }
             }
         }
 
         holder.btnCompartir?.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                val fecha = UtilHelper.setFechaACarpeta(CampañaFragment.ADD_CAMPAÑA.fecha)
-                val fileName = "${paciente.id}.pdf"
-                val relativePath = "${Environment.DIRECTORY_DOCUMENTS}/Katzen/$fecha/${paciente.id}"
-                val filePath = File(Environment.getExternalStoragePublicDirectory(relativePath), fileName)
-
-                withContext(Dispatchers.Main) {
-                    if (filePath.exists()) {
-                        // El archivo existe, compartir a través de WhatsApp
-                        sharePdfViaWhatsApp(filePath)
+            if (!FLAG_IN_PACIENTE) {
+                ConfigLoading.showLoadingAnimation()
+                CoroutineScope(Dispatchers.Main).launch {
+                    val success = convertXmlToPdfAndReplace(paciente.id)
+                    if (success) {
+                        compartirResponsiva(paciente.id)
                     } else {
-                        // El archivo no existe, mostrar mensaje
-                        Toast.makeText(activity, "El archivo PDF no existe", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "No fue posible generar el archivo PDF para compartir", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
-
 
 
         return itemView
@@ -151,6 +129,7 @@ class PacienteListAdapter(
             "Información no disponible"
         }
     }
+
 
     private fun showDeleteConfirmationDialog(pacienteId: String) {
         activity.runOnUiThread {
@@ -235,6 +214,72 @@ class PacienteListAdapter(
             activity.startActivity(Intent.createChooser(intent, "Compartir PDF a través de"))
         } catch (e: Exception) {
             Toast.makeText(activity, "WhatsApp no está instalado o hubo un error al compartir el archivo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private suspend fun convertXmlToPdfAndReplace(pacienteId: String): Boolean {
+        val convertPDF = ConvertPDF(activity)
+        return withContext(Dispatchers.IO) {
+            try {
+                val fecha = UtilHelper.setFechaACarpeta(CampañaFragment.ADD_CAMPAÑA.fecha)
+                val fileName = "$pacienteId.pdf"
+                val relativePath = "${Environment.DIRECTORY_DOCUMENTS}/Katzen/$fecha/$pacienteId"
+                val filePath = File(Environment.getExternalStoragePublicDirectory(relativePath), fileName)
+
+                if (filePath.exists()) {
+                    filePath.delete()
+                }
+
+                val success = convertPDF.convertXmlToPdf(pacienteId)
+                withContext(Dispatchers.Main) {
+                    ConfigLoading.hideLoadingAnimation()
+                }
+                success
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    ConfigLoading.hideLoadingAnimation()
+                    Toast.makeText(activity, "Error al convertir el XML a PDF: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+                false
+            }
+        }
+    }
+
+    fun compartirResponsiva(pacienteId: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val fecha = UtilHelper.setFechaACarpeta(CampañaFragment.ADD_CAMPAÑA.fecha)
+            val fileName = "${pacienteId}.pdf"
+            val relativePath = "${Environment.DIRECTORY_DOCUMENTS}/Katzen/$fecha/${pacienteId}"
+            val filePath = File(Environment.getExternalStoragePublicDirectory(relativePath), fileName)
+
+            withContext(Dispatchers.Main) {
+                if (filePath.exists()) {
+                    // El archivo existe, compartir a través de WhatsApp
+                    sharePdfViaWhatsApp(filePath)
+                } else {
+                    // El archivo no existe, mostrar mensaje
+                    Toast.makeText(activity, "El archivo PDF no existe", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun printPdfFromFile(pacienteId: String) {
+        val fecha = UtilHelper.setFechaACarpeta(CampañaFragment.ADD_CAMPAÑA.fecha)
+        val fileName = "$pacienteId.pdf"
+        val filePath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)}/Katzen/$fecha/$pacienteId/$fileName"
+        } else {
+            "${Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)}/Katzen/$fecha/$pacienteId/$fileName"
+        }
+
+        val file = File(filePath)
+        if (file.exists()) {
+            val printManager = activity.getSystemService(Activity.PRINT_SERVICE) as android.print.PrintManager
+            val printAdapter = PrintDocumentAdapter(file)
+            printManager.print("Impresión de PDF", printAdapter, null)
+        } else {
+            Toast.makeText(activity, "El archivo PDF no existe para imprimir", Toast.LENGTH_LONG).show()
         }
     }
 

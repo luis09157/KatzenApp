@@ -1,5 +1,6 @@
 package com.example.katzen
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,10 +25,13 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.databinding.ActivityMainBinding
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
+import com.example.katzen.Model.User
 import com.example.katzen.PDF.ConvertPDF
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
@@ -36,8 +41,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var drawerToggle: ActionBarDrawerToggle
+    private lateinit var auth: FirebaseAuth
 
     private val codeNotification = 101
+
+    companion object {
+        const val TAG = "MainActivity"
+        var _INFO_USER: User = User()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         firebaseAnalytics = Firebase.analytics
         Firebase.messaging.isAutoInitEnabled = true
+        auth = FirebaseAuth.getInstance()
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -92,6 +104,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navigateTo(itemId: Int) {
+        if (itemId == R.id.nav_cerrar_sesion) {
+            logout()
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+            return  // Salimos de la función para evitar ejecutar el cambio de fragmento
+        }
+
         val fragment = when (itemId) {
             R.id.nav_home -> MenuFragment()
             R.id.nav_fuel -> FuellFragment()
@@ -101,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             R.id.nav_paciente -> PacienteFragment()
             else -> return
         }
+
         binding.appBarMain.toolbar.title = menuItemTitle(itemId)
         UtilFragment.changeFragment(this, fragment, TAG)
     }
@@ -112,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         R.id.nav_viajes -> "Domicilios"
         R.id.nav_cliente -> getString(R.string.menu_cliente)
         R.id.nav_paciente -> getString(R.string.menu_paciente)
+        R.id.nav_cerrar_sesion -> getString(R.string.menu_cerrar_sesion)
         else -> ""
     }
 
@@ -151,6 +175,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun logout() {
+        auth.signOut() // Cierra sesión en Firebase
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -188,7 +215,4 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    companion object {
-        const val TAG = "MainActivity"
-    }
 }

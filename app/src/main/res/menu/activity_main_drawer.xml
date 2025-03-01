@@ -32,5 +32,10 @@
             android:id="@+id/nav_cliente"
             android:icon="@drawable/ic_perfil"
             android:title="@string/menu_cliente" />
+
+        <item
+            android:id="@+id/nav_cerrar_sesion"
+            android:icon="@drawable/ic_cerrar_sesion"
+            android:title="@string/menu_cerrar_sesion" />
     </group>
 </menu>
