@@ -19,7 +19,7 @@ import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.databinding.ClienteFragmentBinding
+import com.ninodev.katzen.databinding.ClienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.katzen.Model.MenuModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class MenuAdapter(private val context: Context, private val menuList: List<MenuModel>) : BaseAdapter() {
 

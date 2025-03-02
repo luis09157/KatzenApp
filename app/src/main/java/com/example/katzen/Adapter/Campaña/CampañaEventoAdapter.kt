@@ -8,12 +8,11 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
-import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Model.CampañaModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

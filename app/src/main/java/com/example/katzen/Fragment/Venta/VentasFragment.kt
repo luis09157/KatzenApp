@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.databinding.VentasFragmentBinding
+import com.ninodev.katzen.databinding.VentasFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

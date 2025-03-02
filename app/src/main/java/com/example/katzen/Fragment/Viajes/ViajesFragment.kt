@@ -16,8 +16,8 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.VentaMesModel
-import com.example.katzen.R
-import com.example.katzen.databinding.ViajesV2FragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.ViajesV2FragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator

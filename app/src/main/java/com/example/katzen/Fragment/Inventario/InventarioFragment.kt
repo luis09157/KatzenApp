@@ -10,7 +10,7 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.databinding.InventarioFragmentBinding
+import com.ninodev.katzen.databinding.InventarioFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

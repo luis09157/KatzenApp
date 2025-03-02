@@ -3,7 +3,7 @@ package com.example.katzen.Helper
 import android.content.Context
 import androidx.fragment.app.Fragment
 import com.example.katzen.MainActivity
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class UtilFragment {
     companion object{

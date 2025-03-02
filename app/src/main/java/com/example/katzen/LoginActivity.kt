@@ -15,10 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.katzen.Helper.HelperUser
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.databinding.ActivityLoginBinding
+import com.ninodev.katzen.databinding.ActivityLoginBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.ninodev.katzen.R
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth

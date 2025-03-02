@@ -15,8 +15,8 @@ import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.CampañaModel
-import com.example.katzen.R
-import com.example.katzen.databinding.CampaniaFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.CampaniaFragmentBinding
 import kotlinx.coroutines.*
 
 class CampañaFragment : Fragment() {

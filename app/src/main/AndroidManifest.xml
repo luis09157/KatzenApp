@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- Permisos -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- Quita WRITE_EXTERNAL_STORAGE si no es necesario -->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
-    <!-- Usa MANAGE_EXTERNAL_STORAGE solo si es absolutamente necesario -->
-    <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -22,12 +22,11 @@
         android:theme="@style/Theme.Katzen"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
+            android:name="com.example.katzen.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.Katzen.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,33 +42,32 @@
         </provider>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.katzen.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Katzen.NoActionBar">
-
         </activity>
 
         <service
-            android:name=".Service.MyFirebaseMessagingService"
+            android:name="com.example.katzen.Service.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service
-            android:name=".Service.DomiciliosPendientesService"
+            android:name="com.example.katzen.Service.DomiciliosPendientesService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
 
         <receiver
-            android:name=".BroadcastReceiver.DomiciliosBroadcastReceiver"
+            android:name="com.example.katzen.BroadcastReceiver.DomiciliosBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -91,6 +89,7 @@
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
+
     </application>
 
 </manifest>

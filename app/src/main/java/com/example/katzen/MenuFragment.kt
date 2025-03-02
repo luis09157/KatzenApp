@@ -22,9 +22,10 @@ import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.databinding.MenuFragmentBinding
+import com.ninodev.katzen.databinding.MenuFragmentBinding
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
+import com.ninodev.katzen.R
 
 class MenuFragment : Fragment() {
     val TAG : String  = "MenuFragment"

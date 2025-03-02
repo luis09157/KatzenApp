@@ -14,8 +14,8 @@ import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.CampañaModel
-import com.example.katzen.R
-import com.example.katzen.databinding.CampaniaEventoFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.CampaniaEventoFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

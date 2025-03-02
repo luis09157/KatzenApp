@@ -1,8 +1,7 @@
 import android.content.Context
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ValidationResult
-import com.example.katzen.R
-import java.text.SimpleDateFormat
+import com.ninodev.katzen.R
 import java.util.*
 
 data class PacienteModel(

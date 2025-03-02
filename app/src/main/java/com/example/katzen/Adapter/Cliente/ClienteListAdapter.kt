@@ -11,16 +11,13 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
-import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
-import com.google.firebase.database.DatabaseReference
+import com.ninodev.katzen.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ClienteListAdapter (
     activity: Activity,

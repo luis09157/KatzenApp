@@ -25,8 +25,8 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyBoardWorld
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ProductoModel
 import com.example.katzen.Model.ValidationResult
-import com.example.katzen.R
-import com.example.katzen.databinding.AddProductoFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.AddProductoFragmentBinding
 
 class AddProductoFragment : Fragment() {
     val TAG : String  = "AddProductoFragment"

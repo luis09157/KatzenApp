@@ -14,7 +14,7 @@ import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.databinding.VistaAgregarCampaniaBinding
+import com.ninodev.katzen.databinding.VistaAgregarCampaniaBinding
 import kotlinx.coroutines.launch
 
 class AddCampañaFragment: Fragment() {

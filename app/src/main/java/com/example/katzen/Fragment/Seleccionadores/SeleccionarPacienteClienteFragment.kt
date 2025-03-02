@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.example.katzen.Adapter.Cliente.SeleccionClienteAdapter
 import com.example.katzen.Adapter.Paciente.SeleccionPacienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
@@ -19,8 +18,7 @@ import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Model.ClienteModel
-import com.example.katzen.databinding.ClienteFragmentBinding
+import com.ninodev.katzen.databinding.ClienteFragmentBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

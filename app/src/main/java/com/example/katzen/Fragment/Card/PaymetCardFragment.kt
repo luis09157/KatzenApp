@@ -8,8 +8,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
-import com.example.katzen.R
-import com.example.katzen.databinding.FragmentCardBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.FragmentCardBinding
 import com.google.android.material.snackbar.Snackbar
 import java.math.RoundingMode
 import java.text.DecimalFormat

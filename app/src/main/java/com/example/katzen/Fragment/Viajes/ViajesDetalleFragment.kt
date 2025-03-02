@@ -15,8 +15,8 @@ import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.R
-import com.example.katzen.databinding.ViajesDetalleFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.ViajesDetalleFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

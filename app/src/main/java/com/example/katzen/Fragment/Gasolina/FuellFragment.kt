@@ -12,8 +12,8 @@ import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.MenuFragment
-import com.example.katzen.R
-import com.example.katzen.databinding.FragmentGasolinaBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.FragmentGasolinaBinding
 import com.google.android.material.snackbar.Snackbar
 class FuellFragment : Fragment() {
     val TAG = "FuellFragment"

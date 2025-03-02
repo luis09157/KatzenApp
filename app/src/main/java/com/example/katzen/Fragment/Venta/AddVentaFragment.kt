@@ -9,9 +9,8 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.katzen.Config.Config
-import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.databinding.AddVentaFragmentBinding
+import com.ninodev.katzen.databinding.AddVentaFragmentBinding
 
 class AddVentaFragment : Fragment() {
 

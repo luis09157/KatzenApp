@@ -16,8 +16,8 @@ import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.R
-import com.example.katzen.databinding.AddPiezaProductoFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.AddPiezaProductoFragmentBinding
 
 class AddProductoInventarioFragment : Fragment() {
     val TAG : String  = "AddProductoInventarioFragment"

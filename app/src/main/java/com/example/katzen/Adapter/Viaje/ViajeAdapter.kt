@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.katzen.Model.VentaMesModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class ViajeAdapter (
     activity: Activity,

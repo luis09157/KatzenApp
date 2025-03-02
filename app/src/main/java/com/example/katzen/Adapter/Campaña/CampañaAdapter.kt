@@ -5,19 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
-import com.example.katzen.DataBaseFirebase.OnCompleteListener
-import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.CampañaModel
-import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ninodev.katzen.R
 
 class CampañaAdapter(
 activity: Activity,

@@ -11,7 +11,7 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.InventarioModel
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.databinding.MenuProductosFragmnetBinding
+import com.ninodev.katzen.databinding.MenuProductosFragmnetBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

@@ -8,7 +8,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat

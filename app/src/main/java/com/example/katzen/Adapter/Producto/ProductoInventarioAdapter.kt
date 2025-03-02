@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class ProductoInventarioAdapter (context: Context, private val productList: List<ProductoModel>) :
     ArrayAdapter<ProductoModel>(context, R.layout.item_menu_inventario, productList) {

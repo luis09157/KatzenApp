@@ -1,15 +1,22 @@
 package com.example.katzen.Fragment.Paciente
 
 import PacienteModel
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
@@ -18,26 +25,29 @@ import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.MediaHelper
 import com.example.katzen.Helper.UpperCaseTextWatcher
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.R
-import com.example.katzen.databinding.VistaAgregarMascotaBinding
+import com.example.katzen.MainActivity
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.VistaAgregarMascotaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 
 class AddPacienteFragment : Fragment() {
     val TAG = "AddMascotaFragment"
     val FOLDER_NAME = "Mascotas"
     val PATH_FIREBASE = "Katzen/Mascota"
 
-
+    private lateinit var photoUri: Uri
     private var _binding: VistaAgregarMascotaBinding? = null
+    private val mediaHelper = MediaHelper(this)
     private val binding get() = _binding!!
     companion object{
-        val PICK_IMAGE_REQUEST = 1
         var ADD_PACIENTE : PacienteModel = PacienteModel()
     }
 
@@ -56,6 +66,15 @@ class AddPacienteFragment : Fragment() {
         setValues()
         view.setOnClickListener { it.hideKeyboard() }
 
+        mediaHelper.setMediaCallback(object : MediaHelper.MediaCallback {
+            override fun onMediaSelected(uri: Uri?) {
+                uri?.let {
+                    FirebaseStorageManager.URI_IMG_SELECTED = uri
+                    binding.fotoMascota.setImageURI(uri)
+                }
+            }
+        })
+
         return view
     }
 
@@ -72,9 +91,9 @@ class AddPacienteFragment : Fragment() {
             guardarMascota()
         }
         binding.btnSubirImagen.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+            mediaHelper.showMediaOptionsDialog()
         }
+
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
@@ -202,15 +221,13 @@ class AddPacienteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    // Simplificar onActivityResult delegándolo a MediaHelper
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
-            // You can now upload this image to Firebase Storage and display it in the ImageView
-
-            binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
-        }
+        mediaHelper.handleActivityResult(requestCode, resultCode, data)
     }
+
+
 
     fun setValues(){
         binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
@@ -246,4 +263,70 @@ class AddPacienteFragment : Fragment() {
                 }
             })
     }
+    private fun abrirGaleria() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "image/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+        startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
+    }
+
+    private fun abrirCamara() {
+        if (!checkCameraPermission()) {
+            requestCameraPermission()
+            return
+        }
+
+        val photoFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo_${System.currentTimeMillis()}.jpg")
+
+        photoUri = FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",
+            photoFile
+        )
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+        startActivityForResult(intent, MainActivity.CAMERA_REQUEST_CODE)
+    }
+
+
+    private fun checkCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCameraPermission() {
+        requestPermissions(arrayOf(Manifest.permission.CAMERA), MainActivity.CAMERA_PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Si el permiso es concedido
+            when (requestCode) {
+                MainActivity.GALLERY_PERMISSION_CODE -> abrirGaleria()
+                MainActivity.CAMERA_PERMISSION_CODE -> abrirCamara()
+                else -> {}
+            }
+        } else {
+            // Si el permiso es denegado, mostrar un mensaje
+            when (requestCode) {
+                MainActivity.GALLERY_PERMISSION_CODE ->
+                    Toast.makeText(requireContext(), "Permiso denegado para acceder a la galería", Toast.LENGTH_SHORT).show()
+                MainActivity.CAMERA_PERMISSION_CODE ->
+                    Toast.makeText(requireContext(), "Permiso denegado para acceder a la cámara", Toast.LENGTH_SHORT).show()
+                else -> {}
+            }
+        }
+    }
+
+
+
+
 }

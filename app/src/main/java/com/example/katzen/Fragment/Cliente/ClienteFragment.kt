@@ -13,8 +13,8 @@ import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
-import com.example.katzen.databinding.ClienteFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.ClienteFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

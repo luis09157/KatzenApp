@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.katzen.databinding.VentasFragmentBinding
+import com.ninodev.katzen.databinding.VentasFragmentBinding
 
 class ProductoFragment : Fragment() {
     val TAG : String  = "ProductoFragment"

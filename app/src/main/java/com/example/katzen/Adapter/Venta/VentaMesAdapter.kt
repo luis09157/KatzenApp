@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.example.katzen.Model.VentaMesModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import java.text.DecimalFormat
 
 class VentaMesAdapter(context: Context, val listVentaMes: ArrayList<VentaMesModel>) : BaseAdapter() {

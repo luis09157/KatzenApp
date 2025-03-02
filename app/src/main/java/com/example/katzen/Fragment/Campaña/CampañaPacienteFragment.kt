@@ -1,14 +1,12 @@
 package com.example.katzen.Fragment.Campaña
 
 import PacienteModel
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -19,10 +17,8 @@ import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Paciente.PacienteDetalleFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.MenuFragment
-import com.example.katzen.PDF.ConvertPDF
-import com.example.katzen.R
-import com.example.katzen.databinding.CampaniaEventoFragmentBinding
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.CampaniaEventoFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

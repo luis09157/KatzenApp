@@ -1,6 +1,5 @@
 package com.example.katzen.DataBaseFirebase
 
-import android.graphics.Bitmap
 import android.util.Log
 import com.example.katzen.Model.User
 import com.google.firebase.firestore.FirebaseFirestore

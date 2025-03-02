@@ -23,8 +23,9 @@ import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.R
-import com.example.katzen.databinding.VistaAgregarMascotaBinding
+import com.example.katzen.MainActivity
+import com.ninodev.katzen.R
+import com.ninodev.katzen.databinding.VistaAgregarMascotaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -112,7 +113,7 @@ class EditarPacienteFragment : Fragment() {
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, AddPacienteFragment.PICK_IMAGE_REQUEST)
+            startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -243,7 +244,7 @@ class EditarPacienteFragment : Fragment() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AddPacienteFragment.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+        if (requestCode == MainActivity.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
             // You can now upload this image to Firebase Storage and display it in the ImageView
 

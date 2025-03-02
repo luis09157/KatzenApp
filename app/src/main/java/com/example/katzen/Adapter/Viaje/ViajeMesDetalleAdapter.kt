@@ -12,9 +12,8 @@ import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class ViajeMesDetalleAdapter (
     activity: Activity,

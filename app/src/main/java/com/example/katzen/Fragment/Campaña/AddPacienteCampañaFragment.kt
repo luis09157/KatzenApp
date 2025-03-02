@@ -17,7 +17,7 @@ import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.databinding.VistaAgregarPacienteCampaniaBinding
+import com.ninodev.katzen.databinding.VistaAgregarPacienteCampaniaBinding
 import kotlinx.coroutines.launch
 
 class AddPacienteCampañaFragment : Fragment() {

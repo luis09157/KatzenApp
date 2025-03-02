@@ -22,12 +22,11 @@ import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
 import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.databinding.ActivityMainBinding
+import com.ninodev.katzen.databinding.ActivityMainBinding
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
 import com.example.katzen.Model.User
 import com.example.katzen.PDF.ConvertPDF
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -35,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.ktx.messaging
+import com.ninodev.katzen.R
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -48,7 +48,12 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val TAG = "MainActivity"
         var _INFO_USER: User = User()
+        const val PICK_IMAGE_REQUEST = 1 // Este es el código de solicitud para abrir la galería
+        const val CAMERA_REQUEST_CODE = 2 // Este es el código de solicitud para tomar una foto con la cámara
+        const val CAMERA_PERMISSION_CODE = 100 // Este es el código de solicitud para el permiso de cámara
+        const val GALLERY_PERMISSION_CODE = 101 // Aquí agregamos el código de solicitud para el permiso de galería
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +66,13 @@ class MainActivity : AppCompatActivity() {
         firebaseAnalytics = Firebase.analytics
         Firebase.messaging.isAutoInitEnabled = true
         auth = FirebaseAuth.getInstance()
+
+        if (auth.currentUser == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView

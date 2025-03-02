@@ -2,7 +2,7 @@ package com.example.katzen.Model
 
 import android.content.Context
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

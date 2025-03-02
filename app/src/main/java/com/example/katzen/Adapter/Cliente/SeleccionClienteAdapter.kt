@@ -9,14 +9,13 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import com.bumptech.glide.Glide
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class SeleccionClienteAdapter(
     activity: Activity,

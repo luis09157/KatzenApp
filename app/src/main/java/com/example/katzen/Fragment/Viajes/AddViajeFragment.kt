@@ -24,7 +24,7 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
-import com.example.katzen.databinding.AddViajeFragmentBinding
+import com.ninodev.katzen.databinding.AddViajeFragmentBinding
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

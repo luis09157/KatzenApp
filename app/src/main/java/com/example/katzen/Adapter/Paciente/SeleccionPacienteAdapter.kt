@@ -2,7 +2,6 @@ package com.example.katzen.Adapter.Paciente
 
 import PacienteModel
 import android.app.Activity
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +10,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
-import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
-import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

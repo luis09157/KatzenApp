@@ -1,9 +1,8 @@
 package com.example.katzen.Config
 
 import android.view.View
-import android.widget.LinearLayout
 import com.airbnb.lottie.LottieAnimationView
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 object ConfigLoading {
     var LOTTIE_ANIMATION_VIEW: LottieAnimationView? = null

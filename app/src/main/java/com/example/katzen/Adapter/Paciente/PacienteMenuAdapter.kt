@@ -8,9 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 
 class PacienteMenuAdapter(
     activity: Activity,

@@ -10,12 +10,10 @@ import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.katzen.Config.Config
@@ -23,7 +21,7 @@ import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

@@ -1,11 +1,10 @@
 import android.app.Activity
-import android.content.Context
 import android.net.Uri
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Model.ProductoModel
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference

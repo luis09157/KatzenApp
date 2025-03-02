@@ -1,7 +1,7 @@
 package com.example.katzen.Model
 
 import android.content.Context
-import com.example.katzen.R
+import com.ninodev.katzen.R
 import java.util.UUID
 
 data class VentaMesDetalleModel(
