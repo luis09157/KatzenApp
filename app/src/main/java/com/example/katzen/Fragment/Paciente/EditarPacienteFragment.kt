@@ -1,11 +1,9 @@
 package com.example.katzen.Fragment.Paciente
 
 import PacienteModel
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,28 +16,29 @@ import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Fragment.Seleccionadores.SeleccionarClienteFragment
-import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.MediaHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.MainActivity
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.VistaAgregarMascotaBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class EditarPacienteFragment : Fragment() {
-    val TAG : String  = "EditarPacienteFragment"
+class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
+
+    val TAG: String = "EditarPacienteFragment"
 
     private var _binding: VistaAgregarMascotaBinding? = null
     private val binding get() = _binding!!
     val FOLDER_NAME = "Mascotas"
     val PATH_FIREBASE = "Katzen/Mascota"
-    companion object{
-        var PACIENTE_EDIT : PacienteModel = PacienteModel()
+    companion object {
+        var PACIENTE_EDIT: PacienteModel = PacienteModel()
     }
+
+    private lateinit var mediaHelper: MediaHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,38 +56,33 @@ class EditarPacienteFragment : Fragment() {
         init()
         initValues()
 
+        // Inicializar MediaHelper
+        mediaHelper = MediaHelper(this)
+        mediaHelper.setMediaCallback(this)
+
         return root
     }
-    fun initLoading(){
+
+    fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-    fun init(){
+    fun init() {
         val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
         binding.spSexo.setAdapter(adapterSEXO)
         val adapterESPECIE = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.ESPECIE)
         binding.spEspecie.setAdapter(adapterESPECIE)
 
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
-
-        /*UpperCaseTextWatcher.UpperText(binding.textNombre)
-        UpperCaseTextWatcher.UpperText(binding.textCliente)
-        UpperCaseTextWatcher.UpperText(binding.textEdad)
-        UpperCaseTextWatcher.UpperText(binding.textPeso)
-        UpperCaseTextWatcher.UpperText(binding.textColor)
-        UpperCaseTextWatcher.UpperText(binding.spRaza)
-        UpperCaseTextWatcher.UpperText(binding.spEspecie)
-        UpperCaseTextWatcher.UpperText(binding.spSexo)*/
     }
     fun initValues() {
-        // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
         PACIENTE_EDIT?.let { paciente ->
             if (paciente.imageUrl.isNotEmpty()) {
                 Glide.with(binding.fotoMascota.context)
                     .load(paciente.imageUrl)
-                    .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                    .error(R.drawable.no_disponible_rosa) // Establecer una imagen en caso de error al cargar
+                    .placeholder(R.drawable.ic_perfil)
+                    .error(R.drawable.no_disponible_rosa)
                     .into(binding.fotoMascota)
             } else {
                 binding.fotoMascota.setImageResource(R.drawable.no_disponible_rosa)
@@ -104,16 +98,14 @@ class EditarPacienteFragment : Fragment() {
             binding.spRaza.setText(paciente.raza)
         }
     }
-
-    fun initListeners(){
+    fun initListeners() {
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
             UtilFragment.changeFragment(requireContext(), PacienteDetalleFragment(), TAG)
         }
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
+            mediaHelper.showMediaOptionsDialog()  // Usar MediaHelper para abrir el diálogo de selección de imágenes
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -134,43 +126,22 @@ class EditarPacienteFragment : Fragment() {
         binding.textCliente.setOnClickListener {
             it.hideKeyboard()
             setPacienteModel()
-            UtilFragment.changeFragment(requireContext() ,
-                SeleccionarClienteFragment("EDIT_PACIENTE") ,TAG)
-        }
-        binding.textCliente.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                view.hideKeyboard()
-                setPacienteModel()
-                UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("EDIT_PACIENTE"), TAG)
-            }
-        }
-        binding.editTextFecha2.setOnClickListener {
-            it.hideKeyboard()
-            CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
-        }
-        binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->
-            UtilHelper.hideKeyBoardWorld(requireActivity(), view)
-            if (isFocus) {
-                view.hideKeyboard()
-                CalendarioUtil.mostrarCalendarioFecha(requireContext(), binding.editTextFecha)
-
-            }
+            UtilFragment.changeFragment(requireContext(), SeleccionarClienteFragment("EDIT_PACIENTE"), TAG)
         }
     }
-    fun setPacienteModel(){
-
+    fun setPacienteModel() {
         PACIENTE_EDIT.nombre = binding.textNombre.text.toString()
-        PACIENTE_EDIT.raza =  binding.spRaza.text.toString()
+        PACIENTE_EDIT.raza = binding.spRaza.text.toString()
         PACIENTE_EDIT.especie = binding.spEspecie.text.toString()
         PACIENTE_EDIT.sexo = binding.spSexo.text.toString()
         PACIENTE_EDIT.edad = binding.editTextFecha2.text.toString()
         PACIENTE_EDIT.color = binding.textColor.text.toString()
         PACIENTE_EDIT.nombreCliente = binding.textCliente.text.toString()
     }
-    fun editarCliente(pacienteModel: PacienteModel){
+    fun editarCliente(pacienteModel: PacienteModel) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()){
-                requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
+            if (FirebaseStorageManager.hasSelectedImage()) {
+                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
                 val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
                 println("URL de descarga de la imagen: $imageUrl")
                 pacienteModel.imageUrl = imageUrl
@@ -180,6 +151,7 @@ class EditarPacienteFragment : Fragment() {
                         val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
+                                limpiarCampos()  // Limpiar los campos después de guardar
                                 ConfigLoading.hideLoadingAnimation()
                                 DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
                             }
@@ -193,16 +165,17 @@ class EditarPacienteFragment : Fragment() {
                     } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
                         }
                     }
                 }
-            }else{
+            } else {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
                         val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
+                                limpiarCampos()  // Limpiar los campos después de guardar
                                 ConfigLoading.hideLoadingAnimation()
                                 DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
                             }
@@ -216,18 +189,24 @@ class EditarPacienteFragment : Fragment() {
                     } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
                         }
                     }
                 }
             }
         }
     }
+    override fun onMediaSelected(uri: Uri?) {
+        uri?.let {
+            FirebaseStorageManager.URI_IMG_SELECTED = it
+            binding.fotoMascota.setImageURI(it)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    fun limpiarCampos(){
+    fun limpiarCampos() {
         requireActivity().runOnUiThread {
             binding.apply {
                 textNombre.text!!.clear()
@@ -244,12 +223,11 @@ class EditarPacienteFragment : Fragment() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MainActivity.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
-            // You can now upload this image to Firebase Storage and display it in the ImageView
-
-            binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
-        }
+        mediaHelper.handleActivityResult(requestCode, resultCode, data)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mediaHelper.onRequestPermissionsResult(requestCode, grantResults)
     }
     override fun onResume() {
         super.onResume()

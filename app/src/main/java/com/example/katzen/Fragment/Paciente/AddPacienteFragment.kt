@@ -38,14 +38,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 
-class AddPacienteFragment : Fragment() {
+class AddPacienteFragment : Fragment(), MediaHelper.MediaCallback {
     val TAG = "AddMascotaFragment"
     val FOLDER_NAME = "Mascotas"
     val PATH_FIREBASE = "Katzen/Mascota"
 
     private lateinit var photoUri: Uri
     private var _binding: VistaAgregarMascotaBinding? = null
-    private val mediaHelper = MediaHelper(this)
+    private lateinit var mediaHelper: MediaHelper
     private val binding get() = _binding!!
     companion object{
         var ADD_PACIENTE : PacienteModel = PacienteModel()
@@ -66,14 +66,8 @@ class AddPacienteFragment : Fragment() {
         setValues()
         view.setOnClickListener { it.hideKeyboard() }
 
-        mediaHelper.setMediaCallback(object : MediaHelper.MediaCallback {
-            override fun onMediaSelected(uri: Uri?) {
-                uri?.let {
-                    FirebaseStorageManager.URI_IMG_SELECTED = uri
-                    binding.fotoMascota.setImageURI(uri)
-                }
-            }
-        })
+        mediaHelper = MediaHelper(this)
+        mediaHelper.setMediaCallback(this)
 
         return view
     }
@@ -221,14 +215,6 @@ class AddPacienteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    // Simplificar onActivityResult delegándolo a MediaHelper
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        mediaHelper.handleActivityResult(requestCode, resultCode, data)
-    }
-
-
-
     fun setValues(){
         binding.fotoMascota.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
         binding.textNombre.setText(ADD_PACIENTE.nombre)
@@ -251,7 +237,6 @@ class AddPacienteFragment : Fragment() {
         ADD_PACIENTE.nombreCliente = binding.textCliente.text.toString()
         ADD_PACIENTE.fecha = UtilHelper.getDate()
     }
-
     override fun onResume() {
         super.onResume()
         setPacienteModel()
@@ -263,70 +248,22 @@ class AddPacienteFragment : Fragment() {
                 }
             })
     }
-    private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            type = "image/*"
-            addCategory(Intent.CATEGORY_OPENABLE)
+
+
+    override fun onMediaSelected(uri: Uri?) {
+        uri?.let {
+            FirebaseStorageManager.URI_IMG_SELECTED = it
+            binding.fotoMascota.setImageURI(it)
         }
-        startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
     }
-
-    private fun abrirCamara() {
-        if (!checkCameraPermission()) {
-            requestCameraPermission()
-            return
-        }
-
-        val photoFile = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo_${System.currentTimeMillis()}.jpg")
-
-        photoUri = FileProvider.getUriForFile(
-            requireContext(),
-            "${requireContext().packageName}.provider",
-            photoFile
-        )
-
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-        startActivityForResult(intent, MainActivity.CAMERA_REQUEST_CODE)
-    }
-
-
-    private fun checkCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestCameraPermission() {
-        requestPermissions(arrayOf(Manifest.permission.CAMERA), MainActivity.CAMERA_PERMISSION_CODE)
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Si el permiso es concedido
-            when (requestCode) {
-                MainActivity.GALLERY_PERMISSION_CODE -> abrirGaleria()
-                MainActivity.CAMERA_PERMISSION_CODE -> abrirCamara()
-                else -> {}
-            }
-        } else {
-            // Si el permiso es denegado, mostrar un mensaje
-            when (requestCode) {
-                MainActivity.GALLERY_PERMISSION_CODE ->
-                    Toast.makeText(requireContext(), "Permiso denegado para acceder a la galería", Toast.LENGTH_SHORT).show()
-                MainActivity.CAMERA_PERMISSION_CODE ->
-                    Toast.makeText(requireContext(), "Permiso denegado para acceder a la cámara", Toast.LENGTH_SHORT).show()
-                else -> {}
-            }
-        }
+        mediaHelper.onRequestPermissionsResult(requestCode, grantResults)
     }
-
-
-
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        mediaHelper.handleActivityResult(requestCode, resultCode, data)
+    }
 }

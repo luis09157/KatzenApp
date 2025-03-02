@@ -43,14 +43,50 @@ class MediaHelper(private val fragment: Fragment) {
         builder.setTitle("Selecciona una opción")
         builder.setItems(options) { _, which ->
             when (which) {
-                0 -> abrirCamara() // Tomar foto
-                1 -> abrirGaleria() // Seleccionar de galería
+                0 -> openCamera() // Tomar foto
+                1 -> openGallery() // Seleccionar de galería
             }
         }
         builder.show()
     }
 
-    // Manejo del resultado de la actividad de selección de medios
+    private fun openCamera() {
+        if (checkPermission(Manifest.permission.CAMERA)) {
+            startCamera()
+        } else {
+            requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE)
+        }
+    }
+
+    private fun openGallery() {
+        if (checkPermissionForGallery()) {
+            startGallery()
+        } else {
+            requestGalleryPermission()
+        }
+    }
+
+    private fun startCamera() {
+        val photoFile = File(
+            fragment.requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+            "photo_${System.currentTimeMillis()}.jpg"
+        )
+        photoUri = FileProvider.getUriForFile(
+            fragment.requireContext(),
+            "${fragment.requireContext().packageName}.provider",
+            photoFile
+        )
+
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+        fragment.startActivityForResult(intent, CAMERA_REQUEST_CODE)
+    }
+
+    private fun startGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        fragment.startActivityForResult(intent, GALLERY_REQUEST_CODE)
+    }
+
     fun handleActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val uri = when (requestCode) {
@@ -72,61 +108,53 @@ class MediaHelper(private val fragment: Fragment) {
         fragment.requestPermissions(arrayOf(permission), requestCode)
     }
 
-
-
-    fun abrirCamara() {
-        if (!checkPermission(Manifest.permission.CAMERA)) {
-            requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE)
-            return
-        }
-
-        val photoFile = File(
-            fragment.requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "photo_${System.currentTimeMillis()}.jpg"
-        )
-        photoUri = FileProvider.getUriForFile(
-            fragment.requireContext(),
-            "${fragment.requireContext().packageName}.provider",
-            photoFile
-        )
-
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-        fragment.startActivityForResult(intent, CAMERA_REQUEST_CODE)
-    }
-
-    fun checkPermissionForGallery(): Boolean {
+    private fun checkPermissionForGallery(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13 (API 33) o superior
-            ContextCompat.checkSelfPermission(fragment.requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                fragment.requireContext(),
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) == PackageManager.PERMISSION_GRANTED
         } else {
-            // Para versiones inferiores a Android 13
-            ContextCompat.checkSelfPermission(fragment.requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                fragment.requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
 
-    fun requestGalleryPermission() {
+    private fun requestGalleryPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            fragment.requestPermissions(arrayOf(Manifest.permission.READ_MEDIA_IMAGES), GALLERY_PERMISSION_CODE)
+            fragment.requestPermissions(
+                arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                GALLERY_PERMISSION_CODE
+            )
         } else {
-            fragment.requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
+            fragment.requestPermissions(
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                GALLERY_PERMISSION_CODE
+            )
         }
     }
 
-    fun abrirGaleria() {
-        // Verificar si se tiene el permiso para leer el almacenamiento
-        if (!checkPermissionForGallery()) {
-            // Si no se tiene el permiso, solicitarlo
-            requestGalleryPermission()
-            return
+    fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            when (requestCode) {
+                CAMERA_PERMISSION_CODE -> openCamera()
+                GALLERY_PERMISSION_CODE -> openGallery()
+            }
+        } else {
+            when (requestCode) {
+                CAMERA_PERMISSION_CODE -> Toast.makeText(
+                    fragment.requireContext(),
+                    "Permiso denegado para acceder a la cámara",
+                    Toast.LENGTH_SHORT
+                ).show()
+                GALLERY_PERMISSION_CODE -> Toast.makeText(
+                    fragment.requireContext(),
+                    "Permiso denegado para acceder a la galería",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-
-        // Si ya se tiene el permiso, abrir la galería
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        fragment.startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
-
-
-
-
 }
