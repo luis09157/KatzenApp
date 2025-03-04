@@ -26,6 +26,7 @@
 
     <string name="menu_paciente">Pacientes</string>
     <string name="menu_cliente">Clientes</string>
+    <string name="menu_productos">Productos</string>
     <string name="menu_cerrar_sesion">Cerrar sesión</string>
     <string name="menu_cliente_detalle">Detalle del Cliente</string>
     <string name="menu_paciente_detalle">Detalle del Paciente</string>
@@ -33,10 +34,10 @@
     <string name="menu_pago_tarjeta">Pago Con Tarjeta</string>
 
 
-    <string name="menu_recordatorio">Notas</string>
-    <string name="menu_consultas">Consultas</string>
-    <string name="menu_vacunas">Vacunas</string>
-    <string name="menu_estetica">Estetica</string>
+    <string name="submenu_recordatorio">Notas</string>
+    <string name="submenu_consultas">Consultas</string>
+    <string name="submenu_vacunas">Vacunas</string>
+    <string name="submenu_estetica">Estetica</string>
 
     <string name="menu_add_mascota">Agregar Mascota</string>
 

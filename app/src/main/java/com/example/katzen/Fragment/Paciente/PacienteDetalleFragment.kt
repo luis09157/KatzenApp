@@ -56,10 +56,10 @@ class PacienteDetalleFragment : Fragment() {
         ConfigLoading.showLoadingAnimation()
         setValues()
         menuList = listOf(
-            MenuModel(requireActivity().getString(R.string.menu_recordatorio), R.drawable.img_recordatorios),
-            MenuModel(requireActivity().getString(R.string.menu_consultas), R.drawable.img_consulta),
-            MenuModel(requireActivity().getString(R.string.menu_vacunas), R.drawable.img_vacunas),
-            MenuModel(requireActivity().getString(R.string.menu_estetica), R.drawable.img_estetica)
+            MenuModel(requireActivity().getString(R.string.submenu_recordatorio), R.drawable.img_recordatorios),
+            MenuModel(requireActivity().getString(R.string.submenu_consultas), R.drawable.img_consulta),
+            MenuModel(requireActivity().getString(R.string.submenu_vacunas), R.drawable.img_vacunas),
+            MenuModel(requireActivity().getString(R.string.submenu_estetica), R.drawable.img_estetica)
         )
         val adapter = MenuAdapter(requireContext(), menuList)
         binding.menuOpciones.adapter = adapter
