@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.katzen.Adapter.Cliente.ClienteListAdapter
 import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
@@ -61,6 +62,15 @@ class PacienteDetalleFragment : Fragment() {
             ConfigLoading.showNodata()
         }else{
 
+            if (EditarPacienteFragment.PACIENTE_EDIT.imageUrl.isNotEmpty()) {
+                Glide.with(binding.imgPerfil.context)
+                    .load(EditarPacienteFragment.PACIENTE_EDIT.imageUrl)
+                    .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
+                    .error(R.drawable.no_disponible_rosa) // Opcional: establecer una imagen en caso de error al cargar
+                    .into(binding.imgPerfil)
+            } else {
+                binding.imgPerfil.setImageResource(R.drawable.no_disponible_rosa)
+            }
             binding.textNombreCliente.text = EditarPacienteFragment.PACIENTE_EDIT.nombre
             binding.textEspecie.text = EditarPacienteFragment.PACIENTE_EDIT.especie
             binding.textRaza.text = EditarPacienteFragment.PACIENTE_EDIT.raza
@@ -89,11 +99,11 @@ class PacienteDetalleFragment : Fragment() {
             UtilFragment.changeFragment(requireActivity() , EditarPacienteFragment() ,TAG)
         }
 
-        binding.btnAddCliente.setOnClickListener {
+        /*binding.btnAddCliente.setOnClickListener {
             AddPacienteFragment.ADD_PACIENTE.idCliente = EditClienteFragment.CLIENTE_EDIT.id
             AddPacienteFragment.ADD_PACIENTE.nombreCliente = EditClienteFragment.CLIENTE_EDIT.nombre
             UtilFragment.changeFragment(requireActivity() , AddPacienteFragment() ,TAG)
-        }
+        }*/
     }
 
     private fun obtenerClientePorId(idCliente: String) {
