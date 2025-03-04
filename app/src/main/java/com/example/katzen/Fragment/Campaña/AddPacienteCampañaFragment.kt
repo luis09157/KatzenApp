@@ -26,6 +26,7 @@ class AddPacienteCampañaFragment : Fragment() {
     val PATH_FIREBASE = "Katzen/Mascota"
 
 
+
     private var _binding: VistaAgregarPacienteCampaniaBinding? = null
     private val binding get() = _binding!!
 

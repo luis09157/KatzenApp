@@ -1,10 +1,8 @@
 package com.example.katzen.Fragment.Cliente
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +11,10 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.MediaHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.AddClienteFragmentBinding
@@ -25,13 +22,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class AddClienteFragment : Fragment() {
-    val TAG : String  = "AddClienteFragment"
+class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
+
+    val TAG: String = "AddClienteFragment"
 
     private var _binding: AddClienteFragmentBinding? = null
     private val binding get() = _binding!!
     val FOLDER_NAME = "Clientes"
     val PATH_FIREBASE = "Katzen/Cliente"
+
+    private lateinit var mediaHelper: MediaHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,21 +41,25 @@ class AddClienteFragment : Fragment() {
         _binding = AddClienteFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        requireActivity().title = "Añdadir Cliente"
+        requireActivity().title = "Añadir Cliente"
 
         initLoading()
         initListeners()
         init()
 
+        // Inicializar MediaHelper
+        mediaHelper = MediaHelper(this)
+        mediaHelper.setMediaCallback(this)
+
         return root
     }
 
-    fun initLoading(){
+    fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-    fun init(){
+    fun init() {
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 
         /*UpperCaseTextWatcher.UpperText(binding.textNombre)
@@ -66,15 +70,14 @@ class AddClienteFragment : Fragment() {
         UpperCaseTextWatcher.UpperText(binding.textTelefono)
         UpperCaseTextWatcher.UpperText(binding.textColonia)*/
     }
-    fun initListeners(){
+    fun initListeners() {
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            UtilFragment.changeFragment(requireContext() , ClienteFragment() ,TAG)
+            UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
         }
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
+            mediaHelper.showMediaOptionsDialog()  // Usar MediaHelper para abrir el diálogo de selección de imágenes
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -118,28 +121,24 @@ class AddClienteFragment : Fragment() {
             }
         }
     }
-    fun guardarCliente(clienteModel: ClienteModel){
+    fun guardarCliente(clienteModel: ClienteModel) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()){
-                requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
+            if (FirebaseStorageManager.hasSelectedImage()) {
+                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
                 val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
                 println("URL de descarga de la imagen: $imageUrl")
                 clienteModel.imageUrl = imageUrl
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    val ( flag,message ) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id ,PATH_FIREBASE)
+                    val (flag, message) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
 
                     if (flag) {
-                        limpiarCampos()
+                        limpiarCampos()  // Limpiar los campos después de guardar
                         requireActivity().runOnUiThread {
-                            requireActivity().runOnUiThread {
-                                DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
-                                    if (confirmed) {
-                                        ConfigLoading.hideLoadingAnimation()
-                                        UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
-                                    } else {
-                                        // El usuario canceló la operación
-                                    }
+                            DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
+                                if (confirmed) {
+                                    ConfigLoading.hideLoadingAnimation()
+                                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
                                 }
                             }
                         }
@@ -150,19 +149,17 @@ class AddClienteFragment : Fragment() {
                         }
                     }
                 }
-            }else{
+            } else {
                 GlobalScope.launch(Dispatchers.IO) {
-                    val ( flag,message ) =  FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
+                    val (flag, message) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
 
                     if (flag) {
-                        limpiarCampos()
+                        limpiarCampos()  // Limpiar los campos después de guardar
                         requireActivity().runOnUiThread {
                             DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
                                 if (confirmed) {
                                     ConfigLoading.hideLoadingAnimation()
                                     UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
-                                } else {
-                                    // El usuario canceló la operación
                                 }
                             }
                         }
@@ -176,12 +173,17 @@ class AddClienteFragment : Fragment() {
             }
         }
     }
-
+    override fun onMediaSelected(uri: Uri?) {
+        uri?.let {
+            FirebaseStorageManager.URI_IMG_SELECTED = it
+            binding.imgPerfil.setImageURI(it)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    fun limpiarCampos(){
+    fun limpiarCampos() {
         requireActivity().runOnUiThread {
             binding.apply {
                 textNombre.text!!.clear()
@@ -195,18 +197,17 @@ class AddClienteFragment : Fragment() {
                 textMunicipio.text!!.clear()
                 textGoogleMaps.text!!.clear()
                 textKilometrosCasa.text!!.clear()
-                imgPerfil.setImageResource(R.drawable.ic_imagen)
+                imgPerfil.setImageResource(R.drawable.ic_imagen)  // Restablecer la imagen predeterminada
             }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MainActivity.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
-            // You can now upload this image to Firebase Storage and display it in the ImageView
-
-            binding.imgPerfil.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
-        }
+        mediaHelper.handleActivityResult(requestCode, resultCode, data)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mediaHelper.onRequestPermissionsResult(requestCode, grantResults)
     }
     override fun onResume() {
         super.onResume()

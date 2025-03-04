@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Campaña.CampañaAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
-import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
@@ -26,7 +25,6 @@ class CampañaFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var campañaList: MutableList<CampañaModel>
     private lateinit var campañaListAdapter: CampañaAdapter
-
     companion object{
         var ADD_CAMPAÑA : CampañaModel = CampañaModel()
     }

@@ -1,10 +1,8 @@
 package com.example.katzen.Fragment.Cliente
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +12,10 @@ import com.bumptech.glide.Glide
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
-import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.MediaHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
-import com.example.katzen.MainActivity
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.AddClienteFragmentBinding
@@ -26,16 +23,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class EditClienteFragment : Fragment() {
-    val TAG : String  = "EditClienteFragment"
+class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
+
+    val TAG: String = "EditClienteFragment"
 
     private var _binding: AddClienteFragmentBinding? = null
     private val binding get() = _binding!!
     val FOLDER_NAME = "Clientes"
     val PATH_FIREBASE = "Katzen/Cliente"
-    companion object{
-        var CLIENTE_EDIT : ClienteModel = ClienteModel()
+    companion object {
+        var CLIENTE_EDIT: ClienteModel = ClienteModel()
     }
+
+    private lateinit var mediaHelper: MediaHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,17 +53,22 @@ class EditClienteFragment : Fragment() {
         init()
         initValues()
 
+        // Inicializar MediaHelper
+        mediaHelper = MediaHelper(this)
+        mediaHelper.setMediaCallback(this)
+
         return root
     }
-    fun initLoading(){
+
+    fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
         ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
-    fun init(){
+    fun init() {
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 
-       /* UpperCaseTextWatcher.UpperText(binding.textNombre)
+        /*UpperCaseTextWatcher.UpperText(binding.textNombre)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoPaterno)
         UpperCaseTextWatcher.UpperText(binding.textAppellidoMaterno)
         UpperCaseTextWatcher.UpperText(binding.textCalle)
@@ -72,13 +77,12 @@ class EditClienteFragment : Fragment() {
         UpperCaseTextWatcher.UpperText(binding.textColonia)*/
     }
     fun initValues() {
-        // Verifica si CLIENTE_EDIT no es nulo antes de acceder a sus propiedades
         CLIENTE_EDIT?.let { cliente ->
             if (cliente.imageUrl.isNotEmpty()) {
                 Glide.with(binding.imgPerfil.context)
                     .load(cliente.imageUrl)
-                    .placeholder(R.drawable.ic_perfil) // Establecer la imagen predeterminada
-                    .error(R.drawable.no_disponible_rosa) // Establecer una imagen en caso de error al cargar
+                    .placeholder(R.drawable.ic_perfil)
+                    .error(R.drawable.no_disponible_rosa)
                     .into(binding.imgPerfil)
             } else {
                 binding.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
@@ -98,16 +102,14 @@ class EditClienteFragment : Fragment() {
             binding.textKilometrosCasa.setText(cliente.kilometrosCasa)
         }
     }
-
-    fun initListeners(){
+    fun initListeners() {
         binding.btnCancelar.setOnClickListener {
             it.hideKeyboard()
-            UtilFragment.changeFragment(requireContext() , ClienteFragment() ,TAG)
+            UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
         }
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(intent, MainActivity.PICK_IMAGE_REQUEST)
+            mediaHelper.showMediaOptionsDialog()  // Usar MediaHelper para abrir el diálogo de selección de imágenes
         }
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
@@ -126,7 +128,7 @@ class EditClienteFragment : Fragment() {
             }
         }
     }
-    fun setCliente(){
+    fun setCliente() {
         val nombre = binding.textNombre.text.toString()
         val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
         val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
@@ -151,10 +153,10 @@ class EditClienteFragment : Fragment() {
         CLIENTE_EDIT.municipio = municipio
         CLIENTE_EDIT.urlGoogleMaps = googleMaps
     }
-    fun editarCliente(clienteModel: ClienteModel){
+    fun editarCliente(clienteModel: ClienteModel) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()){
-                requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
+            if (FirebaseStorageManager.hasSelectedImage()) {
+                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
                 val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
                 println("URL de descarga de la imagen: $imageUrl")
                 clienteModel.imageUrl = imageUrl
@@ -164,6 +166,7 @@ class EditClienteFragment : Fragment() {
                         val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
+                                limpiarCampos()  // Limpiar los campos después de editar
                                 ConfigLoading.hideLoadingAnimation()
                                 DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
                             }
@@ -177,16 +180,17 @@ class EditClienteFragment : Fragment() {
                     } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
                         }
                     }
                 }
-            }else{
+            } else {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
                         val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
                         result.onSuccess { message ->
                             requireActivity().runOnUiThread {
+                                limpiarCampos()  // Limpiar los campos después de editar
                                 ConfigLoading.hideLoadingAnimation()
                                 DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
                             }
@@ -200,18 +204,24 @@ class EditClienteFragment : Fragment() {
                     } catch (e: Exception) {
                         requireActivity().runOnUiThread {
                             ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(),  "Error: ${e.message}")
+                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
                         }
                     }
                 }
             }
         }
     }
+    override fun onMediaSelected(uri: Uri?) {
+        uri?.let {
+            FirebaseStorageManager.URI_IMG_SELECTED = it
+            binding.imgPerfil.setImageURI(it)
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    fun limpiarCampos(){
+    fun limpiarCampos() {
         requireActivity().runOnUiThread {
             binding.apply {
                 textNombre.text!!.clear()
@@ -225,18 +235,17 @@ class EditClienteFragment : Fragment() {
                 textColonia.text!!.clear()
                 textMunicipio.text!!.clear()
                 textGoogleMaps.text!!.clear()
-                imgPerfil.setImageResource(R.drawable.ic_imagen)
+                imgPerfil.setImageResource(R.drawable.ic_imagen)  // Restablecer la imagen predeterminada
             }
         }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MainActivity.PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            FirebaseStorageManager.URI_IMG_SELECTED = data.data!!
-            // You can now upload this image to Firebase Storage and display it in the ImageView
-
-            binding.imgPerfil.setImageURI(FirebaseStorageManager.URI_IMG_SELECTED)
-        }
+        mediaHelper.handleActivityResult(requestCode, resultCode, data)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mediaHelper.onRequestPermissionsResult(requestCode, grantResults)
     }
     override fun onResume() {
         super.onResume()
