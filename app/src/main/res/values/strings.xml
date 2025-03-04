@@ -33,6 +33,11 @@
     <string name="menu_pago_tarjeta">Pago Con Tarjeta</string>
 
 
+    <string name="menu_recordatorio">Notas</string>
+    <string name="menu_consultas">Consultas</string>
+    <string name="menu_vacunas">Vacunas</string>
+    <string name="menu_estetica">Estetica</string>
+
     <string name="menu_add_mascota">Agregar Mascota</string>
 
     <string name="menu_total">Total</string>

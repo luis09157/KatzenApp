@@ -1,6 +1,5 @@
 package com.example.katzen.Fragment.Paciente
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,15 +9,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.katzen.Adapter.Cliente.ClienteListAdapter
+import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Adapter.Paciente.PacienteListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.Fragment.Campaña.CampañaPacienteFragment
-import com.example.katzen.Fragment.Cliente.EditClienteFragment
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
+import com.example.katzen.Model.MenuModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.PacienteDetalleFragmentBinding
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +32,7 @@ class PacienteDetalleFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var clienteListAdapter: ClienteListAdapter
     private lateinit var clientesList: MutableList<ClienteModel>
+    private lateinit var menuList: List<MenuModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +55,14 @@ class PacienteDetalleFragment : Fragment() {
         //PacienteListAdapter.FLAG_IN_PACIENTE = true
         ConfigLoading.showLoadingAnimation()
         setValues()
+        menuList = listOf(
+            MenuModel(requireActivity().getString(R.string.menu_recordatorio), R.drawable.img_recordatorios),
+            MenuModel(requireActivity().getString(R.string.menu_consultas), R.drawable.img_consulta),
+            MenuModel(requireActivity().getString(R.string.menu_vacunas), R.drawable.img_vacunas),
+            MenuModel(requireActivity().getString(R.string.menu_estetica), R.drawable.img_estetica)
+        )
+        val adapter = MenuAdapter(requireContext(), menuList)
+        binding.menuOpciones.adapter = adapter
     }
 
     fun setValues(){

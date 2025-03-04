@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/background_color"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <include
         android:id="@+id/fragment_no_data"
@@ -23,285 +23,281 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <LinearLayout
-        android:id="@+id/cont_add_producto"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fillViewport="true">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
+            android:id="@+id/cont_add_producto"
             android:layout_width="match_parent"
-            android:layout_height="330dp"
-            android:layout_margin="15dp"
-            app:cardCornerRadius="30dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="330dp"
+                android:layout_margin="15dp"
+                app:cardCornerRadius="30dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="3.5"
-                    android:orientation="horizontal"
-                    android:background="@color/katzen_verde">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/text_nombre_cliente"
-                            android:textColor="@color/white"
-                            android:gravity="center"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            app:autoSizeTextType="uniform"
-                            app:autoSizeMinTextSize="15sp"
-                            app:autoSizeMaxTextSize="20sp"
-                            android:lines="1"
-                            android:fontFamily="@font/varela"
-                            android:textStyle="bold"
-                            android:text="Nombre del producto" />
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/btn_edit"
-                            android:layout_weight="5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                            <ImageView
-                                android:background="@color/katzen_verde"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:padding="15dp"
-                                android:src="@drawable/ic_edit_blanco"/>
-                        </androidx.cardview.widget.CardView>
-
-
-                    </LinearLayout>
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
                     android:orientation="vertical">
                     <LinearLayout
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-                        <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3.5"
+                        android:orientation="horizontal"
+                        android:background="@color/katzen_verde">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:cardCornerRadius="50dp">
-                            <ImageView
-                                android:id="@+id/imgPerfil"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/text_nombre_cliente"
+                                android:textColor="@color/white"
+                                android:gravity="center"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_person"></ImageView>
-                        </androidx.cardview.widget.CardView>
+                                android:layout_weight="1"
+                                app:autoSizeTextType="uniform"
+                                app:autoSizeMinTextSize="15sp"
+                                app:autoSizeMaxTextSize="20sp"
+                                android:lines="1"
+                                android:fontFamily="@font/varela"
+                                android:textStyle="bold"
+                                android:text="Nombre del producto" />
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/btn_edit"
+                                android:layout_weight="5"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                    android:background="@color/katzen_verde"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="15dp"
+                                    android:src="@drawable/ic_edit_blanco"/>
+                            </androidx.cardview.widget.CardView>
+
+
+                        </LinearLayout>
+
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
                         <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-                            <LinearLayout
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
+                            <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
+                                app:cardCornerRadius="50dp">
                                 <ImageView
-                                    android:layout_margin="4dp"
+                                    android:id="@+id/imgPerfil"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/ic_sexo"/>
-                                <TextView
-                                    android:id="@+id/text_sexo"
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
-                                    android:layout_weight="1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="1"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold"/>
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
-                                <ImageView
-                                    android:layout_margin="4dp"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/ic_raza"/>
-                                <TextView
-                                    android:id="@+id/text_especie"
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
-                                    android:layout_weight="1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="2"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold"/>
-                            </LinearLayout>
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/ic_person"></ImageView>
+                            </androidx.cardview.widget.CardView>
                         </LinearLayout>
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
-                                <ImageView
-                                    android:layout_margin="4dp"
+                                android:layout_weight="1">
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/ic_peso"/>
-                                <TextView
-                                    android:id="@+id/text_peso"
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
                                     android:layout_weight="1"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_margin="4dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:src="@drawable/ic_sexo"/>
+                                    <TextView
+                                        android:id="@+id/text_sexo"
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="1"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="1"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
-                                <ImageView
-                                    android:layout_margin="4dp"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/ic_edad"/>
-                                <TextView
-                                    android:id="@+id/text_edad"
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
                                     android:layout_weight="1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="1"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold"/>
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_margin="4dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:src="@drawable/ic_raza"/>
+                                    <TextView
+                                        android:id="@+id/text_especie"
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="2"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
                             </LinearLayout>
-                        </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:orientation="horizontal">
-                                <ImageView
-                                    android:layout_margin="4dp"
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="5"
-                                    android:src="@drawable/ic_especie"/>
-                                <TextView
-                                    android:id="@+id/text_raza"
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
                                     android:layout_weight="1"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_margin="4dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:src="@drawable/ic_peso"/>
+                                    <TextView
+                                        android:id="@+id/text_peso"
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="1"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="1"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold" />
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_margin="4dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:src="@drawable/ic_edad"/>
+                                    <TextView
+                                        android:id="@+id/text_edad"
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="1"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold"/>
+                                </LinearLayout>
                             </LinearLayout>
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="horizontal">
 
-                                <TextView
-                                    android:textColor="@color/black"
-                                    android:gravity="left|center"
-                                    android:layout_weight="1"
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    app:autoSizeTextType="uniform"
-                                    app:autoSizeMinTextSize="10sp"
-                                    app:autoSizeMaxTextSize="15sp"
-                                    android:lines="1"
-                                    android:fontFamily="@font/varela"
-                                    android:textStyle="bold" />
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+                                    <ImageView
+                                        android:layout_margin="4dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="5"
+                                        android:src="@drawable/ic_especie"/>
+                                    <TextView
+                                        android:id="@+id/text_raza"
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="1"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:textColor="@color/black"
+                                        android:gravity="left|center"
+                                        android:layout_weight="1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:autoSizeTextType="uniform"
+                                        app:autoSizeMinTextSize="10sp"
+                                        app:autoSizeMaxTextSize="15sp"
+                                        android:lines="1"
+                                        android:fontFamily="@font/varela"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
                             </LinearLayout>
+
                         </LinearLayout>
 
                     </LinearLayout>
-
                 </LinearLayout>
-            </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-        <ListView
-            android:id="@+id/lista_pacientes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1" />
-
-       <!-- <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="bottom|right">
-            <Button
-                android:id="@+id/btn_add_cliente"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Paciente"
-                android:drawableLeft="@drawable/ic_mas_blanco"
+            <ListView
+                android:id="@+id/lista_pacientes"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
                 android:layout_margin="10dp"/>
-        </LinearLayout>-->
 
-    </LinearLayout>
+            <GridView
+                android:id="@+id/menu_opciones"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_margin="10dp"
+                android:numColumns="3"/>
 
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
