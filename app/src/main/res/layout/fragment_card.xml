@@ -24,7 +24,7 @@
                 android:text="Tarjeta"
                 android:textColor="@color/black"
                 android:textSize="26dp"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/poppins_black"
                 android:textStyle="bold"
                 android:gravity="center"/>
             <androidx.cardview.widget.CardView
@@ -55,7 +55,7 @@
                             android:inputType="number|numberDecimal"
                             android:digits="0123456789."
                             android:imeOptions="actionDone"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textColor="@color/black"
                             android:textColorHint="@color/black"
                             android:layout_width="match_parent"
@@ -97,7 +97,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/title_dinero"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_regular"
                                         android:textSize="22dp"
                                         android:textStyle="bold"
                                         android:textColor="@color/black"/>
@@ -106,7 +106,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Monto"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textSize="15dp"
                                         android:textStyle="normal"
                                         android:textColor="@color/black"/>
@@ -128,7 +128,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/title_dinero"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_regular"
                                         android:textSize="22dp"
                                         android:textStyle="bold"
                                         android:textColor="@color/black"/>
@@ -137,7 +137,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Impuesto"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textSize="15dp"
                                         android:textStyle="normal"
                                         android:textColor="@color/black"/>
@@ -159,7 +159,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/title_dinero"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_regular"
                                         android:textSize="22dp"
                                         android:textStyle="bold"
                                         android:textColor="@color/black"/>
@@ -168,7 +168,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Venta"
                                         android:gravity="center"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textSize="15dp"
                                         android:textStyle="normal"
                                         android:textColor="@color/black"/>
@@ -192,7 +192,7 @@
                             android:layout_margin="5dp"
                             android:layout_weight="1"
                             android:backgroundTint="@color/katzen_rosa_fuerte"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_bold"
                             android:text="@string/btn_limpiar"
                             android:textSize="18dp" />
 
@@ -202,7 +202,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
 
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_bold"
                             android:textSize="18dp"
                             android:backgroundTint="@color/katzen_rosa_fuerte"
                             android:layout_margin="5dp"

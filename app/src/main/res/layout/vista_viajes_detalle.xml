@@ -68,7 +68,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="15sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"/>
                     <androidx.cardview.widget.CardView
                         android:id="@+id/btn_edit"
@@ -133,7 +133,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold" />
 
                         <TextView
@@ -141,6 +141,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
+                            android:fontFamily="@font/poppins_light"
                             android:gravity="left|center"
                             />
 
@@ -168,7 +169,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold" />
 
                         <TextView
@@ -176,6 +177,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
+                            android:fontFamily="@font/poppins_light"
                             android:gravity="left|center" />
 
                     </LinearLayout>
@@ -202,7 +204,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold" />
 
                         <TextView
@@ -210,6 +212,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
+                            android:fontFamily="@font/poppins_light"
                             android:gravity="left|center" />
 
                     </LinearLayout>
@@ -230,7 +233,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold"/>
 
                         <TextView
@@ -244,7 +247,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold" />
 
                         <TextView
@@ -258,7 +261,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold" />
                     </LinearLayout>
                     <LinearLayout
@@ -274,7 +277,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_light"
                             android:textStyle="bold"
                             android:textColor="#CD2703"
                             android:gravity="center"
@@ -290,7 +293,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_regular"
                             android:textStyle="bold"
                             android:textColor="#08A1F2"
                             android:text="@string/title_dinero" />
@@ -304,7 +307,7 @@
                             app:autoSizeMinTextSize="10sp"
                             app:autoSizeMaxTextSize="15sp"
                             android:lines="1"
-                            android:fontFamily="@font/varela"
+                            android:fontFamily="@font/poppins_light"
                             android:textStyle="bold"
                             android:textColor="#4CB219"
                             android:gravity="center"

@@ -66,7 +66,7 @@
                                 app:autoSizeMinTextSize="15sp"
                                 app:autoSizeMaxTextSize="20sp"
                                 android:lines="1"
-                                android:fontFamily="@font/varela"
+                                android:fontFamily="@font/poppins_bold"
                                 android:textStyle="bold"
                                 android:text="Nombre del producto" />
                             <androidx.cardview.widget.CardView
@@ -139,7 +139,7 @@
                                         app:autoSizeMinTextSize="10sp"
                                         app:autoSizeMaxTextSize="15sp"
                                         android:lines="1"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textStyle="bold"/>
                                 </LinearLayout>
                                 <LinearLayout
@@ -164,7 +164,7 @@
                                         app:autoSizeMinTextSize="10sp"
                                         app:autoSizeMaxTextSize="15sp"
                                         android:lines="2"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textStyle="bold"/>
                                 </LinearLayout>
                             </LinearLayout>
@@ -196,7 +196,7 @@
                                         app:autoSizeMinTextSize="10sp"
                                         app:autoSizeMaxTextSize="15sp"
                                         android:lines="1"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textStyle="bold" />
                                 </LinearLayout>
                                 <LinearLayout
@@ -221,7 +221,7 @@
                                         app:autoSizeMinTextSize="10sp"
                                         app:autoSizeMaxTextSize="15sp"
                                         android:lines="1"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textStyle="bold"/>
                                 </LinearLayout>
                             </LinearLayout>
@@ -253,7 +253,7 @@
                                         app:autoSizeMinTextSize="10sp"
                                         app:autoSizeMaxTextSize="15sp"
                                         android:lines="1"
-                                        android:fontFamily="@font/varela"
+                                        android:fontFamily="@font/poppins_light"
                                         android:textStyle="bold" />
                                 </LinearLayout>
                                 <LinearLayout

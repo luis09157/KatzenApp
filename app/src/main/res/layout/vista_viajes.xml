@@ -41,7 +41,7 @@
                     app:autoSizeMinTextSize="12sp"
                     app:autoSizeMaxTextSize="20sp"
                     android:lines="1"
-                    android:fontFamily="@font/varela"
+                    android:fontFamily="@font/poppins_bold"
                     android:textStyle="bold"
                     android:text="OCT"/>
             </LinearLayout>
@@ -66,7 +66,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="17sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:text="@string/menu_costo" />
 
@@ -78,7 +78,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="17sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:text="@string/menu_ganancia" />
@@ -91,7 +91,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="18sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:text="@string/menu_venta" />
@@ -110,7 +110,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="17sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:textColor="#CD2703"
                         android:gravity="center"
@@ -126,7 +126,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="17sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:textColor="#08A1F2"
                         android:text="@string/title_dinero" />
@@ -140,7 +140,7 @@
                         app:autoSizeMinTextSize="10sp"
                         app:autoSizeMaxTextSize="17sp"
                         android:lines="1"
-                        android:fontFamily="@font/varela"
+                        android:fontFamily="@font/poppins_regular"
                         android:textStyle="bold"
                         android:textColor="#4CB219"
                         android:gravity="center"

@@ -51,7 +51,7 @@
                     app:autoSizeMaxTextSize="15sp"
                     android:text="Roket"
                     android:lines="1"
-                    android:fontFamily="@font/varela"
+                    android:fontFamily="@font/poppins_regular"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/text_descripcion"
@@ -65,7 +65,7 @@
                     app:autoSizeMaxTextSize="15sp"
                     android:text="Canino, 3 a;os"
                     android:lines="1"
-                    android:fontFamily="@font/varela"
+                    android:fontFamily="@font/poppins_light"
                     android:textStyle="bold" />
             </LinearLayout>
             <LinearLayout

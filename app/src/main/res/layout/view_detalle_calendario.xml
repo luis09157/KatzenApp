@@ -35,7 +35,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/katzen_rosa_fuerte"
-                    android:fontFamily="@font/varela"
+                    android:fontFamily="@font/poppins_regular"
                     android:textStyle="bold"
                     android:text="ENERO"/>
                 <ImageView
@@ -58,7 +58,7 @@
                 android:lines="2"
                 android:gravity="center"
                 android:textColor="@color/katzen_rosa_fuerte"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/poppins_bold"
                 android:textStyle="bold"
                 android:text="2 Eventos"/>
 

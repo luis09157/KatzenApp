@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">Ganando dinero como tiburones.</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="nav_home">Inicio</string>
+    <string name="nav_menu_productos">Menu Productos</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Pago Con Tarjeta</string>
@@ -38,6 +39,14 @@
     <string name="submenu_consultas">Consultas</string>
     <string name="submenu_vacunas">Vacunas</string>
     <string name="submenu_estetica">Estetica</string>
+
+    <string name="submenu_productos_prod_varios">Prod.Varios</string>
+    <string name="submenu_productos_alimentos">Alimentos</string>
+    <string name="submenu_productos_servicios">Servicios</string>
+    <string name="submenu_productos_medicamentos">Medicamentos</string>
+    <string name="submenu_productos_procedimientos">Procedimientos</string>
+    <string name="submenu_productos_m_complementarios">M.Complementarios</string>
+    <string name="submenu_productos_estetica">Estetica</string>
 
     <string name="menu_add_mascota">Agregar Mascota</string>
 

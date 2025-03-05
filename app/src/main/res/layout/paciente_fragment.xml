@@ -30,35 +30,42 @@
             android:id="@+id/cont_add_producto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <SearchView
-                android:id="@+id/buscarMascota"
+                <SearchView
+                    android:id="@+id/buscarMascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"/>
+
+                <ListView
+                    android:id="@+id/lis_menu_mascota"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@color/white"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"/>
-
-            <ListView
-                android:id="@+id/lis_menu_mascota"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/white"
-                android:layout_weight="1"/>
-
+                android:gravity="right">
+                <Button
+                    android:id="@+id/btn_add_paciente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Paciente"
+                    android:drawableLeft="@drawable/ic_mas_blanco"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right">
-            <Button
-                android:id="@+id/btn_add_paciente"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Paciente"
-                android:drawableLeft="@drawable/ic_mas_blanco"
-                android:layout_margin="10dp"/>
-        </LinearLayout>
+
     </LinearLayout>
 
 

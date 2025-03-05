@@ -1,6 +1,5 @@
 package com.example.katzen
 
-import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,7 +15,6 @@ import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
-import com.example.katzen.Fragment.Producto.AddProductoFragment
 import com.example.katzen.Fragment.Venta.VentasFragment
 import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
@@ -25,6 +23,7 @@ import com.example.katzen.Model.ProductoModel
 import com.ninodev.katzen.databinding.MenuFragmentBinding
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
+import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import com.ninodev.katzen.R
 
 class MenuFragment : Fragment() {
@@ -71,14 +70,13 @@ class MenuFragment : Fragment() {
                 "Venta" -> {
                     UtilFragment.changeFragment(requireActivity(), VentasFragment(),TAG)
                 }
-                "Producto" -> {
-                    Config.PRODUCTO_EDIT = ProductoModel()
-                    UtilFragment.changeFragment(requireActivity(), AddProductoFragment(),TAG)
+                requireActivity().getString(R.string.menu_productos) -> {
+                    UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
                 }
                 "Balance General" -> {
                 }
                 "Lista Productos" -> {
-                    UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
+                    //UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
                 }
                 "Inventario" -> {
                     UtilFragment.changeFragment(requireActivity(), InventarioFragment(),TAG)
