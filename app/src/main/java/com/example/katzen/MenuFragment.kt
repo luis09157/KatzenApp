@@ -25,6 +25,7 @@ import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
 import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import com.ninodev.katzen.R
+import com.example.katzen.Fragment.Campaña.YearListFragment
 
 class MenuFragment : Fragment() {
     val TAG : String  = "MenuFragment"
@@ -92,7 +93,7 @@ class MenuFragment : Fragment() {
                     UtilFragment.changeFragment(requireActivity(), ViajesFragment(),TAG)
                 }
                 requireActivity().getString(R.string.menu_campania) -> {
-                    UtilFragment.changeFragment(requireActivity(), CampañaFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), YearListFragment(), TAG)
                 }
             }
         }

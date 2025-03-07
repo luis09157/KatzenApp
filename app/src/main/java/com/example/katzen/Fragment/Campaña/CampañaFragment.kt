@@ -27,6 +27,20 @@ class CampañaFragment : Fragment() {
     private lateinit var campañaListAdapter: CampañaAdapter
     companion object{
         var ADD_CAMPAÑA : CampañaModel = CampañaModel()
+        fun newInstance(year: String): CampañaFragment {
+            return CampañaFragment().apply {
+                arguments = Bundle().apply {
+                    putString("selected_year", year)
+                }
+            }
+        }
+    }
+
+    private var selectedYear: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        selectedYear = arguments?.getString("selected_year")
     }
 
     override fun onCreateView(
@@ -63,7 +77,7 @@ class CampañaFragment : Fragment() {
     }
     fun listeners() {
         binding.lisMenuCampaA.setOnItemClickListener { adapterView, view, i, l ->
-            ADD_CAMPAÑA.año = CalendarioUtil.obtenerAñoActual()
+            ADD_CAMPAÑA.año = selectedYear ?: CalendarioUtil.obtenerAñoActual()
             ADD_CAMPAÑA.mes = String.format("%02d", (i + 1))
             UtilFragment.changeFragment(requireActivity(), CampañaEventoFragment(),TAG)
         }
@@ -84,29 +98,26 @@ class CampañaFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
     fun initCampañas() {
-        campañaList.clear() // Limpiar la lista antes de agregar nuevos elementos
+        campañaList.clear()
 
-        // Array con los nombres de los meses en español
         val nombresMeses = arrayOf(
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         )
 
-        val añoActual = CalendarioUtil.obtenerAñoActual()
+        val año = selectedYear ?: CalendarioUtil.obtenerAñoActual()
 
-        // Iterar del 1 al 12 (meses)
         for (i in 1..12) {
-            val mes = String.format("%02d", i) // Formatear el número del mes a dos dígitos (01, 02, ..., 12)
-            val mesCompleto = "$mes-$añoActual"
+            val mes = String.format("%02d", i)
+            val mesCompleto = "$mes-$año"
 
             val campañaModel = CampañaModel().apply {
                 cantidadCampañas = "0"
-                this.mes = nombresMeses[i - 1] // Obtener el nombre del mes desde el array
+                this.mes = nombresMeses[i - 1]
             }
             campañaList.add(campañaModel)
         }
 
-        // Notificar al adaptador que los datos han cambiado
         campañaListAdapter.notifyDataSetChanged()
     }
     suspend fun obtenerCantidadCampañasPorMes() {
@@ -144,7 +155,7 @@ class CampañaFragment : Fragment() {
         )
         val index = nombresMeses.indexOf(nombreMes)
         return if (index != -1) {
-            String.format("%02d", index + 1) + "-${CalendarioUtil.obtenerAñoActual()}"
+            String.format("%02d", index + 1) + "-${selectedYear ?: CalendarioUtil.obtenerAñoActual()}"
         } else {
             ""
         }
@@ -153,7 +164,7 @@ class CampañaFragment : Fragment() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                UtilFragment.changeFragment(requireContext(), YearListFragment(), TAG)
             }
         })
     }

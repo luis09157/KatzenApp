@@ -25,6 +25,7 @@ import com.example.katzen.Helper.PrintDocumentAdapter
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.PDF.ConvertPDF
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.ninodev.katzen.R
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ class PacienteListAdapter(
 ) : ArrayAdapter<PacienteModel>(activity, R.layout.view_list_paciente, mascotaList) {
 
     private val storage = FirebaseStorage.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var holder: ViewHolder
@@ -56,62 +58,100 @@ class PacienteListAdapter(
         }
         holder = itemView.tag as ViewHolder
 
-        val paciente = mascotaList[position]
-
-        configureImage(holder.imgPerfil, paciente.imageUrl)
-        holder.nombrePaciente?.text = paciente.nombre
-        holder.descripcion?.text = formatDescripcion(paciente)
-
-        // Controlar visibilidad de botones según FLAG_IN_PACIENTE
-        if (FLAG_IN_PACIENTE) {
-            holder.btnPDF?.visibility = View.GONE
-            holder.btnCompartir?.visibility = View.GONE
-        } else {
-            holder.btnPDF?.visibility = View.VISIBLE
-            holder.btnCompartir?.visibility = View.VISIBLE
-        }
-
-        holder.btnEliminar?.setOnClickListener {
-            showDeleteConfirmationDialog(paciente.id)
-        }
-
-        holder.btnCompartir?.setOnClickListener {
-            ConfigLoading.showLoadingAnimation()
-            CoroutineScope(Dispatchers.Main).launch {
-                compartirResponsiva(paciente.id)
+        try {
+            val paciente = mascotaList[position]
+            
+            // Verificar que los datos no sean nulos
+            if (paciente.nombre.isNullOrEmpty()) {
+                Log.e("PacienteListAdapter", "Nombre de paciente vacío en posición $position")
+                holder.nombrePaciente?.text = "Sin nombre"
+            } else {
+                holder.nombrePaciente?.text = paciente.nombre
             }
-        }
 
-        holder.btnPDF?.setOnClickListener {
-            ConfigLoading.showLoadingAnimation()
-            CoroutineScope(Dispatchers.Main).launch {
-                try {
-                    // Primero verificamos si ya existe el PDF en Firebase
-                    val storageRef = storage.reference.child("pdfs/$paciente.id.pdf")
+            // Verificar y manejar la descripción
+            holder.descripcion?.text = try {
+                if (paciente.especie.isNullOrEmpty()) {
+                    Log.w("PacienteListAdapter", "Especie vacía en paciente ${paciente.id}")
+                    "Especie no especificada"
+                } else {
+                    "${paciente.especie}, ${UtilHelper.obtenerEdadPaciente(paciente)}"
+                }
+            } catch (e: Exception) {
+                Log.e("PacienteListAdapter", "Error al formatear descripción: ${e.message}")
+                "Información no disponible"
+            }
+
+            // Manejo seguro de la imagen
+            try {
+                configureImage(holder.imgPerfil, paciente.imageUrl)
+            } catch (e: Exception) {
+                Log.e("PacienteListAdapter", "Error al cargar imagen: ${e.message}")
+                holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
+            }
+
+            // Control de visibilidad de botones
+            if (FLAG_IN_PACIENTE) {
+                holder.btnPDF?.visibility = View.GONE
+                holder.btnCompartir?.visibility = View.GONE
+            } else {
+                holder.btnPDF?.visibility = View.VISIBLE
+                holder.btnCompartir?.visibility = View.VISIBLE
+            }
+
+            // Configuración de listeners con manejo de errores
+            holder.btnEliminar?.setOnClickListener {
+                if (!paciente.id.isNullOrEmpty()) {
+                    showDeleteConfirmationDialog(paciente.id)
+                } else {
+                    Toast.makeText(activity, "ID de paciente no válido", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            holder.btnCompartir?.setOnClickListener {
+                ConfigLoading.showLoadingAnimation()
+                CoroutineScope(Dispatchers.Main).launch {
+                    compartirResponsiva(paciente.id)
+                }
+            }
+
+            holder.btnPDF?.setOnClickListener {
+                ConfigLoading.showLoadingAnimation()
+                CoroutineScope(Dispatchers.Main).launch {
                     try {
-                        // Intentar obtener metadata del archivo
-                        val metadata = storageRef.metadata.await()
-                        if (metadata != null) {
-                            // El PDF ya existe, procedemos a imprimir
-                            Log.d("PacienteListAdapter", "PDF encontrado en Firebase, procediendo a imprimir")
-                            printPdfFromFirebase(paciente.id)
-                        } else {
-                            // El PDF no existe, necesitamos crearlo
+                        // Primero verificamos si ya existe el PDF en Firebase
+                        val storageRef = storage.reference.child("pdfs/$paciente.id.pdf")
+                        try {
+                            // Intentar obtener metadata del archivo
+                            val metadata = storageRef.metadata.await()
+                            if (metadata != null) {
+                                // El PDF ya existe, procedemos a imprimir
+                                Log.d("PacienteListAdapter", "PDF encontrado en Firebase, procediendo a imprimir")
+                                printPdfFromFirebase(paciente.id)
+                            } else {
+                                // El PDF no existe, necesitamos crearlo
+                                generarEImprimirPDF(paciente.id)
+                            }
+                        } catch (e: Exception) {
+                            // Si hay error, probablemente el archivo no existe
+                            Log.d("PacienteListAdapter", "PDF no encontrado en Firebase, generando nuevo")
                             generarEImprimirPDF(paciente.id)
                         }
                     } catch (e: Exception) {
-                        // Si hay error, probablemente el archivo no existe
-                        Log.d("PacienteListAdapter", "PDF no encontrado en Firebase, generando nuevo")
-                        generarEImprimirPDF(paciente.id)
-                    }
-                } catch (e: Exception) {
-                    Log.e("PacienteListAdapter", "Error en proceso de PDF", e)
-                    withContext(Dispatchers.Main) {
-                        ConfigLoading.hideLoadingAnimation()
-                        Toast.makeText(activity, "Error: ${e.localizedMessage ?: "Error desconocido"}", Toast.LENGTH_SHORT).show()
+                        Log.e("PacienteListAdapter", "Error en proceso de PDF", e)
+                        withContext(Dispatchers.Main) {
+                            ConfigLoading.hideLoadingAnimation()
+                            Toast.makeText(activity, "Error: ${e.localizedMessage ?: "Error desconocido"}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
+        } catch (e: Exception) {
+            Log.e("PacienteListAdapter", "Error al configurar vista: ${e.message}")
+            // Configurar vista con valores por defecto
+            holder.nombrePaciente?.text = "Error al cargar datos"
+            holder.descripcion?.text = "Información no disponible"
+            holder.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
         }
 
         return itemView
@@ -139,15 +179,32 @@ class PacienteListAdapter(
         }
     }
 
+    private suspend fun ensureAuthenticated() {
+        if (auth.currentUser == null) {
+            try {
+                Log.d("PacienteListAdapter", "Iniciando autenticación anónima...")
+                val result = auth.signInAnonymously().await()
+                Log.d("PacienteListAdapter", "Autenticación exitosa: ${result.user?.uid}")
+            } catch (e: Exception) {
+                Log.e("PacienteListAdapter", "Error en autenticación: ${e.message}")
+                e.printStackTrace()
+                throw e
+            }
+        } else {
+            Log.d("PacienteListAdapter", "Usuario ya autenticado: ${auth.currentUser?.uid}")
+        }
+    }
+
     private suspend fun convertXmlToPdfAndUpload(pacienteId: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
+                ensureAuthenticated()
+                val fecha = CampañaFragment.ADD_CAMPAÑA.fecha
+                val (dia, mes, año) = UtilHelper.parseFecha(fecha)
+                val pdfPath = "PDF/$año/$mes/$dia/$pacienteId.pdf"
+                
                 Log.d("PacienteListAdapter", "Iniciando conversión de PDF para paciente: $pacienteId")
                 val convertPDF = ConvertPDF(activity)
-                
-                // Obtener la fecha actual para la estructura de carpetas
-                val fecha = CampañaFragment.ADD_CAMPAÑA.fecha // formato "dd/MM/yyyy"
-                val (dia, mes, año) = UtilHelper.parseFecha(fecha)
                 
                 // Crear la estructura de carpetas en el caché
                 val pdfDir = File(activity.cacheDir, "pdfs").apply { 
@@ -165,7 +222,6 @@ class PacienteListAdapter(
                 
                 if (success && tempFile.exists() && tempFile.length() > 0) {
                     // Crear la ruta estructurada en Firebase
-                    val pdfPath = "PDF/$año/$mes/$dia/$pacienteId.pdf"
                     val storageRef = storage.reference.child(pdfPath)
                     
                     try {
@@ -197,6 +253,7 @@ class PacienteListAdapter(
     private suspend fun compartirResponsiva(pacienteId: String) {
         withContext(Dispatchers.IO) {
             try {
+                ensureAuthenticated()
                 val fecha = CampañaFragment.ADD_CAMPAÑA.fecha
                 val (dia, mes, año) = UtilHelper.parseFecha(fecha)
                 val pdfPath = "PDF/$año/$mes/$dia/$pacienteId.pdf"
@@ -257,6 +314,7 @@ class PacienteListAdapter(
     private suspend fun printPdfFromFirebase(pacienteId: String) {
         withContext(Dispatchers.IO) {
             try {
+                ensureAuthenticated()
                 val fecha = CampañaFragment.ADD_CAMPAÑA.fecha
                 val (dia, mes, año) = UtilHelper.parseFecha(fecha)
                 val pdfPath = "PDF/$año/$mes/$dia/$pacienteId.pdf"
@@ -311,13 +369,18 @@ class PacienteListAdapter(
     }
 
     private fun configureImage(imageView: ImageView?, imageUrl: String?) {
-        if (!imageUrl.isNullOrEmpty()) {
-            Glide.with(imageView!!.context)
-                .load(imageUrl)
-                .placeholder(R.drawable.ic_perfil)
-                .error(R.drawable.no_disponible_rosa)
-                .into(imageView)
-        } else {
+        try {
+            if (!imageUrl.isNullOrEmpty()) {
+                Glide.with(imageView?.context ?: return)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_perfil)
+                    .error(R.drawable.no_disponible_rosa)
+                    .into(imageView)
+            } else {
+                imageView?.setImageResource(R.drawable.no_disponible_rosa)
+            }
+        } catch (e: Exception) {
+            Log.e("PacienteListAdapter", "Error al configurar imagen: ${e.message}")
             imageView?.setImageResource(R.drawable.no_disponible_rosa)
         }
     }
@@ -327,8 +390,21 @@ class PacienteListAdapter(
     override fun getItem(position: Int): PacienteModel = mascotaList[position]
 
     fun updateList(newList: List<PacienteModel>) {
-        mascotaList = newList
-        notifyDataSetChanged()
+        try {
+            Log.d("PacienteListAdapter", "Actualizando lista con ${newList.size} elementos")
+            // Verificar datos válidos
+            val validList = newList.filter { paciente ->
+                val isValid = !paciente.id.isNullOrEmpty() && !paciente.nombre.isNullOrEmpty()
+                if (!isValid) {
+                    Log.w("PacienteListAdapter", "Paciente inválido encontrado: ${paciente.id}")
+                }
+                isValid
+            }
+            mascotaList = validList
+            notifyDataSetChanged()
+        } catch (e: Exception) {
+            Log.e("PacienteListAdapter", "Error al actualizar lista: ${e.message}")
+        }
     }
 
     private fun formatDescripcion(paciente: PacienteModel): String {
