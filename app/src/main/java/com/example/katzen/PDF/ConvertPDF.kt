@@ -64,7 +64,7 @@ class ConvertPDF(private val activity: Activity) {
         builder.create().show()
     }
 
-    suspend fun convertXmlToPdf(pacienteId: String): Boolean {
+    suspend fun convertXmlToPdf(pacienteId: String, absolutePath: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val (paciente, cliente) = getData(pacienteId)

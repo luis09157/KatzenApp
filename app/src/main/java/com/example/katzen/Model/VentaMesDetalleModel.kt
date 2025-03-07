@@ -18,6 +18,22 @@ data class VentaMesDetalleModel(
     var nombreCliente: String = "",
     var idCliente: String = ""
 ) {
+    // Constructor vacío necesario para Firebase
+    constructor() : this(
+        id = UUID.randomUUID().toString(),
+        nombreDomicilio = "",
+        categoria = "",
+        costo = "",
+        domicilio = "",
+        fecha = "",
+        ganancia = "",
+        kilometros = "",
+        venta = "",
+        linkMaps = "",
+        nombreCliente = "",
+        idCliente = ""
+    )
+
     companion object {
         fun validarViaje(context: Context, viaje: VentaMesDetalleModel): ValidationResult {
 
@@ -34,7 +50,6 @@ data class VentaMesDetalleModel(
             } else if (viaje.linkMaps.isEmpty()) {
                 return ValidationResult(false, context.getString(R.string.error_empty_link_maps))
             }
-
 
             // Si todas las validaciones pasan, retornar un resultado válido
             return ValidationResult(true)

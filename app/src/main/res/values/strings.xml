@@ -45,7 +45,7 @@
     <string name="submenu_productos_servicios">Servicios</string>
     <string name="submenu_productos_medicamentos">Medicamentos</string>
     <string name="submenu_productos_procedimientos">Procedimientos</string>
-    <string name="submenu_productos_m_complementarios">M.Complementarios</string>
+    <string name="submenu_productos_m_complementarios">M.Auxiliar</string>
     <string name="submenu_productos_estetica">Estetica</string>
 
     <string name="menu_add_mascota">Agregar Mascota</string>
@@ -128,6 +128,8 @@
     <string name="txtField_kilometros">Kilometros</string>
     <string name="txtField_dinero">Dinero</string>
     <string name="txtField_maps">Google Maps</string>
+
+    <string name="txtField_unidad_medida">Unidad Medida</string>
 
 
     <string name="txtField_mascota">Nombre Mascota</string>
@@ -278,4 +280,19 @@
     <string name="error_terms_not_accepted">Debes aceptar los términos y condiciones para continuar.</string>
     <string name="error_registration_failed">El registro falló. Inténtalo de nuevo.</string>
     <string name="thank_you_for_registering">¡Gracias por unirte a nuestra comunidad!</string>
+
+
+    <string name="error_invalid_peso">El peso debe ser un número válido mayor a 0</string>
+    <string name="error_invalid_edad">La edad debe ser un número válido y no negativo</string>
+    <string name="error_empty_sexo">El sexo no puede estar vacío</string>
+    <string name="error_empty_especie">La especie no puede estar vacía</string>
+    <string name="error_empty_raza">La raza no puede estar vacía</string>
+    <string name="error_empty_nombre_cliente">El nombre del cliente no puede estar vacío</string>
+    <string name="error_empty_id_cliente">El ID del cliente no puede estar vacío</string>
+
+    <!-- Validaciones de PacienteModel -->
+    <string name="error_invalid_age">La edad debe ser un número válido entre 0 y 30 años.</string>
+    <string name="error_invalid_weight">El peso debe ser un número válido entre 0.1 kg y 200 kg.</string>
+    <string name="error_invalid_id_cliente">El ID de cliente debe tener al menos 5 caracteres.</string>
+
 </resources>

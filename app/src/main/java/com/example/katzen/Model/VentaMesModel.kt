@@ -8,7 +8,19 @@ data class VentaMesModel(
      var costo: String = "",
      var mes: String = "",
      var anio: String = "",
-     var fecha: String ="",
+     var fecha: String = "",
      var ganancia: String = "",
-     var cargos : String = ""
-)
+     var cargos: String = ""
+) {
+     // Constructor sin argumentos requerido por Firebase
+     constructor() : this(
+          id = UUID.randomUUID().toString(),
+          venta = "",
+          costo = "",
+          mes = "",
+          anio = "",
+          fecha = "",
+          ganancia = "",
+          cargos = ""
+     )
+}

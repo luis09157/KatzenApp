@@ -155,7 +155,8 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             when {
                 ContextCompat.checkSelfPermission(applicationContext, permission) == PackageManager.PERMISSION_GRANTED -> {
-                    Toast.makeText(applicationContext, "$name permission is granted", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "$name permission is granted")
+
                 }
                 shouldShowRequestPermissionRationale(permission) -> showDialog(permission, name, requestCode)
                 else -> ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
@@ -195,20 +196,11 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            ConvertPDF.REQUEST_CODE_WRITE_STORAGE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permiso concedido, procede con la conversión
-                    Toast.makeText(this, "Permiso de almacenamiento concedido", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Permiso denegado
-                    Toast.makeText(this, "Permiso de almacenamiento denegado", Toast.LENGTH_SHORT).show()
-                }
-            }
             codeNotification -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "Permission Granted")
                 } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "Permission Denied")
                 }
             }
             // Manejo de otros permisos...

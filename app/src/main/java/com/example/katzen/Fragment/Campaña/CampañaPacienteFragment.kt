@@ -112,6 +112,7 @@ class CampañaPacienteFragment : Fragment() {
         pacienteListAdapter.updateList(filteredList)
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

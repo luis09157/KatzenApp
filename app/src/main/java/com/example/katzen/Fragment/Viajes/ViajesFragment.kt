@@ -97,48 +97,57 @@ class ViajesFragment : Fragment() {
                 try {
                     viajesList.clear()
 
+                    // Iterar sobre los niños del snapshot
                     for (viajeSnapshot in snapshot.children) {
+                        // Comprobamos si el valor es un mapa (en lugar de usar GenericTypeIndicator)
                         if (viajeSnapshot.value !is Map<*, *>) continue
 
-                        val genericTypeIndicator = object : GenericTypeIndicator<Map<String, Any>>() {}
-                        val ventaMesMap: Map<String, Any> = viajeSnapshot.getValue(genericTypeIndicator) ?: continue
+                        // Obtener el mapa directamente
+                        val ventaMesMap = viajeSnapshot.value as Map<String, Any>
 
+                        // Crear el modelo a partir del mapa
                         val ventaMesModel = VentaMesModel(
                             venta = ventaMesMap["venta"].toString(),
                             costo = ventaMesMap["costo"].toString(),
                             mes = ventaMesMap["mes"].toString(),
                             anio = ventaMesMap["anio"].toString(),
                             fecha = ventaMesMap["fecha"].toString(),
-                            ganancia = ventaMesMap["ganancia"].toString()
+                            ganancia = ventaMesMap["ganancia"].toString(),
+                            cargos = ventaMesMap["cargos"].toString() // Asegúrate de que "cargos" esté presente en tu base de datos
                         )
                         viajesList.add(ventaMesModel)
                     }
 
+                    // Verificar si la lista tiene 12 elementos
                     if (viajesList.size != 12) {
-                        initYearFirebase(viajesList)
-                        obtenerViajes() // Consider refactoring to avoid recursion
+                        initYearFirebase(viajesList)  // Llamamos a initYearFirebase si no tiene 12
+                        obtenerViajes()  // Podrías refactorizar para evitar la recursión, pero mantiene la lógica igual
                     } else {
-                        // Notify the adapter and update UI if data is present
+                        // Si tiene los 12 elementos, notificar al adaptador y ocultar la animación de carga
                         viajesAdapter.notifyDataSetChanged()
                         ConfigLoading.hideLoadingAnimation()
                     }
 
+                    // Si la lista está vacía, mostrar mensaje
                     if (viajesList.isEmpty()) {
                         ConfigLoading.showNodata()
                     }
 
                 } catch (e: Exception) {
+                    // Manejo de excepciones
                     Log.e(TAG, "Error al obtener los viajes: ${e.message}", e)
                     ConfigLoading.showNodata()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
+                // Si la consulta a Firebase falla
                 Log.e(TAG, "Error en la consulta a Firebase: ${error.message}")
                 ConfigLoading.showNodata()
             }
         })
     }
+
 
     private fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
         val listMonths = UtilHelper.getMontsThisYears()

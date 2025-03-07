@@ -14,6 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class UtilHelper {
     companion object{
@@ -128,6 +129,15 @@ class UtilHelper {
             val anio = partes[2]
             return "${dia}-${mes}-${anio}"
         }
+        fun parseDate(dateString: String, format: String = "dd/MM/yyyy HH:mm:ss"): Date? {
+            return try {
+                val dateFormatter = SimpleDateFormat(format, Locale.getDefault())
+                dateFormatter.parse(dateString)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
 
         fun hideKeyBoardWorld(activity : Activity,view : View){
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

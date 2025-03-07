@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseDatabaseManager
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.MediaHelper
 import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
@@ -21,6 +23,7 @@ import com.ninodev.katzen.databinding.AddClienteFragmentBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
 
@@ -75,12 +78,15 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
             it.hideKeyboard()
             UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
         }
+
         binding.btnSubirImagen.setOnClickListener {
             it.hideKeyboard()
             mediaHelper.showMediaOptionsDialog()  // Usar MediaHelper para abrir el diálogo de selección de imágenes
         }
+
         binding.btnGuardar.setOnClickListener {
             it.hideKeyboard()
+
             val nombre = binding.textNombre.text.toString()
             val apellidoPaterno = binding.textAppellidoPaterno.text.toString()
             val apellidoMaterno = binding.textAppellidoMaterno.text.toString()
@@ -95,6 +101,7 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
             val kilometros = binding.textKilometrosCasa.text.toString()
 
             val cliente = ClienteModel(
+                id = UUID.randomUUID().toString(),
                 nombre = nombre,
                 apellidoPaterno = apellidoPaterno,
                 apellidoMaterno = apellidoMaterno,
@@ -106,21 +113,28 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
                 colonia = colonia,
                 municipio = municipio,
                 urlGoogleMaps = googleMaps,
-                kilometrosCasa = kilometros
+                kilometrosCasa = kilometros,
+                fecha = UtilHelper.getDate(), // Agregar fecha actual
+                imageUrl = "",  // Valores predeterminados para evitar errores
+                imageFileName = ""
             )
 
             val validationResult = ClienteModel.validarCliente(requireContext(), cliente)
             if (validationResult.isValid) {
-                GlobalScope.launch(Dispatchers.IO) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {  // Reemplazo de GlobalScope
                     guardarCliente(cliente)
                 }
             } else {
                 println(validationResult.message)
                 ConfigLoading.hideLoadingAnimation()
-                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), validationResult.message)
+
+                activity?.let {
+                    DialogMaterialHelper.mostrarErrorDialog(it, validationResult.message)
+                }
             }
         }
     }
+
     fun guardarCliente(clienteModel: ClienteModel) {
         GlobalScope.launch(Dispatchers.IO) {
             if (FirebaseStorageManager.hasSelectedImage()) {

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Ruta para el directorio interno de archivos -->
+    <files-path name="internal_files" path="." />
+
+    <!-- Ruta para el directorio de caché interno -->
     <cache-path name="cache_images" path="." />
-    <external-files-path name="images" path="Pictures/" />
+
+    <!-- Ruta para el directorio interno de archivos en una subcarpeta específica -->
+    <files-path name="katzen_documents" path="Documents/Katzen/" />
 </paths>

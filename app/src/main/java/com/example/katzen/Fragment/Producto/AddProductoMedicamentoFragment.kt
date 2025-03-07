@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import com.example.katzen.Config.Config
 import com.ninodev.katzen.databinding.AddProductoMedicamentoFragmentBinding
 
 class AddProductoMedicamentoFragment : Fragment() {
@@ -28,27 +29,10 @@ class AddProductoMedicamentoFragment : Fragment() {
     }
 
     private fun setupUnidadMedidaSpinner() {
-        // Obtener referencia al AutoCompleteTextView desde el binding
-        val spinnerUnidadMedida = binding.spinnerUnidadMedida
+        val adapter = ArrayAdapter(requireActivity(),
+            android.R.layout.simple_list_item_1, Config.UNIDADES_MEDIDA)
 
-        // Lista de unidades de medida
-        val unidades = arrayOf("u.", "l.", "ml.", "kg.", "gr.", "mg.")
-
-        // Configurar el adaptador
-        val adapter = ArrayAdapter(
-            requireContext(), // Usar requireContext() en un Fragment
-            android.R.layout.simple_dropdown_item_1line, // Layout predeterminado para el Spinner
-            unidades
-        )
-
-        // Asignar el adaptador al AutoCompleteTextView
-        spinnerUnidadMedida.setAdapter(adapter)
-
-        // Manejar la selección de un elemento
-        spinnerUnidadMedida.setOnItemClickListener { _, _, position, _ ->
-            val selectedItem = unidades[position]
-            // Hacer algo con el elemento seleccionado
-        }
+        binding.spUnidadMedida.setAdapter(adapter)
     }
 
     override fun onDestroyView() {

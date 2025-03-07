@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Fragment.Campaña.CampañaFragment
-import com.example.katzen.Fragment.Viajes.ViajesFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.ninodev.katzen.R
@@ -35,7 +34,7 @@ class MenuProductosFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.submenu_productos_alimentos), R.drawable.img_alimento),
             MenuModel(requireActivity().getString(R.string.submenu_productos_servicios), R.drawable.img_servicios),
             MenuModel(requireActivity().getString(R.string.submenu_productos_medicamentos), R.drawable.img_medicamentos),
-            MenuModel(requireActivity().getString(R.string.submenu_productos_procedimientos), R.drawable.img_productos),
+            MenuModel(requireActivity().getString(R.string.submenu_productos_procedimientos), R.drawable.img_procedimientos),
             MenuModel(requireActivity().getString(R.string.submenu_productos_m_complementarios), R.drawable.img_prod_complementario),
             MenuModel(requireActivity().getString(R.string.submenu_productos_estetica), R.drawable.img_prod_estetica)
         )

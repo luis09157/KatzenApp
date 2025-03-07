@@ -49,6 +49,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+
         <activity
             android:name="com.example.katzen.MainActivity"
             android:exported="true"

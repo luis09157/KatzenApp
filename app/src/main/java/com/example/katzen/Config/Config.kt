@@ -7,6 +7,15 @@ class Config {
     companion object{
 
         val CATEGORIAS = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
+        val UNIDADES_MEDIDA = listOf(
+            "Unidad",
+            "Litro",
+            "Mililitro",
+            "Kilogramo",
+            "Gramo",
+            "Miligramo"
+        )
+
         val UNIDAD_MEDIDA = listOf("Piezas","Mililitros", "Litros")
         val CATEGORIAS_PRODUCTO = listOf("MEDICAMENTO","ALIMENTO", "PET SHOP")
         val PROVEEDORES = listOf("GOPET")

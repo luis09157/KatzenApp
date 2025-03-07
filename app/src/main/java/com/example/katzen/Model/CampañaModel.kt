@@ -1,6 +1,7 @@
 package com.example.katzen.Model
 
 import java.util.UUID
+
 class CampañaModel(
     var id: String = UUID.randomUUID().toString(),
     var nombreCampaña: String = "",
@@ -10,13 +11,24 @@ class CampañaModel(
     var nombreCliente: String = "",
     var idPaciente: String = "",
     var nombrePaciente: String = "",
-    var año:String = "",
+    var año: String = "",
     var mes: String = "",
     var dia: String = "",
     var fecha: String = ""
-
-
 ) {
-    companion object {
-    }
+    // Constructor vacío necesario para Firebase
+    constructor() : this(
+        id = UUID.randomUUID().toString(),
+        nombreCampaña = "",
+        cantidadCampañas = "",
+        cantidadPacientes = "",
+        idCliente = "",
+        nombreCliente = "",
+        idPaciente = "",
+        nombrePaciente = "",
+        año = "",
+        mes = "",
+        dia = "",
+        fecha = ""
+    )
 }

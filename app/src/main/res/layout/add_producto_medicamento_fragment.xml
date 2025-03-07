@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:padding="16dp"
-    android:background="@color/background_color"
-    tools:context=".ui.NuevoMedicamentoFragment">
+    android:background="@color/background_color">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -158,21 +157,25 @@
 
                 <!-- Spinner para Unidad de medida -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutUnidadMedida"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_marginTop="16dp">
+                    android:background="@color/white"
+                    android:textColorHint="@color/black"
+                    app:startIconDrawable="@drawable/ic_categoria">
 
                     <AutoCompleteTextView
-                        android:id="@+id/spinnerUnidadMedida"
+                        android:id="@+id/sp_unidad_medida"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Seleccione una unidad"
-                        android:inputType="none"
-                        android:clickable="true"
-                        android:focusable="false"/>
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="@color/black"
+                        app:hintTextColor="@color/black"
+                        android:textColorHint="@color/black"
+                        android:hint="@string/txtField_unidad_medida"/>
+
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <!-- Costo de compra por unidad -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"

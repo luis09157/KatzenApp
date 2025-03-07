@@ -28,3 +28,5 @@
 
 # Mantener cualquier modelo de datos que use Gson
 -keep class com.ninodev.rutasmagicas.Model.** { *; }
+-keep class com.example.katzen.Model.PacienteCampañaModel { *; }
+

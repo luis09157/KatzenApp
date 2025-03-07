@@ -34,12 +34,6 @@ class MenuFragment : Fragment() {
     private lateinit var menuList: List<MenuModel>
 
 
-    //MenuModel("Venta", R.drawable.img_venta),
-    //MenuModel("Producto", R.drawable.img_producto),
-    //MenuModel("Lista Productos", R.drawable.img_lista_productos),
-    //MenuModel("Balance General", R.drawable.img_balance_general),
-    //MenuModel("Inventario", R.drawable.img_inventario),
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,7 +49,7 @@ class MenuFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.menu_pago_tarjeta), R.drawable.img_pago_tarjeta),
             MenuModel(requireActivity().getString(R.string.menu_paciente), R.drawable.img_paciente),
             MenuModel(requireActivity().getString(R.string.menu_cliente), R.drawable.img_cliente),
-            MenuModel(requireActivity().getString(R.string.menu_productos), R.drawable.img_productos),
+            //MenuModel(requireActivity().getString(R.string.menu_productos), R.drawable.img_productos),
             MenuModel(requireActivity().getString(R.string.menu_viajes), R.drawable.img_viajes),
             MenuModel(requireActivity().getString(R.string.menu_campania), R.drawable.img_campania)
         )
