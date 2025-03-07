@@ -12,22 +12,20 @@ android {
         applicationId "com.ninodev.katzen"
         minSdk 24
         targetSdk 34
-        versionCode 29
-        versionName "1.29"
+        versionCode 32
+        versionName "1.32"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    android {
-        buildTypes {
-            release {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            }
-            debugRelease {
-                initWith release // Copia la configuración de release
-                matchingFallbacks = ['release'] // Usa configuraciones compatibles si no encuentra este buildType
-            }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled true // También aplicar ProGuard en debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 

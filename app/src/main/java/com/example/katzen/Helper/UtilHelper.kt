@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import android.util.Log
 
 class UtilHelper {
     companion object{
@@ -244,6 +245,34 @@ class UtilHelper {
                 "${aniosTexto} años y ${mesesTexto} meses"
             } catch (e: Exception) {
                 "Información no disponible"
+            }
+        }
+        fun parseFecha(fecha: String): Triple<String, String, String> {
+            try {
+                // Asumiendo que fecha viene en formato "dd/MM/yyyy"
+                val partes = fecha.split("/")
+                if (partes.size == 3) {
+                    val dia = partes[0].padStart(2, '0') // Asegura que el día tenga 2 dígitos
+                    val mes = partes[1].padStart(2, '0') // Asegura que el mes tenga 2 dígitos
+                    val año = partes[2]
+                    return Triple(dia, mes, año)
+                }
+                // Si hay error en el formato, usar fecha actual
+                val calendar = Calendar.getInstance()
+                return Triple(
+                    calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0'),
+                    (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0'),
+                    calendar.get(Calendar.YEAR).toString()
+                )
+            } catch (e: Exception) {
+                Log.e("UtilHelper", "Error al parsear fecha: ${e.message}")
+                // Si hay error, usar fecha actual
+                val calendar = Calendar.getInstance()
+                return Triple(
+                    calendar.get(Calendar.DAY_OF_MONTH).toString().padStart(2, '0'),
+                    (calendar.get(Calendar.MONTH) + 1).toString().padStart(2, '0'),
+                    calendar.get(Calendar.YEAR).toString()
+                )
             }
         }
     }

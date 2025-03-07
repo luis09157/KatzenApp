@@ -64,7 +64,7 @@ class ConvertPDF(private val activity: Activity) {
         builder.create().show()
     }
 
-    suspend fun convertXmlToPdf(pacienteId: String, absolutePath: String): Boolean {
+    suspend fun convertXmlToPdf(pacienteId: String, outputPath: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val (paciente, cliente) = getData(pacienteId)
@@ -77,38 +77,41 @@ class ConvertPDF(private val activity: Activity) {
                     val pageWidth = 595f
                     val pageHeight = 842f
 
-                    // Medir y ajustar la vista para que se ajuste a las dimensiones del PDF
+                    // Medir y ajustar la vista
                     measureAndLayoutView(view, pageWidth.toInt(), pageHeight.toInt())
 
                     // Crear un nuevo PdfDocument
                     val document = PdfDocument()
 
                     try {
-                        // Crear la página del PDF y dibujar la vista con escala
+                        // Crear la página del PDF y dibujar la vista
                         createPdfPage(document, view, pageWidth, pageHeight)
 
-                        // Guardar el PDF en el almacenamiento
-                        val pdfSaved = savePdfToStorage(document, pacienteId)
-                        if (!pdfSaved) {
-                            Log.i(TAG, "El archivo ya existía o ocurrió un error.")
+                        // Guardar directamente en la ruta proporcionada
+                        try {
+                            FileOutputStream(outputPath).use { fos ->
+                                document.writeTo(fos)
+                            }
+                            true
+                        } catch (e: IOException) {
+                            Log.e("ConvertPDF", "Error al escribir PDF: ${e.message}")
+                            e.printStackTrace()
+                            false
                         }
-
-                        // Retornar true si la conversión fue exitosa
-                        true
-                    } catch (e: IOException) {
+                    } catch (e: Exception) {
+                        Log.e("ConvertPDF", "Error al crear PDF: ${e.message}")
                         e.printStackTrace()
-                        // Retornar false en caso de error al crear el PDF
                         false
                     } finally {
                         document.close()
                     }
                 } else {
-                    // Retornar false si los datos de Firebase no se pudieron obtener
+                    Log.e("ConvertPDF", "No se pudieron obtener los datos del paciente o cliente")
                     false
                 }
             } catch (e: Exception) {
+                Log.e("ConvertPDF", "Error general: ${e.message}")
                 e.printStackTrace()
-                // Retornar false en caso de error al obtener datos
                 false
             }
         }
@@ -251,6 +254,8 @@ class ConvertPDF(private val activity: Activity) {
                 when {
                     foundSex.contains("macho") -> "Castración"
                     foundSex.contains("hembra") -> "OvarioSalpingoHisterectomía (OSH)"
+                    foundSex.contains("Macho") -> "Castración"
+                    foundSex.contains("Hembra") -> "OvarioSalpingoHisterectomía (OSH)"
                     else -> "Procedimiento no definido"
                 }
             }
