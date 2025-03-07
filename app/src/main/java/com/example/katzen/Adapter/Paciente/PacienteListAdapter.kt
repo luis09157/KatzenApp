@@ -62,6 +62,15 @@ class PacienteListAdapter(
         holder.nombrePaciente?.text = paciente.nombre
         holder.descripcion?.text = formatDescripcion(paciente)
 
+        // Controlar visibilidad de botones según FLAG_IN_PACIENTE
+        if (FLAG_IN_PACIENTE) {
+            holder.btnPDF?.visibility = View.GONE
+            holder.btnCompartir?.visibility = View.GONE
+        } else {
+            holder.btnPDF?.visibility = View.VISIBLE
+            holder.btnCompartir?.visibility = View.VISIBLE
+        }
+
         holder.btnEliminar?.setOnClickListener {
             showDeleteConfirmationDialog(paciente.id)
         }
