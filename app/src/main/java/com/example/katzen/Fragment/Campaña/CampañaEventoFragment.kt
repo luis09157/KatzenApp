@@ -151,8 +151,9 @@ class CampañaEventoFragment : Fragment() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), CampañaFragment(), TAG)
+                val fragment = CampañaFragment.newInstance(CampañaFragment.ADD_CAMPAÑA.año)
+                UtilFragment.changeFragment(requireContext(), fragment, TAG)
             }
-        })
+        })-
     }
 }

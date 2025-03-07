@@ -1,6 +1,7 @@
 package com.example.katzen.Fragment.Campaña
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class CampañaFragment : Fragment() {
     companion object{
         var ADD_CAMPAÑA : CampañaModel = CampañaModel()
         fun newInstance(year: String): CampañaFragment {
+            Log.d("CampañaFragment", "Creando nueva instancia con año: $year")
             return CampañaFragment().apply {
                 arguments = Bundle().apply {
                     putString("selected_year", year)
@@ -41,6 +43,7 @@ class CampañaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectedYear = arguments?.getString("selected_year")
+        Log.d(TAG, "onCreate: año seleccionado = $selectedYear")
     }
 
     override fun onCreateView(
@@ -122,18 +125,25 @@ class CampañaFragment : Fragment() {
     }
     suspend fun obtenerCantidadCampañasPorMes() {
         for (campañaModel in campañaList) {
-            val mesKey = obtenerKeyDesdeNombreMes(campañaModel.mes) // Implementa esta función según tu lógica
+            val mesKey = obtenerKeyDesdeNombreMes(campañaModel.mes)
             try {
+                // Agregar log para debug
+                Log.d(TAG, "Buscando campañas para mes: $mesKey")
+                
                 val cantidadCampañas = FirebaseCampañaUtil.contarCampañasPorMes(mesKey).toInt()
+                
+                // Agregar log para ver el resultado
+                Log.d(TAG, "Cantidad de campañas encontradas para $mesKey: $cantidadCampañas")
+                
                 campañaModel.cantidadCampañas = cantidadCampañas.toString()
                 withContext(Dispatchers.Main) {
                     campañaListAdapter.notifyDataSetChanged()
                 }
                 ConfigLoading.hideLoadingAnimation()
             } catch (e: Exception) {
+                Log.e(TAG, "Error al obtener campañas para $mesKey: ${e.message}")
+                e.printStackTrace()
                 ConfigLoading.showNodata()
-                println("Error al obtener cantidad de campañas para ${campañaModel.mes}: ${e.message}")
-                // Manejar el error si es necesario
             }
         }
     }
@@ -154,11 +164,14 @@ class CampañaFragment : Fragment() {
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         )
         val index = nombresMeses.indexOf(nombreMes)
-        return if (index != -1) {
-            String.format("%02d", index + 1) + "-${selectedYear ?: CalendarioUtil.obtenerAñoActual()}"
-        } else {
-            ""
-        }
+        val mes = String.format("%02d", index + 1)
+        val año = selectedYear ?: CalendarioUtil.obtenerAñoActual()
+        val key = "$mes-$año"
+        
+        // Agregar log para verificar la key generada
+        Log.d(TAG, "Key generada para $nombreMes: $key")
+        
+        return key
     }
     override fun onResume() {
         super.onResume()

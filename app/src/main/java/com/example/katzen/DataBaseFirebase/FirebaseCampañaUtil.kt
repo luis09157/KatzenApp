@@ -16,6 +16,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 import kotlin.coroutines.resume
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class FirebaseCampañaUtil {
     companion object {
@@ -33,19 +35,27 @@ class FirebaseCampañaUtil {
 
             referenciaCampañas.addValueEventListener(listener)
         }
-        suspend fun contarCampañasPorMes(mes: String): Int {
-            return suspendCancellableCoroutine { continuation ->
-                referenciaCampaña.child(CalendarioUtil.obtenerAñoActual()).child(mes).addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val count = snapshot.childrenCount.toInt()
-                        continuation.resume(count)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        println("Error al obtener la cantidad de campañas para el mes $mes: ${error.message}")
-                        continuation.resume(0) // Retornar cero en caso de error
-                    }
-                })
+        suspend fun contarCampañasPorMes(mesKey: String): Long {
+            return try {
+                // Agregar logs para debug
+                Log.d("FirebaseCampañaUtil", "Buscando campañas para mes: $mesKey")
+                
+                val snapshot = withContext(Dispatchers.IO) {
+                    database.getReference("Katzen/Campaña")
+                        .child(mesKey.split("-")[1])  // Obtener el año
+                        .child(mesKey)                // Obtener el mes-año
+                        .get()
+                        .await()
+                }
+                
+                // Agregar log del resultado
+                Log.d("FirebaseCampañaUtil", "Encontradas ${snapshot.childrenCount} campañas para $mesKey")
+                
+                snapshot.childrenCount
+            } catch (e: Exception) {
+                Log.e("FirebaseCampañaUtil", "Error al contar campañas para $mesKey: ${e.message}")
+                e.printStackTrace()
+                0
             }
         }
         suspend fun agregarCampaña(campaña: CampañaModel): Result<String> {
