@@ -31,6 +31,23 @@ class ViajesFragment : Fragment() {
     private lateinit var viajesList: MutableList<VentaMesModel>
     private lateinit var viajesAdapter: ViajeAdapter
 
+    companion object {
+        fun newInstance(year: String): ViajesFragment {
+            return ViajesFragment().apply {
+                arguments = Bundle().apply {
+                    putString("selected_year", year)
+                }
+            }
+        }
+    }
+
+    private var selectedYear: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        selectedYear = arguments?.getString("selected_year")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,13 +85,11 @@ class ViajesFragment : Fragment() {
     private fun listeners() {
         binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Aplicar el filtro del adaptador al escribir en el SearchView
-                filterClientes(newText.toString())
+                filterClientes(newText?.trim().orEmpty())
                 return true
             }
         })
@@ -92,62 +107,73 @@ class ViajesFragment : Fragment() {
     }
 
     private fun obtenerViajes() {
-        FirebaseViajesUtil.obtenerListaViajes(object : ValueEventListener {
+        val year = selectedYear ?: return
+
+        Log.d(TAG, "Obteniendo viajes para el año: $year")
+        FirebaseViajesUtil.obtenerListaViajes(year, object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
+                    Log.d(TAG, "¿Existe snapshot? ${snapshot.exists()}")
+                    Log.d(TAG, "Cantidad de hijos: ${snapshot.childrenCount}")
+
                     viajesList.clear()
 
-                    // Iterar sobre los niños del snapshot
-                    for (viajeSnapshot in snapshot.children) {
-                        // Comprobamos si el valor es un mapa (en lugar de usar GenericTypeIndicator)
-                        if (viajeSnapshot.value !is Map<*, *>) continue
+                    snapshot.children.forEach { mesSnapshot ->
+                        Log.d(TAG, "Key del mes: ${mesSnapshot.key}")
+                        Log.d(TAG, "Valor del mes: ${mesSnapshot.value}")
 
-                        // Obtener el mapa directamente
-                        val ventaMesMap = viajeSnapshot.value as Map<String, Any>
+                        val ventaMesMap = mesSnapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
+                        if (ventaMesMap == null) {
+                            Log.d(TAG, "ventaMesMap es null para ${mesSnapshot.key}")
+                            return@forEach
+                        }
 
-                        // Crear el modelo a partir del mapa
+                        val anioReal = ventaMesMap["anio"]?.toString() ?: year
+                        Log.d(TAG, "Año extraído: $anioReal")
+
                         val ventaMesModel = VentaMesModel(
-                            venta = ventaMesMap["venta"].toString(),
-                            costo = ventaMesMap["costo"].toString(),
-                            mes = ventaMesMap["mes"].toString(),
-                            anio = ventaMesMap["anio"].toString(),
-                            fecha = ventaMesMap["fecha"].toString(),
-                            ganancia = ventaMesMap["ganancia"].toString(),
-                            cargos = ventaMesMap["cargos"].toString() // Asegúrate de que "cargos" esté presente en tu base de datos
+                            venta = ventaMesMap["venta"]?.toString() ?: "0.00",
+                            costo = ventaMesMap["costo"]?.toString() ?: "0.00",
+                            mes = ventaMesMap["mes"]?.toString() ?: "",
+                            anio = anioReal,
+                            fecha = ventaMesMap["fecha"]?.toString() ?: "",
+                            ganancia = ventaMesMap["ganancia"]?.toString() ?: "0.00",
+                            cargos = ventaMesMap["cargos"]?.toString() ?: "0.00"
                         )
-                        viajesList.add(ventaMesModel)
+
+                        if (ventaMesModel.anio == year) {
+                            viajesList.add(ventaMesModel)
+                            Log.d(TAG, "Agregado viaje: ${ventaMesModel.mes}-${ventaMesModel.anio}")
+                        }
                     }
 
-                    // Verificar si la lista tiene 12 elementos
-                    if (viajesList.size != 12) {
-                        initYearFirebase(viajesList)  // Llamamos a initYearFirebase si no tiene 12
-                        obtenerViajes()  // Podrías refactorizar para evitar la recursión, pero mantiene la lógica igual
+                    Log.d(TAG, "Total de viajes en lista antes de actualizar adapter: ${viajesList.size}")
+
+                    if (viajesList.isEmpty() && year == UtilHelper.getDateYear()) {
+                        Log.d(TAG, "Lista vacía. Inicializando datos para el año actual.")
+                        initYearFirebase(viajesList)
                     } else {
-                        // Si tiene los 12 elementos, notificar al adaptador y ocultar la animación de carga
                         viajesAdapter.notifyDataSetChanged()
-                        ConfigLoading.hideLoadingAnimation()
-                    }
-
-                    // Si la lista está vacía, mostrar mensaje
-                    if (viajesList.isEmpty()) {
-                        ConfigLoading.showNodata()
+                        if (viajesList.isEmpty()) {
+                            ConfigLoading.showNodata()
+                        } else {
+                            ConfigLoading.hideLoadingAnimation()
+                        }
                     }
 
                 } catch (e: Exception) {
-                    // Manejo de excepciones
-                    Log.e(TAG, "Error al obtener los viajes: ${e.message}", e)
+                    Log.e(TAG, "Error al obtener los viajes: ${e.message}")
+                    e.printStackTrace()
                     ConfigLoading.showNodata()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Si la consulta a Firebase falla
                 Log.e(TAG, "Error en la consulta a Firebase: ${error.message}")
                 ConfigLoading.showNodata()
             }
         })
     }
-
 
     private fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
         val listMonths = UtilHelper.getMontsThisYears()

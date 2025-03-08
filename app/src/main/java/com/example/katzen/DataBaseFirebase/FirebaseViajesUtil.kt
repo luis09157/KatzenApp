@@ -8,16 +8,20 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.text.DecimalFormat
+import android.util.Log
 
 class FirebaseViajesUtil {
     companion object {
         private const val VIAJES_PATH = "Katzen/Gasolina"
         private const val VIAJES_IMAGES_PATH = "Viajes"
         val decimalFormat = DecimalFormat("#.00")
-        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val referenciaViaje: DatabaseReference = database.getReference(VIAJES_PATH)
-        fun obtenerListaViajes(listener: ValueEventListener) {
-            referenciaViaje.child(UtilHelper.getDateYear()).addValueEventListener(listener)
+        fun obtenerListaViajes(year: String, listener: ValueEventListener) {
+            Log.d("FirebaseViajesUtil", "Buscando viajes para el año: $year")
+            val referencia = database.getReference(VIAJES_PATH).child(year)
+            Log.d("FirebaseViajesUtil", "Ruta completa: ${referencia.path}")
+            referencia.addListenerForSingleValueEvent(listener)
         }
         fun obtenerListaCargosViajes( listener: ValueEventListener) {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
@@ -115,13 +119,11 @@ class FirebaseViajesUtil {
             }
         }
 
-        fun guardarListaMeses(mes : String ,ventaMesModel: VentaMesModel): Pair<Boolean, String> {
-            val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
-                .child(mes)
-
+        fun guardarListaMeses(month: String, ventaMesModel: VentaMesModel): Pair<Boolean, String> {
+            val mesKey = "$month-${ventaMesModel.anio}"
+            val referencia = database.getReference("$VIAJES_PATH/${ventaMesModel.anio}/$mesKey")
             return try {
-                referenciaViajesCargos.setValue(ventaMesModel).isComplete to "Se insertó el viaje correctamente."
+                referencia.setValue(ventaMesModel).isComplete to "Se insertó el viaje correctamente."
             } catch (e: Exception) {
                 false to "Error al insertar el viaje: ${e.message}"
             }

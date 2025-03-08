@@ -154,6 +154,6 @@ class CampañaEventoFragment : Fragment() {
                 val fragment = CampañaFragment.newInstance(CampañaFragment.ADD_CAMPAÑA.año)
                 UtilFragment.changeFragment(requireContext(), fragment, TAG)
             }
-        })-
+        })
     }
 }
