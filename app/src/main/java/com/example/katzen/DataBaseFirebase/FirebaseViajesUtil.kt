@@ -21,21 +21,21 @@ class FirebaseViajesUtil {
             Log.d("FirebaseViajesUtil", "Buscando viajes para el año: $year")
             val referencia = database.getReference(VIAJES_PATH).child(year)
             Log.d("FirebaseViajesUtil", "Ruta completa: ${referencia.path}")
-            referencia.addListenerForSingleValueEvent(listener)
+            referencia.addValueEventListener(listener)
         }
-        fun obtenerListaCargosViajes( listener: ValueEventListener) {
+        fun obtenerListaCargosViajes(listener: ValueEventListener) {
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
+                .child(Config.MES_DETALLE.split("-")[1])
                 .child(Config.MES_DETALLE)
                 .child("cargos")
 
             referenciaViajesCargos.orderByChild("fecha").limitToLast(100).addValueEventListener(listener)
-
         }
 
         fun eliminarViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
+            val year = Config.MES_DETALLE.split("-")[1]
             val referenciaViajeCargo = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
+                .child(year)
                 .child(Config.MES_DETALLE)
                 .child("cargos")
                 .child(ventaMesDetalleModel.fecha)
@@ -49,8 +49,9 @@ class FirebaseViajesUtil {
         }
 
         fun editarCargoViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
+            val year = Config.MES_DETALLE.split("-")[1]
             val referenciaViajeCargo = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
+                .child(year)
                 .child(Config.MES_DETALLE)
                 .child("cargos")
                 .child(ventaMesDetalleModel.fecha)
@@ -78,9 +79,10 @@ class FirebaseViajesUtil {
         }
 
         fun guardarCargosViajes(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {
+            val year = Config.MES_DETALLE.split("-")[1]
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
-                .child(UtilHelper.obtenerMesYAnio(ventaMesDetalleModel.fecha))
+                .child(year)
+                .child(Config.MES_DETALLE)
                 .child("cargos")
                 .child(ventaMesDetalleModel.fecha)
                 .child(ventaMesDetalleModel.id)
@@ -92,8 +94,6 @@ class FirebaseViajesUtil {
             }
         }
 
-
-
         fun formatValue(value: Double): String {
             return if (value == 0.00) {
                 "0.00"
@@ -102,8 +102,9 @@ class FirebaseViajesUtil {
             }
         }
         fun editarResumenViajes(): Pair<Boolean, String> {
+            val year = Config.MES_DETALLE.split("-")[1]
             val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
-                .child(UtilHelper.getDateYear())
+                .child(year)
                 .child(Config.MES_DETALLE)
 
             val datosActualizados = mapOf(

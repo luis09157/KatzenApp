@@ -183,7 +183,10 @@ class ViajesDetalleFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), ViajesFragment(), TAG)
+                // Obtener el año del mes detalle actual
+                val year = Config.MES_DETALLE.split("-")[1]
+                val fragment = ViajesFragment.newInstance(year)
+                UtilFragment.changeFragment(requireContext(), fragment, TAG)
             }
         })
     }

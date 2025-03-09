@@ -32,7 +32,10 @@ class ViajesFragment : Fragment() {
     private lateinit var viajesAdapter: ViajeAdapter
 
     companion object {
+        private var lastSelectedYear: String? = null
+
         fun newInstance(year: String): ViajesFragment {
+            lastSelectedYear = year
             return ViajesFragment().apply {
                 arguments = Bundle().apply {
                     putString("selected_year", year)
@@ -45,7 +48,7 @@ class ViajesFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        selectedYear = arguments?.getString("selected_year")
+        selectedYear = arguments?.getString("selected_year") ?: lastSelectedYear
     }
 
     override fun onCreateView(
@@ -108,57 +111,61 @@ class ViajesFragment : Fragment() {
 
     private fun obtenerViajes() {
         val year = selectedYear ?: return
-
+        
         Log.d(TAG, "Obteniendo viajes para el año: $year")
         FirebaseViajesUtil.obtenerListaViajes(year, object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
                     Log.d(TAG, "¿Existe snapshot? ${snapshot.exists()}")
                     Log.d(TAG, "Cantidad de hijos: ${snapshot.childrenCount}")
-
+                    
                     viajesList.clear()
 
-                    snapshot.children.forEach { mesSnapshot ->
-                        Log.d(TAG, "Key del mes: ${mesSnapshot.key}")
-                        Log.d(TAG, "Valor del mes: ${mesSnapshot.value}")
+                    val mesesValidos = snapshot.children
+                        .mapNotNull { it.key }
+                        .filter { it.contains("-") }
+                        .sorted()
 
+                    for (mesKey in mesesValidos) {
+                        val mesSnapshot = snapshot.child(mesKey)
+                        Log.d(TAG, "Procesando mes-año: $mesKey")
+                        
                         val ventaMesMap = mesSnapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
                         if (ventaMesMap == null) {
-                            Log.d(TAG, "ventaMesMap es null para ${mesSnapshot.key}")
-                            return@forEach
+                            Log.d(TAG, "ventaMesMap es null para $mesKey")
+                            continue
                         }
 
-                        val anioReal = ventaMesMap["anio"]?.toString() ?: year
-                        Log.d(TAG, "Año extraído: $anioReal")
+                        val mesParts = mesKey.split("-")
+                        if (mesParts.size != 2) continue
+                        
+                        val mesNumero = mesParts[0]
+                        val mesAbreviado = UtilHelper.getMonthYear(mesNumero.toInt())
 
                         val ventaMesModel = VentaMesModel(
                             venta = ventaMesMap["venta"]?.toString() ?: "0.00",
                             costo = ventaMesMap["costo"]?.toString() ?: "0.00",
-                            mes = ventaMesMap["mes"]?.toString() ?: "",
-                            anio = anioReal,
+                            mes = mesAbreviado,
+                            anio = year,
                             fecha = ventaMesMap["fecha"]?.toString() ?: "",
                             ganancia = ventaMesMap["ganancia"]?.toString() ?: "0.00",
                             cargos = ventaMesMap["cargos"]?.toString() ?: "0.00"
                         )
-
-                        if (ventaMesModel.anio == year) {
-                            viajesList.add(ventaMesModel)
-                            Log.d(TAG, "Agregado viaje: ${ventaMesModel.mes}-${ventaMesModel.anio}")
-                        }
+                        viajesList.add(ventaMesModel)
+                        Log.d(TAG, "Viaje añadido: ${ventaMesModel.mes}-${ventaMesModel.anio}")
                     }
 
-                    Log.d(TAG, "Total de viajes en lista antes de actualizar adapter: ${viajesList.size}")
+                    Log.d(TAG, "Total de viajes encontrados: ${viajesList.size}")
 
-                    if (viajesList.isEmpty() && year == UtilHelper.getDateYear()) {
-                        Log.d(TAG, "Lista vacía. Inicializando datos para el año actual.")
-                        initYearFirebase(viajesList)
-                    } else {
-                        viajesAdapter.notifyDataSetChanged()
-                        if (viajesList.isEmpty()) {
-                            ConfigLoading.showNodata()
+                    viajesAdapter.notifyDataSetChanged()
+                    if (viajesList.isEmpty()) {
+                        if (year == UtilHelper.getDateYear()) {
+                            initYearFirebase(viajesList)
                         } else {
-                            ConfigLoading.hideLoadingAnimation()
+                            ConfigLoading.showNodata()
                         }
+                    } else {
+                        ConfigLoading.hideLoadingAnimation()
                     }
 
                 } catch (e: Exception) {
@@ -176,14 +183,20 @@ class ViajesFragment : Fragment() {
     }
 
     private fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
-        val listMonths = UtilHelper.getMontsThisYears()
+        val year = selectedYear ?: return
+        val listMonths = ArrayList<String>()
+
+        for (i in 1..12) {
+            val monthStr = String.format("%02d", i)
+            listMonths.add("$monthStr-$year")
+        }
 
         for (month in listMonths) {
             val ventaMesModel = VentaMesModel().apply {
                 venta = "0.00"
                 costo = "0.00"
                 ganancia = "0.00"
-                anio = UtilHelper.getDateYear()
+                anio = year
                 mes = UtilHelper.getMonthYear(month.split("-")[0].toInt())
                 fecha = UtilHelper.getDate()
             }
@@ -206,7 +219,7 @@ class ViajesFragment : Fragment() {
         init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                UtilFragment.changeFragment(requireContext(), YearViajeListFragment(), TAG)
             }
         })
     }
