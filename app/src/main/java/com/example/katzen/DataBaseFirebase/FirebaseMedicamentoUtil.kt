@@ -55,69 +55,73 @@ object FirebaseMedicamentoUtil {
     }
 
     /**
-     * Actualiza un medicamento existente (Firestore)
+     * Actualiza un medicamento existente (Realtime Database)
      * @param medicamento El medicamento a actualizar
      * @param callback Función de retorno con éxito/fracaso y mensaje
      */
     fun actualizarMedicamento(medicamento: ProductoMedicamentoModel, callback: (success: Boolean, message: String) -> Unit) {
-        if (medicamento.id.isEmpty()) {
-            callback(false, "ID de medicamento no válido")
-            return
+        try {
+            if (medicamento.id.isEmpty()) {
+                callback(false, "ID de medicamento no válido")
+                return
+            }
+            
+            // Actualizar en Realtime Database
+            val referencia = referenciaMedicamentos.child(medicamento.id)
+            
+            // En lugar de modificar el objeto, lo guardamos tal cual
+            // Ya que Realtime Database almacena todo el objeto
+            Log.d("FirebaseMedicamentoUtil", "Actualizando medicamento con ID: ${medicamento.id}")
+            
+            referencia.setValue(medicamento)
+                .addOnSuccessListener {
+                    Log.d("FirebaseMedicamentoUtil", "Medicamento actualizado correctamente")
+                    callback(true, "Medicamento actualizado correctamente")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("FirebaseMedicamentoUtil", "Error al actualizar medicamento: ${e.message}")
+                    callback(false, "Error al actualizar medicamento: ${e.message}")
+                }
+        } catch (e: Exception) {
+            Log.e("FirebaseMedicamentoUtil", "Excepción al actualizar medicamento: ${e.message}")
+            e.printStackTrace()
+            callback(false, "Error: ${e.message}")
         }
-        
-        val docRef = db.collection(COLECCION_MEDICAMENTOS).document(medicamento.id)
-        
-        // Crear un mapa de datos para actualizar
-        val datosActualizados = hashMapOf(
-            "nombre" to medicamento.nombre,
-            "descripcion" to medicamento.descripcion,
-            "codigoInterno" to medicamento.codigoInterno,
-            "codigoBarras" to medicamento.codigoBarras,
-            "tipo" to medicamento.tipo,
-            "unidadMedida" to medicamento.unidadMedida,
-            "costoCompra" to medicamento.costoCompra,
-            "margenGanancia" to medicamento.margenGanancia,
-            "precioSinIva" to medicamento.precioSinIva,
-            "iva" to medicamento.iva,
-            "precio" to medicamento.precio,
-            "categoria" to medicamento.categoria,
-            "activo" to medicamento.activo,
-            "fechaActualizacion" to System.currentTimeMillis()
-        )
-        
-        docRef.update(datosActualizados as Map<String, Any>)
-            .addOnSuccessListener {
-                callback(true, "Medicamento actualizado correctamente")
-            }
-            .addOnFailureListener { e ->
-                callback(false, "Error al actualizar medicamento: ${e.message}")
-            }
     }
     
     /**
-     * Agrega un nuevo medicamento (Firestore)
+     * Agrega un nuevo medicamento (Realtime Database)
      * @param medicamento El medicamento a agregar
      * @param callback Función de retorno con éxito/fracaso y mensaje
      */
     fun agregarMedicamento(medicamento: ProductoMedicamentoModel, callback: (success: Boolean, message: String) -> Unit) {
-        // Generar un nuevo ID para el documento
-        val docRef = db.collection(COLECCION_MEDICAMENTOS).document()
-        
-        // Asignar el ID generado al medicamento
-        medicamento.id = docRef.id
-        
-        // Asegurar que tenemos fechas
-        if (medicamento.fechaRegistro.isEmpty()) {
-            medicamento.fechaRegistro = System.currentTimeMillis().toString()
+        try {
+            // Asignar ID si no tiene uno
+            if (medicamento.id.isEmpty()) {
+                medicamento.id = UUID.randomUUID().toString()
+            }
+            
+            // Asegurar que tenemos fechas
+            if (medicamento.fechaRegistro.isEmpty()) {
+                medicamento.fechaRegistro = System.currentTimeMillis().toString()
+            }
+            
+            // Guardar en Realtime Database (es lo que usa la app actualmente)
+            val referencia = referenciaMedicamentos.child(medicamento.id)
+            referencia.setValue(medicamento)
+                .addOnSuccessListener {
+                    Log.d("FirebaseMedicamentoUtil", "Medicamento agregado correctamente con ID: ${medicamento.id}")
+                    callback(true, "Medicamento agregado correctamente")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("FirebaseMedicamentoUtil", "Error al agregar medicamento: ${e.message}")
+                    callback(false, "Error al agregar medicamento: ${e.message}")
+                }
+        } catch (e: Exception) {
+            Log.e("FirebaseMedicamentoUtil", "Excepción al agregar medicamento: ${e.message}")
+            e.printStackTrace()
+            callback(false, "Error: ${e.message}")
         }
-        
-        docRef.set(medicamento)
-            .addOnSuccessListener {
-                callback(true, "Medicamento agregado correctamente")
-            }
-            .addOnFailureListener { e ->
-                callback(false, "Error al agregar medicamento: ${e.message}")
-            }
     }
     
     /**

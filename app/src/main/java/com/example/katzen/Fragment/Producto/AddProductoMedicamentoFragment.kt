@@ -3,6 +3,7 @@ package com.example.katzen.Fragment.Producto
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -156,11 +157,11 @@ class AddProductoMedicamentoFragment : Fragment() {
 
     private fun setupListeners() {
         binding.btnGuardar.setOnClickListener {
-            guardarMedicamento()
+            onClickGuardar()
         }
     }
 
-    private fun guardarMedicamento() {
+    private fun onClickGuardar() {
         ConfigLoading.showLoadingAnimation()
 
         // Obtener todos los valores
@@ -227,8 +228,11 @@ class AddProductoMedicamentoFragment : Fragment() {
                 )
             }
 
+            Log.d(TAG, "Iniciando guardado de medicamento: ${medicamento.nombre}")
+
             if (isEditMode) {
                 FirebaseMedicamentoUtil.actualizarMedicamento(medicamento) { success, message ->
+                    Log.d(TAG, "Callback de actualización recibido: $success, $message")
                     ConfigLoading.hideLoadingAnimation()
                     if (success) {
                         DialogMaterialHelper.mostrarSuccessClickDialog(
@@ -242,7 +246,9 @@ class AddProductoMedicamentoFragment : Fragment() {
                     }
                 }
             } else {
+                Log.d(TAG, "Enviando solicitud para agregar medicamento")
                 FirebaseMedicamentoUtil.agregarMedicamento(medicamento) { success, message ->
+                    Log.d(TAG, "Callback de agregar recibido: $success, $message")
                     ConfigLoading.hideLoadingAnimation()
                     if (success) {
                         DialogMaterialHelper.mostrarSuccessClickDialog(
@@ -257,6 +263,7 @@ class AddProductoMedicamentoFragment : Fragment() {
                 }
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Error al guardar medicamento: ${e.message}", e)
             ConfigLoading.hideLoadingAnimation()
             DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
         }
