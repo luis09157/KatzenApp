@@ -9,11 +9,20 @@ class Config {
         val CATEGORIAS = listOf("Semana X4","Semana X2", "Campaña", "Ruta", "Moto")
         val UNIDADES_MEDIDA = listOf(
             "Unidad",
-            "Litro",
-            "Mililitro",
-            "Kilogramo",
-            "Gramo",
-            "Miligramo"
+            "Mililitro (ml)",
+            "Centímetro cúbico (cc)",
+            "Gramo (g)",
+            "Kilogramo (kg)",
+            "Litro (L)",
+            "Tableta",
+            "Cápsula",
+            "Ampolla",
+            "Dosis",
+            "Frasco",
+            "Sobre",
+            "Tubo",
+            "Parche",
+            "Jeringa"
         )
 
         val UNIDAD_MEDIDA = listOf("Piezas","Mililitros", "Litros")

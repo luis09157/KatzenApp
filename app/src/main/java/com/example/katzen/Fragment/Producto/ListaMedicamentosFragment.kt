@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.katzen.Adapter.MedicamentosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseMedicamentoUtil
@@ -33,7 +33,7 @@ class ListaMedicamentosFragment : Fragment() {
     ): View {
         _binding = FragmentListaMedicamentosBinding.inflate(inflater, container, false)
         initLoading()
-        setupRecyclerView()
+        setupAdapter()
         setupListeners()
         return binding.root
     }
@@ -49,19 +49,21 @@ class ListaMedicamentosFragment : Fragment() {
         ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 
-    private fun setupRecyclerView() {
+    private fun setupAdapter() {
         medicamentosAdapter = MedicamentosAdapter(medicamentosList) { medicamento ->
             editarMedicamento(medicamento)
         }
-        binding.rvMedicamentos.apply {
-            adapter = medicamentosAdapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        binding.lisMenuMedicamentos.adapter = medicamentosAdapter
+        binding.lisMenuMedicamentos.divider = null
     }
 
     private fun setupListeners() {
-        binding.fabAgregarMedicamento.setOnClickListener {
+        binding.btnAddMedicamento.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoMedicamentoFragment(), TAG)
+        }
+        
+        binding.lisMenuMedicamentos.setOnItemClickListener { _, _, position, _ ->
+            editarMedicamento(medicamentosList[position])
         }
     }
 
@@ -105,6 +107,17 @@ class ListaMedicamentosFragment : Fragment() {
     private fun editarMedicamento(medicamento: ProductoMedicamentoModel) {
         val fragment = AddProductoMedicamentoFragment.newInstance(medicamento)
         UtilFragment.changeFragment(requireContext(), fragment, TAG)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                }
+            })
     }
 
     override fun onDestroyView() {

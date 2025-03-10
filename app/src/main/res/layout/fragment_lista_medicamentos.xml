@@ -33,13 +33,19 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/background_color">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvMedicamentos"
+            <ListView
+                android:id="@+id/lis_menu_medicamentos"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/white"/>
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:background="@color/background_color"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:clipToPadding="false"/>
 
         </LinearLayout>
 
@@ -48,13 +54,14 @@
             android:layout_height="wrap_content"
             android:gravity="end">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAgregarMedicamento"
+            <Button
+                android:id="@+id/btn_add_medicamento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:contentDescription="Agregar medicamento"
-                app:srcCompat="@android:drawable/ic_input_add"/>
+                android:text="Medicamento"
+                android:fontFamily="@font/poppins_bold"
+                android:drawableLeft="@drawable/ic_mas_blanco"
+                android:layout_margin="10dp"/>
 
         </LinearLayout>
 

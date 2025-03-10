@@ -8,6 +8,7 @@
     android:background="@color/background_color">
 
     <ScrollView
+        android:id="@+id/contAddProducto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -18,8 +19,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Primer CardView -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Primera tarjeta - Información del Producto -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -33,20 +34,31 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Información del Producto"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="@color/katzen_rosa"
+                        android:layout_marginBottom="8dp"/>
+
                     <!-- RadioGroup para Estado -->
                     <RadioGroup
+                        android:id="@+id/rgEstado"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
+                        <RadioButton
                             android:id="@+id/rbActivo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Activo"
-                            android:checked="true"/>
+                            android:checked="true"
+                            android:layout_marginRight="16dp"/>
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
+                        <RadioButton
                             android:id="@+id/rbInactivo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -55,47 +67,52 @@
 
                     <!-- RadioGroup para Tipo -->
                     <RadioGroup
+                        android:id="@+id/rgTipo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="8dp">
 
-                        <com.google.android.material.radiobutton.MaterialRadioButton
+                        <RadioButton
+                            android:id="@+id/rbVacuna"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vacuna"
+                            android:layout_marginRight="16dp"/>
+
+                        <RadioButton
+                            android:id="@+id/rbAntiparasitario"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Antiparasitario"
+                            android:layout_marginRight="16dp"/>
+
+                        <RadioButton
                             android:id="@+id/rbOtro"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Otro"
                             android:checked="true"/>
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbVacuna"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Vacuna"/>
-
-                        <com.google.android.material.radiobutton.MaterialRadioButton
-                            android:id="@+id/rbAntiparasitario"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Antiparasitario"/>
                     </RadioGroup>
 
-                    <!-- Nombre -->
+                    <!-- Campos de datos básicos -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etNombre"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Nombre"/>
+                            android:hint="Nombre del medicamento"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Código interno -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -105,10 +122,10 @@
                             android:hint="Código interno"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Código de barras -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -118,53 +135,94 @@
                             android:hint="Código de barras"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Instrucciones -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etInstrucciones"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Instrucciones de uso"
+                            android:hint="Instrucciones / Descripción"
                             android:minLines="3"
-                            android:gravity="top"
                             android:inputType="textMultiLine"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Unidad de medida -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                         <AutoCompleteTextView
                             android:id="@+id/spUnidadMedida"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Unidad de medida"/>
+                            android:hint="Unidad de medida"
+                            android:inputType="none"/>
                     </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <!-- Costo de compra -->
+            <!-- Segunda tarjeta - Información de Precios -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Información de Precios"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="@color/katzen_rosa"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Campos relacionados con precios -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCostoCompra"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Costo de compra por unidad"
+                            android:hint="Costo de compra"
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Margen de ganancia -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPorcentajeIva"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="IVA (%)"
+                            android:inputType="numberDecimal"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -175,10 +233,10 @@
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Precio por unidad -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -186,27 +244,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Precio por unidad"
-                            android:enabled="false"/>
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- IVA -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPorcentajeIva"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Porcentaje IVA"
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Precio final -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -217,18 +261,18 @@
                             android:enabled="false"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Botón Guardar -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnGuardar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Guardar"
-                        android:layout_marginTop="16dp"/>
-
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
+            <!-- Botón Guardar -->
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:backgroundTint="@color/katzen_rosa"
+                android:layout_marginTop="8dp"/>
+        </LinearLayout>
     </ScrollView>
 
     <com.airbnb.lottie.LottieAnimationView
@@ -243,5 +287,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        android:id="@+id/fragmentNoData"
+        layout="@layout/fragment_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

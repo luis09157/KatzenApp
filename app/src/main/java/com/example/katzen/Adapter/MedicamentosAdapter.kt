@@ -1,36 +1,54 @@
 package com.example.katzen.Adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.BaseAdapter
+import android.widget.Button
+import android.widget.TextView
 import com.example.katzen.Model.ProductoMedicamentoModel
-import com.ninodev.katzen.databinding.ItemMedicamentoBinding
+import com.ninodev.katzen.R
 
 class MedicamentosAdapter(
-    private val medicamentos: List<ProductoMedicamentoModel>,
+    private var medicamentosList: List<ProductoMedicamentoModel>,
     private val onItemClick: (ProductoMedicamentoModel) -> Unit
-) : RecyclerView.Adapter<MedicamentosAdapter.ViewHolder>() {
+) : BaseAdapter() {
 
-    inner class ViewHolder(val binding: ItemMedicamentoBinding) : RecyclerView.ViewHolder(binding.root)
+    override fun getCount(): Int = medicamentosList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMedicamentoBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+    override fun getItem(position: Int): Any = medicamentosList[position]
+
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = convertView ?: LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_medicamento, parent, false)
+        
+        val medicamento = medicamentosList[position]
+        
+        val tvNombre: TextView = view.findViewById(R.id.tvNombre)
+        val tvPrecio: TextView = view.findViewById(R.id.tvPrecio)
+        val tvTipo: TextView = view.findViewById(R.id.tvTipo)
+        val btnEstado: Button = view.findViewById(R.id.btnEstado)
+        
+        tvNombre.text = medicamento.nombre
+        tvPrecio.text = "Precio: $${medicamento.precio}"
+        tvTipo.text = medicamento.tipo
+        
+        btnEstado.text = if (medicamento.activo) "Activo" else "Inactivo"
+        btnEstado.backgroundTintList = view.context.getColorStateList(
+            if (medicamento.activo) R.color.green_300 else R.color.grey_300
         )
-        return ViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val medicamento = medicamentos[position]
-        with(holder.binding) {
-            tvNombre.text = medicamento.nombre
-            tvPrecio.text = "Precio: $${medicamento.precio}"
-            tvTipo.text = medicamento.tipo
-            chipEstado.isChecked = medicamento.activo
-            
-            root.setOnClickListener { onItemClick(medicamento) }
+        
+        view.setOnClickListener {
+            onItemClick(medicamento)
         }
+        
+        return view
     }
 
-    override fun getItemCount() = medicamentos.size
+    fun updateList(newList: List<ProductoMedicamentoModel>) {
+        medicamentosList = newList
+        notifyDataSetChanged()
+    }
 } 

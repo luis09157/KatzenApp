@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseMedicamentoUtil
 import com.example.katzen.Helper.DialogMaterialHelper
@@ -16,6 +18,7 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ProductoMedicamentoModel
 import com.ninodev.katzen.databinding.AddProductoMedicamentoFragmentBinding
+import java.text.DecimalFormat
 
 class AddProductoMedicamentoFragment : Fragment() {
     private var _binding: AddProductoMedicamentoFragmentBinding? = null
@@ -35,10 +38,12 @@ class AddProductoMedicamentoFragment : Fragment() {
     }
 
     private var medicamentoToEdit: ProductoMedicamentoModel? = null
+    private var isEditMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         medicamentoToEdit = arguments?.getParcelable(ARG_MEDICAMENTO)
+        isEditMode = medicamentoToEdit != null
     }
 
     override fun onCreateView(
@@ -48,25 +53,31 @@ class AddProductoMedicamentoFragment : Fragment() {
     ): View {
         _binding = AddProductoMedicamentoFragmentBinding.inflate(inflater, container, false)
         initLoading()
-        setupUnidadMedida()
+        setupUnidadesMedida()
+        setupCalculations()
+        setupListeners()
+        
+        if (isEditMode) {
+            cargarDatosMedicamento()
+        }
+        
         return binding.root
     }
 
     private fun initLoading() {
         ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
+        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
+        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupListeners()
-        setupCalculations()
-        medicamentoToEdit?.let { loadMedicamentoData(it) }
-    }
-
-    private fun setupUnidadMedida() {
-        val unidadesMedida = arrayOf("Unidad", "Mililitros", "Gramos", "Tabletas", "Cápsulas")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, unidadesMedida)
-        binding.spUnidadMedida.setAdapter(adapter)
+    private fun setupUnidadesMedida() {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            Config.UNIDADES_MEDIDA
+        )
+        
+        (binding.spUnidadMedida as? AutoCompleteTextView)?.setAdapter(adapter)
     }
 
     private fun setupCalculations() {
@@ -116,6 +127,33 @@ class AddProductoMedicamentoFragment : Fragment() {
         }
     }
 
+    private fun cargarDatosMedicamento() {
+        medicamentoToEdit?.let {
+            binding.etNombre.setText(it.nombre)
+            binding.etCodigoInterno.setText(it.codigoInterno)
+            binding.etCodigoBarras.setText(it.codigoBarras)
+            binding.etInstrucciones.setText(it.descripcion)
+            binding.spUnidadMedida.setText(it.unidadMedida, false)
+            binding.etCostoCompra.setText(it.costoCompra)
+            binding.etMargenGanancia.setText(it.margenGanancia)
+            binding.etPorcentajeIva.setText(it.iva)
+            binding.etPrecioPorUnidad.setText(it.precioSinIva)
+            binding.etPrecioFinal.setText(it.precio)
+            
+            when (it.tipo) {
+                "Vacuna" -> binding.rbVacuna.isChecked = true
+                "Antiparasitario" -> binding.rbAntiparasitario.isChecked = true
+                else -> binding.rbOtro.isChecked = true
+            }
+            
+            if (it.activo) {
+                binding.rbActivo.isChecked = true
+            } else {
+                binding.rbInactivo.isChecked = true
+            }
+        }
+    }
+
     private fun setupListeners() {
         binding.btnGuardar.setOnClickListener {
             guardarMedicamento()
@@ -144,6 +182,7 @@ class AddProductoMedicamentoFragment : Fragment() {
         val activo = binding.rbActivo.isChecked
 
         if (nombre.isEmpty() || costoCompra.isEmpty() || unidadMedida.isEmpty()) {
+            ConfigLoading.hideLoadingAnimation()
             DialogMaterialHelper.mostrarErrorDialog(
                 requireActivity(),
                 "El nombre, costo y unidad de medida son obligatorios"
@@ -151,58 +190,75 @@ class AddProductoMedicamentoFragment : Fragment() {
             return
         }
 
-        val medicamento = ProductoMedicamentoModel(
-            nombre = nombre,
-            descripcion = instrucciones,
-            codigoInterno = codigoInterno,
-            codigoBarras = codigoBarras,
-            tipo = tipo,
-            unidadMedida = unidadMedida,
-            costoCompra = costoCompra,
-            margenGanancia = margenGanancia,
-            precioSinIva = precioSinIva,
-            iva = iva,
-            precio = precioFinal,
-            categoria = tipo,
-            activo = activo,
-            fechaRegistro = UtilHelper.getDate()
-        )
-
-        val (success, message) = FirebaseMedicamentoUtil.guardarMedicamento(medicamento)
-        
-        ConfigLoading.hideLoadingAnimation()
-        
-        if (success) {
-            DialogMaterialHelper.mostrarSuccessClickDialog(
-                requireActivity(), 
-                message
-            ) {
-                UtilFragment.changeFragment(requireContext(), ListaMedicamentosFragment(), TAG)
+        try {
+            // En modo edición, actualizar el objeto existente para conservar el ID
+            val medicamento = if (isEditMode && medicamentoToEdit != null) {
+                medicamentoToEdit!!.apply {
+                    this.nombre = nombre
+                    this.descripcion = instrucciones
+                    this.codigoInterno = codigoInterno
+                    this.codigoBarras = codigoBarras
+                    this.tipo = tipo
+                    this.unidadMedida = unidadMedida
+                    this.costoCompra = costoCompra
+                    this.margenGanancia = margenGanancia
+                    this.precioSinIva = precioSinIva
+                    this.iva = iva
+                    this.precio = precioFinal
+                    this.categoria = tipo
+                    this.activo = activo
+                }
+            } else {
+                ProductoMedicamentoModel(
+                    nombre = nombre,
+                    descripcion = instrucciones,
+                    codigoInterno = codigoInterno,
+                    codigoBarras = codigoBarras,
+                    tipo = tipo,
+                    unidadMedida = unidadMedida,
+                    costoCompra = costoCompra,
+                    margenGanancia = margenGanancia,
+                    precioSinIva = precioSinIva,
+                    iva = iva,
+                    precio = precioFinal,
+                    categoria = tipo,
+                    activo = activo,
+                    fechaRegistro = UtilHelper.getDate()
+                )
             }
-        } else {
-            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
-        }
-    }
 
-    private fun loadMedicamentoData(medicamento: ProductoMedicamentoModel) {
-        with(binding) {
-            etNombre.setText(medicamento.nombre)
-            etCodigoInterno.setText(medicamento.codigoInterno)
-            etCodigoBarras.setText(medicamento.codigoBarras)
-            etInstrucciones.setText(medicamento.descripcion)
-            spUnidadMedida.setText(medicamento.unidadMedida)
-            etCostoCompra.setText(medicamento.costoCompra)
-            etMargenGanancia.setText(medicamento.margenGanancia)
-            etPorcentajeIva.setText(medicamento.iva)
-            
-            when (medicamento.tipo) {
-                "Vacuna" -> rbVacuna.isChecked = true
-                "Antiparasitario" -> rbAntiparasitario.isChecked = true
-                else -> rbOtro.isChecked = true
+            if (isEditMode) {
+                FirebaseMedicamentoUtil.actualizarMedicamento(medicamento) { success, message ->
+                    ConfigLoading.hideLoadingAnimation()
+                    if (success) {
+                        DialogMaterialHelper.mostrarSuccessClickDialog(
+                            requireActivity(),
+                            "Medicamento actualizado correctamente"
+                        ) {
+                            UtilFragment.changeFragment(requireContext(), ListaMedicamentosFragment(), TAG)
+                        }
+                    } else {
+                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: $message")
+                    }
+                }
+            } else {
+                FirebaseMedicamentoUtil.agregarMedicamento(medicamento) { success, message ->
+                    ConfigLoading.hideLoadingAnimation()
+                    if (success) {
+                        DialogMaterialHelper.mostrarSuccessClickDialog(
+                            requireActivity(),
+                            "Medicamento guardado correctamente"
+                        ) {
+                            UtilFragment.changeFragment(requireContext(), ListaMedicamentosFragment(), TAG)
+                        }
+                    } else {
+                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: $message")
+                    }
+                }
             }
-            
-            rbActivo.isChecked = medicamento.activo
-            rbInactivo.isChecked = !medicamento.activo
+        } catch (e: Exception) {
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
         }
     }
 
