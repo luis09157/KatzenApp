@@ -51,7 +51,7 @@ class MenuFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.menu_pago_tarjeta), R.drawable.img_pago_tarjeta),
             MenuModel(requireActivity().getString(R.string.menu_paciente), R.drawable.img_paciente),
             MenuModel(requireActivity().getString(R.string.menu_cliente), R.drawable.img_cliente),
-            //MenuModel(requireActivity().getString(R.string.menu_productos), R.drawable.img_productos),
+            MenuModel(requireActivity().getString(R.string.menu_productos), R.drawable.img_productos),
             MenuModel(requireActivity().getString(R.string.menu_viajes), R.drawable.img_viajes),
             MenuModel(requireActivity().getString(R.string.menu_campania), R.drawable.img_campania)
         )

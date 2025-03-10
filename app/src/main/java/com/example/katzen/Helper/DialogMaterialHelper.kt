@@ -1,20 +1,21 @@
 package com.example.katzen.Helper
 
 import android.app.Activity
-import android.content.Context
 import android.content.DialogInterface
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DialogMaterialHelper {
     companion object {
 
-        fun mostrarSuccessDialog(activity: Activity, mensaje: String) {
-            activity.runOnUiThread {
-                MaterialAlertDialogBuilder(activity)
-                    .setTitle("Éxito")
-                    .setMessage(mensaje)
-                    .setPositiveButton("Aceptar", null)
-                    .show()
+        fun mostrarSuccessDialog(activity: Activity, mensaje: String, onAccept: () -> Unit = {}) {
+            MaterialDialog(activity).show {
+                title(text = "Éxito")
+                message(text = mensaje)
+                positiveButton(text = "Aceptar") {
+                    it.dismiss()
+                    onAccept()
+                }
             }
         }
         fun mostrarSuccessClickDialog(activity: Activity, mensaje: String, onAceptarClick: () -> Unit) {
