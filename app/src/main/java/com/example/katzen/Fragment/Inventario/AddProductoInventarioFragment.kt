@@ -45,11 +45,14 @@ class AddProductoInventarioFragment : Fragment() {
         return root
     }
 
-    fun initLoading(){
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    fun initLoading() {
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
     fun setupListeners(){
         binding.spUnidadMedida.setOnClickListener { it.hideKeyboard() }
         binding.editTextFecha2.setOnFocusChangeListener { view, isFocus ->

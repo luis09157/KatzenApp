@@ -58,10 +58,13 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
     }
 
     fun initLoading() {
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
     fun init() {
         FirebaseStorageManager.URI_IMG_SELECTED = Uri.EMPTY
 

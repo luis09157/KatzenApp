@@ -162,11 +162,14 @@ class AddViajeFragment : Fragment() {
        // UpperCaseTextWatcher.UpperText(binding.textColor)
 
     }
-    fun initLoading(){
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddViaje
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    fun initLoading() {
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddViaje,
+            binding.fragmentNoData.contNoData
+        )
     }
+
     fun limpiarCampos() {
         requireActivity().runOnUiThread {
             binding.apply {

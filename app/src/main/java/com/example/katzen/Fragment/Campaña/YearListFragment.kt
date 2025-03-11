@@ -51,19 +51,18 @@ class YearListFragment : Fragment() {
     }
 
     private fun initLoading() {
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
-        
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.root
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.root,
+            binding.fragmentNoData.contNoData
+        )
     }
+
+
 
     private fun loadYears() {
         Log.d(TAG, "Iniciando carga de años")
-        
-        binding.lottieAnimationView.visibility = View.VISIBLE
-        binding.fragmentNoData.contNoData.visibility = View.GONE
-        binding.listViewYears.visibility = View.GONE
-        
+        ConfigLoading.showLoadingAnimation()
         val database = FirebaseDatabase.getInstance()
         val campañasRef = database.getReference("Katzen/Campaña")
 
@@ -72,19 +71,17 @@ class YearListFragment : Fragment() {
                 try {
                     if (!snapshot.exists()) {
                         Log.d(TAG, "No existen datos en la referencia Katzen/Campaña")
-                        showNoData()
+                        ConfigLoading.showNodata()
                         return
                     }
 
                     Log.d(TAG, "Datos recibidos de Firebase: ${snapshot.childrenCount} registros")
                     val years = mutableMapOf<String, Int>()
                     
-                    // Recorrer los años directamente (2024, 2025, etc.)
                     for (yearSnapshot in snapshot.children) {
                         val year = yearSnapshot.key ?: continue
                         Log.d(TAG, "Procesando año: $year")
                         
-                        // Contar cuántos meses tiene este año
                         val campañasCount = yearSnapshot.childrenCount.toInt()
                         years[year] = campañasCount
                         Log.d(TAG, "Año encontrado: $year con $campañasCount campañas")
@@ -92,7 +89,7 @@ class YearListFragment : Fragment() {
 
                     if (years.isEmpty()) {
                         Log.d(TAG, "No se encontraron años")
-                        showNoData()
+                        ConfigLoading.showNodata()
                         return
                     }
 
@@ -106,9 +103,8 @@ class YearListFragment : Fragment() {
                         yearList.clear()
                         yearList.addAll(yearModelList)
                         adapter.notifyDataSetChanged()
-                        hideLoading()
+                        ConfigLoading.hideLoadingAnimation()
 
-                        // Debug de la lista final
                         yearList.forEach { 
                             Log.d(TAG, "Año en lista final: ${it.year}, Campañas: ${it.campañasCount}")
                         }
@@ -118,7 +114,7 @@ class YearListFragment : Fragment() {
                     Log.e(TAG, "Error al cargar años: ${e.message}")
                     e.printStackTrace()
                     requireActivity().runOnUiThread {
-                        showNoData()
+                        ConfigLoading.showNodata()
                         DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al cargar los años: ${e.message}")
                     }
                 }
@@ -127,23 +123,11 @@ class YearListFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
                 Log.e(TAG, "Error en la base de datos: ${error.message}")
                 requireActivity().runOnUiThread {
-                    showNoData()
+                    ConfigLoading.showNodata()
                     DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${error.message}")
                 }
             }
         })
-    }
-    
-    private fun hideLoading() {
-        binding.lottieAnimationView.visibility = View.GONE
-        binding.fragmentNoData.contNoData.visibility = View.GONE
-        binding.listViewYears.visibility = View.VISIBLE
-    }
-    
-    private fun showNoData() {
-        binding.lottieAnimationView.visibility = View.GONE
-        binding.fragmentNoData.contNoData.visibility = View.VISIBLE
-        binding.listViewYears.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -157,8 +141,7 @@ class YearListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.lottieAnimationView.clearAnimation()
-        binding.lottieAnimationView.visibility = View.GONE
+        ConfigLoading.hideLoadingAnimation()
         _binding = null
     }
 } 

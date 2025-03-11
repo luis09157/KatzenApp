@@ -67,11 +67,14 @@ class AddProductoMedicamentoFragment : Fragment() {
         return binding.root
     }
 
-    private fun initLoading() {
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    fun initLoading() {
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
 
     private fun setupUnidadesMedida() {
         val adapter = ArrayAdapter(

@@ -133,15 +133,13 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
     }
 
     fun initLoading() {
-        try {
-            ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-            ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-            ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
-        } catch (e: Exception) {
-            e.printStackTrace()
-            // Manejar la excepción durante la configuración de la animación de carga
-        }
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
 
     fun obtenerClientes() {
         try {

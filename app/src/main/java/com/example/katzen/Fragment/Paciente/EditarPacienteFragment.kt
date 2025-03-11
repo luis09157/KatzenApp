@@ -64,10 +64,13 @@ class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
     }
 
     fun initLoading() {
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
     fun init() {
         val adapterSEXO = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Config.SEXO)
         binding.spSexo.setAdapter(adapterSEXO)

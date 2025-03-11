@@ -84,11 +84,14 @@ class ClienteFragment : Fragment() {
             }
         })
     }
-    fun initLoading(){
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.contAddProducto
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
+    fun initLoading() {
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
+        )
     }
+
 
     fun obtenerClientes(){
         FirebaseClienteUtil.obtenerListaClientes(object : ValueEventListener {

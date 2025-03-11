@@ -49,13 +49,13 @@ class YearViajeListFragment : Fragment() {
         
         return root
     }
-
-    private fun initLoading() {
-        ConfigLoading.LOTTIE_ANIMATION_VIEW = binding.lottieAnimationView
-        ConfigLoading.FRAGMENT_NO_DATA = binding.fragmentNoData.contNoData
-        ConfigLoading.CONT_ADD_PRODUCTO = binding.root
+    fun initLoading() {
+        ConfigLoading.init(
+            binding.lottieAnimationView,
+            binding.root,
+            binding.fragmentNoData.contNoData
+        )
     }
-
     private fun loadYears() {
         Log.d(TAG, "Iniciando carga de años")
         ConfigLoading.showLoadingAnimation()
