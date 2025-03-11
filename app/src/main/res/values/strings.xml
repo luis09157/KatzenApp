@@ -44,6 +44,7 @@
     <string name="submenu_productos_alimentos">Alimentos</string>
     <string name="submenu_productos_servicios">Servicios</string>
     <string name="submenu_productos_medicamentos">Medicamentos</string>
+    <string name="submenu_add_productos_medicamentos">Agregar Medicamento</string>
     <string name="submenu_productos_procedimientos">Procedimientos</string>
     <string name="submenu_productos_m_complementarios">M.Auxiliar</string>
     <string name="submenu_productos_estetica">Estetica</string>

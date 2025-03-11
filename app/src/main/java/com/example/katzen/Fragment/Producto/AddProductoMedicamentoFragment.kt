@@ -18,6 +18,7 @@ import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ProductoMedicamentoModel
+import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.AddProductoMedicamentoFragmentBinding
 import java.text.DecimalFormat
 
@@ -43,6 +44,7 @@ class AddProductoMedicamentoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requireActivity().title = getString(R.string.submenu_add_productos_medicamentos)
         medicamentoToEdit = arguments?.getParcelable(ARG_MEDICAMENTO)
         isEditMode = medicamentoToEdit != null
     }
