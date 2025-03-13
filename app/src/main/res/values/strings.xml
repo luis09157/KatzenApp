@@ -296,4 +296,9 @@
     <string name="error_invalid_weight">El peso debe ser un número válido entre 0.1 kg y 200 kg.</string>
     <string name="error_invalid_id_cliente">El ID de cliente debe tener al menos 5 caracteres.</string>
 
+    <string name="submenu_servicios">Servicios</string>
+    <string name="submenu_add_servicios">Nuevo servicio</string>
+
+    <string name="submenu_add_productos_estetica">Nuevo producto de estética</string>
+
 </resources>
