@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            app:startIconDrawable="@drawable/ic_search"
+            app:startIconDrawable="@drawable/ic_buscar"
             app:endIconMode="clear_text"
             android:hint="Buscar producto..."
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">

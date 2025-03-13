@@ -1,6 +1,8 @@
 package com.example.katzen.Fragment.Producto
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +25,7 @@ class ListaMedicamentosFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var medicamentosAdapter: MedicamentosAdapter
     private val medicamentosList = mutableListOf<ProductoMedicamentoModel>()
+    private val medicamentosListOriginal = mutableListOf<ProductoMedicamentoModel>()
     private val TAG = "ListaMedicamentosFragment"
     private var valueEventListener: ValueEventListener? = null
 
@@ -35,6 +38,7 @@ class ListaMedicamentosFragment : Fragment() {
         initLoading()
         setupAdapter()
         setupListeners()
+        setupSearchBar()
         return binding.root
     }
 
@@ -70,6 +74,33 @@ class ListaMedicamentosFragment : Fragment() {
         }
     }
 
+    private fun setupSearchBar() {
+        binding.searchBar.editText?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                filtrarMedicamentos(s?.toString())
+            }
+        })
+    }
+
+    private fun filtrarMedicamentos(query: String?) {
+        if (query.isNullOrEmpty()) {
+            medicamentosList.clear()
+            medicamentosList.addAll(medicamentosListOriginal)
+        } else {
+            val filteredList = medicamentosListOriginal.filter { medicamento ->
+                medicamento.nombre?.lowercase()?.contains(query.lowercase()) == true ||
+                medicamento.codigoInterno?.lowercase()?.contains(query.lowercase()) == true
+            }
+            medicamentosList.clear()
+            medicamentosList.addAll(filteredList)
+        }
+        medicamentosAdapter.notifyDataSetChanged()
+    }
+
     private fun cargarMedicamentos() {
         ConfigLoading.showLoadingAnimation()
         
@@ -78,9 +109,13 @@ class ListaMedicamentosFragment : Fragment() {
                 if (!isAdded) return
                 
                 medicamentosList.clear()
+                medicamentosListOriginal.clear()
                 for (medicamentoSnapshot in snapshot.children) {
                     val medicamento = medicamentoSnapshot.getValue(ProductoMedicamentoModel::class.java)
-                    medicamento?.let { medicamentosList.add(it) }
+                    medicamento?.let {
+                        medicamentosList.add(it)
+                        medicamentosListOriginal.add(it)
+                    }
                 }
                 medicamentosAdapter.notifyDataSetChanged()
 
