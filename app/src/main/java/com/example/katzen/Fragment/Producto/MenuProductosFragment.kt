@@ -81,6 +81,9 @@ class MenuProductosFragment : Fragment() {
                 requireActivity().getString(R.string.submenu_productos_prod_varios) -> {
                     UtilFragment.changeFragment(requireActivity(), ListaProductosVariosFragment(),TAG)
                 }
+                requireActivity().getString(R.string.submenu_productos_servicios) -> {
+                    UtilFragment.changeFragment(requireActivity(), ListaServiciosFragment(),TAG)
+                }
             }
         }
     }

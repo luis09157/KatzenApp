@@ -6,9 +6,10 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.UUID
+import com.google.android.gms.tasks.Task
 
 object FirebaseServicioUtil {
-    private const val SERVICIOS_PATH = "Katzen/Servicios"
+    private const val SERVICIOS_PATH = "Katzen/Productos/Servicios"
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val referenciaServicios: DatabaseReference = database.getReference(SERVICIOS_PATH)
 
@@ -72,5 +73,9 @@ object FirebaseServicioUtil {
             e.printStackTrace()
             callback(false, "Error: ${e.message}")
         }
+    }
+
+    fun eliminarServicio(servicioId: String): Task<Void> {
+        return referenciaServicios.child(servicioId).removeValue()
     }
 } 

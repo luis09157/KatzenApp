@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment.Servicio
+package com.example.katzen.Fragment.Producto
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.ServiciosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseServicioUtil
-import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ServicioModel
@@ -58,11 +57,11 @@ class ListaServiciosFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        serviciosAdapter = ServiciosAdapter(
-            serviciosList,
-            onItemClick = { servicio -> editarServicio(servicio) },
-            onDeleteClick = { servicio -> eliminarServicio(servicio) }
-        )
+        serviciosAdapter = ServiciosAdapter(serviciosList, { servicio ->
+            editarServicio(servicio)
+        }, { servicio ->
+            eliminarServicio(servicio)
+        })
         binding.lisMenuServicios.adapter = serviciosAdapter
         binding.lisMenuServicios.divider = null
     }

@@ -5,13 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.katzen.Model.ServicioModel
 import com.ninodev.katzen.R
 
 class ServiciosAdapter(
     private var serviciosList: List<ServicioModel>,
-    private val onItemClick: (ServicioModel) -> Unit
+    private val onItemClick: (ServicioModel) -> Unit,
+    private val onDeleteClick: (ServicioModel) -> Unit
 ) : BaseAdapter() {
 
     override fun getCount(): Int = serviciosList.size
@@ -30,6 +32,7 @@ class ServiciosAdapter(
         val tvPrecio: TextView = view.findViewById(R.id.tvPrecio)
         val tvCodigo: TextView = view.findViewById(R.id.tvCodigo)
         val btnEstado: Button = view.findViewById(R.id.btnEstado)
+        val btnEliminar: LinearLayout = view.findViewById(R.id.btnEliminar)
         
         tvNombre.text = servicio.nombre
         tvPrecio.text = "Precio: $${servicio.precioFinal}"
@@ -39,6 +42,10 @@ class ServiciosAdapter(
         btnEstado.backgroundTintList = view.context.getColorStateList(
             if (servicio.activo) R.color.green_300 else R.color.grey_300
         )
+        
+        btnEliminar.setOnClickListener {
+            onDeleteClick(servicio)
+        }
         
         view.setOnClickListener {
             onItemClick(servicio)

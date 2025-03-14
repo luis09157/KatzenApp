@@ -1,4 +1,4 @@
-package com.example.katzen.Fragment.Servicio
+package com.example.katzen.Fragment.Producto
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +11,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseServicioUtil
-import com.example.katzen.Fragment.Producto.ListaServiciosFragment
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
@@ -85,17 +84,23 @@ class AddServicioFragment : Fragment() {
     }
 
     private fun setupCalculations() {
-        // Calcular precio final cuando cambie el precio unitario o el IVA
-        val precioWatcher = object : TextWatcher {
+        // Watcher para precio unitario
+        binding.etPrecioUnitario.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 calcularPrecioFinal()
             }
-        }
+        })
 
-        binding.etPrecioUnitario.addTextChangedListener(precioWatcher)
-        binding.etIva.addTextChangedListener(precioWatcher)
+        // Watcher para IVA
+        binding.etIva.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                calcularPrecioFinal()
+            }
+        })
     }
 
     private fun calcularPrecioFinal() {
@@ -103,13 +108,14 @@ class AddServicioFragment : Fragment() {
             val precioUnitario = binding.etPrecioUnitario.text.toString().toDoubleOrNull() ?: 0.0
             val porcentajeIva = binding.etIva.text.toString().toDoubleOrNull() ?: 0.0
             
+            // Aplicar IVA
             val iva = precioUnitario * (porcentajeIva / 100)
             val precioFinal = precioUnitario + iva
             
-            binding.etPrecioFinal.setText("$" + df.format(precioFinal))
+            binding.etPrecioFinal.setText(df.format(precioFinal))
         } catch (e: Exception) {
             Log.e(TAG, "Error al calcular precio final: ${e.message}")
-            binding.etPrecioFinal.setText("$0.00")
+            binding.etPrecioFinal.setText("0.00")
         }
     }
 
@@ -118,14 +124,10 @@ class AddServicioFragment : Fragment() {
         
         if (activo) {
             binding.btnActivo.setBackgroundTintList(resources.getColorStateList(R.color.purple_500, null))
-            binding.btnActivo.setTextColor(resources.getColor(android.R.color.white, null))
-            binding.btnInactivo.setBackgroundTintList(resources.getColorStateList(R.color.grey_400, null))
-            binding.btnInactivo.setTextColor(resources.getColor(android.R.color.white, null))
+            binding.btnInactivo.setBackgroundTintList(resources.getColorStateList(R.color.grey_500, null))
         } else {
-            binding.btnActivo.setBackgroundTintList(resources.getColorStateList(R.color.grey_400, null))
-            binding.btnActivo.setTextColor(resources.getColor(android.R.color.white, null))
+            binding.btnActivo.setBackgroundTintList(resources.getColorStateList(R.color.grey_500, null))
             binding.btnInactivo.setBackgroundTintList(resources.getColorStateList(R.color.purple_500, null))
-            binding.btnInactivo.setTextColor(resources.getColor(android.R.color.white, null))
         }
     }
 
@@ -136,12 +138,10 @@ class AddServicioFragment : Fragment() {
             binding.etDescripcion.setText(it.descripcion)
             binding.etPrecioUnitario.setText(it.precioUnitario)
             binding.etIva.setText(it.iva)
+            binding.etPrecioFinal.setText(it.precioFinal)
             
             // Establecer estado
             actualizarEstadoBotones(it.activo)
-            
-            // Calcular precio final
-            calcularPrecioFinal()
         }
     }
 
@@ -149,7 +149,7 @@ class AddServicioFragment : Fragment() {
         binding.btnGuardar.setOnClickListener {
             onClickGuardar()
         }
-        
+
         binding.btnActivo.setOnClickListener {
             actualizarEstadoBotones(true)
         }
@@ -168,7 +168,7 @@ class AddServicioFragment : Fragment() {
         val descripcion = binding.etDescripcion.text.toString().trim()
         val precioUnitario = binding.etPrecioUnitario.text.toString()
         val iva = binding.etIva.text.toString()
-        val precioFinal = binding.etPrecioFinal.text.toString().replace("$", "")
+        val precioFinal = binding.etPrecioFinal.text.toString()
         val activo = estadoActivo
 
         if (nombre.isEmpty() || precioUnitario.isEmpty()) {
