@@ -96,17 +96,14 @@ object FirebaseMedicamentoUtil {
      */
     fun agregarMedicamento(medicamento: ProductoMedicamentoModel, callback: (success: Boolean, message: String) -> Unit) {
         try {
-            // Asignar ID si no tiene uno
             if (medicamento.id.isEmpty()) {
                 medicamento.id = UUID.randomUUID().toString()
             }
             
-            // Asegurar que tenemos fechas
             if (medicamento.fechaRegistro.isEmpty()) {
                 medicamento.fechaRegistro = System.currentTimeMillis().toString()
             }
             
-            // Guardar en Realtime Database (es lo que usa la app actualmente)
             val referencia = referenciaMedicamentos.child(medicamento.id)
             referencia.setValue(medicamento)
                 .addOnSuccessListener {
@@ -151,6 +148,13 @@ object FirebaseMedicamentoUtil {
      * @return Task que se completa cuando la operación finaliza
      */
     fun eliminarMedicamento(medicamentoId: String): Task<Void> {
-        return db.collection(COLECCION_MEDICAMENTOS).document(medicamentoId).delete()
+        Log.d("FirebaseMedicamentoUtil", "Intentando eliminar medicamento con ID: $medicamentoId")
+        val task = referenciaMedicamentos.child(medicamentoId).removeValue()
+        task.addOnSuccessListener {
+            Log.d("FirebaseMedicamentoUtil", "Medicamento eliminado correctamente")
+        }.addOnFailureListener { e ->
+            Log.e("FirebaseMedicamentoUtil", "Error al eliminar medicamento: ${e.message}")
+        }
+        return task
     }
 } 

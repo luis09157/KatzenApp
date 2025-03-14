@@ -126,12 +126,14 @@ class ListaMedicamentosFragment : Fragment() {
                     ConfigLoading.hideLoadingAnimation()
                 } else {
                     ConfigLoading.showNodata()
+                    binding.fragmentNoData.tvNoDataMessage.text = "No hay medicamentos registrados. Agrega uno nuevo con el botón inferior."
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 if (!isAdded) return
                 ConfigLoading.showNodata()
+                binding.fragmentNoData.tvNoDataMessage.text = "Error al cargar medicamentos: ${error.message}"
                 DialogMaterialHelper.mostrarErrorDialog(
                     requireActivity(),
                     "Error al cargar los medicamentos: ${error.message}"
@@ -150,14 +152,21 @@ class ListaMedicamentosFragment : Fragment() {
     }
 
     private fun eliminarMedicamento(medicamento: ProductoMedicamentoModel) {
-        FirebaseMedicamentoUtil.eliminarMedicamento(medicamento.id)
-            .addOnSuccessListener {
-                cargarMedicamentos()
-                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "Medicamento eliminado correctamente")
+        DialogMaterialHelper.mostrarConfirmDeleteDialog(requireActivity(), "¿Eliminar medicamento?") { confirmed ->
+            if (confirmed) {
+                ConfigLoading.showLoadingAnimation()
+                FirebaseMedicamentoUtil.eliminarMedicamento(medicamento.id)
+                    .addOnSuccessListener {
+                        ConfigLoading.hideLoadingAnimation()
+                        cargarMedicamentos()
+                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "Medicamento eliminado correctamente")
+                    }
+                    .addOnFailureListener { e ->
+                        ConfigLoading.hideLoadingAnimation()
+                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
+                    }
             }
-            .addOnFailureListener { e ->
-                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
-            }
+        }
     }
 
     override fun onResume() {

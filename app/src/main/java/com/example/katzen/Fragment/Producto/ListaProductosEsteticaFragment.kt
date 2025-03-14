@@ -119,12 +119,14 @@ class ListaProductosEsteticaFragment : Fragment() {
                     ConfigLoading.hideLoadingAnimation()
                 } else {
                     ConfigLoading.showNodata()
+                    binding.fragmentNoData.tvNoDataMessage.text = "No hay productos de estética registrados. Agrega uno nuevo con el botón inferior."
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 if (!isAdded) return
                 ConfigLoading.showNodata()
+                binding.fragmentNoData.tvNoDataMessage.text = "Error al cargar productos de estética: ${error.message}"
                 DialogMaterialHelper.mostrarErrorDialog(
                     requireActivity(),
                     "Error al cargar los productos: ${error.message}"

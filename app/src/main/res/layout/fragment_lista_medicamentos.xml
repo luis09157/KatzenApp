@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/background_color"
-    android:layout_height="match_parent">
-
-    <include
-        android:id="@+id/fragment_no_data"
-        layout="@layout/fragment_no_data"/>
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:lottie_autoPlay="true"
-        android:background="@color/white"
-        app:lottie_loop="true"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/gato_loading" />
+
+    <include
+        android:id="@+id/fragmentNoData"
+        layout="@layout/fragment_no_data"
+        android:visibility="gone" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/searchBar"
@@ -36,7 +32,10 @@
             app:startIconDrawable="@drawable/ic_buscar"
             app:endIconMode="clear_text"
             android:hint="Buscar medicamento..."
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -47,42 +46,38 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
-            android:id="@+id/cont_add_producto"
-            android:layout_weight="1"
+            android:id="@+id/contAddProducto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            android:background="@color/background_color">
+            android:background="@color/background_color"
+            app:layout_constraintTop_toBottomOf="@id/searchBar"
+            app:layout_constraintBottom_toTopOf="@id/btnAddMedicamento"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <ListView
-                android:id="@+id/lis_menu_medicamentos"
+                android:id="@+id/lisMenuMedicamentos"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:divider="@null"
                 android:dividerHeight="0dp"
-                android:background="@color/background_color"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
                 android:clipToPadding="false"/>
-
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnAddMedicamento"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="end">
+            android:text="Medicamento"
+            android:fontFamily="@font/poppins_bold"
+            android:drawableLeft="@drawable/ic_mas_blanco"
+            android:layout_margin="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-            <Button
-                android:id="@+id/btn_add_medicamento"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Medicamento"
-                android:fontFamily="@font/poppins_bold"
-                android:drawableLeft="@drawable/ic_mas_blanco"
-                android:layout_margin="10dp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout> 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout> 
