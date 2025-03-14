@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
@@ -27,6 +29,7 @@ class MenuProductosFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = MenuFragmentBinding.inflate(inflater, container, false)
+        requireActivity().title = getString(R.string.menu_productos)
         setupMenu()
         setupListeners()
         return binding.root
@@ -44,8 +47,6 @@ class MenuProductosFragment : Fragment() {
     }
 
     private fun setupMenu() {
-        requireActivity().title = getString(R.string.nav_menu_productos)
-
         menuList = listOf(
             MenuModel(requireActivity().getString(R.string.submenu_productos_prod_varios), R.drawable.img_prod_varios),
             MenuModel(requireActivity().getString(R.string.submenu_productos_alimentos), R.drawable.img_alimento),
@@ -76,6 +77,9 @@ class MenuProductosFragment : Fragment() {
                 }
                 requireActivity().getString(R.string.submenu_productos_alimentos) -> {
                     UtilFragment.changeFragment(requireActivity(), ListaAlimentosFragment(),TAG)
+                }
+                requireActivity().getString(R.string.submenu_productos_prod_varios) -> {
+                    UtilFragment.changeFragment(requireActivity(), ListaProductosVariosFragment(),TAG)
                 }
             }
         }
