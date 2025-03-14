@@ -57,9 +57,11 @@ class ListaMedicamentosFragment : Fragment() {
 
 
     private fun setupAdapter() {
-        medicamentosAdapter = MedicamentosAdapter(medicamentosList) { medicamento ->
+        medicamentosAdapter = MedicamentosAdapter(medicamentosList, { medicamento ->
             editarMedicamento(medicamento)
-        }
+        }, { medicamento ->
+            eliminarMedicamento(medicamento)
+        })
         binding.lisMenuMedicamentos.adapter = medicamentosAdapter
         binding.lisMenuMedicamentos.divider = null
     }
@@ -145,6 +147,17 @@ class ListaMedicamentosFragment : Fragment() {
     private fun editarMedicamento(medicamento: ProductoMedicamentoModel) {
         val fragment = AddProductoMedicamentoFragment.newInstance(medicamento)
         UtilFragment.changeFragment(requireContext(), fragment, TAG)
+    }
+
+    private fun eliminarMedicamento(medicamento: ProductoMedicamentoModel) {
+        FirebaseMedicamentoUtil.eliminarMedicamento(medicamento.id)
+            .addOnSuccessListener {
+                cargarMedicamentos()
+                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "Medicamento eliminado correctamente")
+            }
+            .addOnFailureListener { e ->
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
+            }
     }
 
     override fun onResume() {

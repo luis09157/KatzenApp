@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.util.UUID
+import com.google.android.gms.tasks.Task
 
 object FirebaseProductoEsteticaUtil {
     private const val PRODUCTOS_ESTETICA_PATH = "Katzen/Productos/Estetica"
@@ -72,5 +73,9 @@ object FirebaseProductoEsteticaUtil {
             e.printStackTrace()
             callback(false, "Error: ${e.message}")
         }
+    }
+
+    fun eliminarProductoEstetica(productoId: String): Task<Void> {
+        return referenciaProductosEstetica.child(productoId).removeValue()
     }
 } 

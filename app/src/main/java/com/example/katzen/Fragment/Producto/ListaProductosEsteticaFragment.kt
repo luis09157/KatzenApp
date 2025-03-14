@@ -50,15 +50,17 @@ class ListaProductosEsteticaFragment : Fragment() {
     private fun initLoading() {
         ConfigLoading.init(
             binding.lottieAnimationView,
-            binding.contListaProductos,
-            binding.fragmentNoData.root
+            binding.contAddProducto,
+            binding.fragmentNoData.contNoData
         )
     }
 
     private fun setupAdapter() {
-        productosAdapter = ProductosEsteticaAdapter(productosList) { producto ->
+        productosAdapter = ProductosEsteticaAdapter(productosList, { producto ->
             editarProducto(producto)
-        }
+        }, { producto ->
+            eliminarProducto(producto)
+        })
         binding.lisMenuProductos.adapter = productosAdapter
         binding.lisMenuProductos.divider = null
     }
@@ -138,6 +140,21 @@ class ListaProductosEsteticaFragment : Fragment() {
     private fun editarProducto(producto: ProductoEsteticaModel) {
         val fragment = AddProductoEsteticaFragment.newInstance(producto)
         UtilFragment.changeFragment(requireContext(), fragment, TAG)
+    }
+
+    private fun eliminarProducto(producto: ProductoEsteticaModel) {
+        DialogMaterialHelper.mostrarConfirmDeleteDialog(requireActivity(), "¿Eliminar producto?") { confirmed ->
+            if (confirmed) {
+                FirebaseProductoEsteticaUtil.eliminarProductoEstetica(producto.id)
+                    .addOnSuccessListener {
+                        cargarProductos()
+                        DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "Producto eliminado correctamente")
+                    }
+                    .addOnFailureListener { e ->
+                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
+                    }
+            }
+        }
     }
 
     override fun onResume() {
