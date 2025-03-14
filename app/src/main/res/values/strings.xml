@@ -301,4 +301,6 @@
 
     <string name="submenu_add_productos_estetica">Nuevo producto de estética</string>
 
+    <string name="submenu_add_productos_alimentos">Agregar Alimento</string>
+
 </resources>
