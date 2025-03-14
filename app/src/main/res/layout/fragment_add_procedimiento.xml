@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/gato_loading" />
+
+    <include
+        android:id="@+id/fragmentNoData"
+        layout="@layout/fragment_no_data"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/contAddProducto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Primera tarjeta - Información básica -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Estado -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"
+                        android:background="@android:color/white"
+                        android:padding="2dp">
+
+                        <Button
+                            android:id="@+id/btnActivo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Activo"
+                            android:textColor="@android:color/white"
+                            android:backgroundTint="#9C27B0"
+                            android:layout_marginEnd="2dp"/>
+
+                        <Button
+                            android:id="@+id/btnInactivo"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Inactivo"
+                            android:textColor="@android:color/white"
+                            android:backgroundTint="#9E9E9E"
+                            android:layout_marginStart="2dp"/>
+                    </LinearLayout>
+
+                    <!-- Tipo -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tipo"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/spinnerTipo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:hint="Seleccionar tipo"
+                            android:textColorHint="#BDBDBD"
+                            android:textColor="#333333"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Nombre -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre *"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etNombre"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="Nombre del procedimiento"
+                        android:textColorHint="#BDBDBD"
+                        android:textColor="#333333"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Código interno -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Código interno"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etCodigoInterno"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="Código interno"
+                        android:textColorHint="#BDBDBD"
+                        android:textColor="#333333"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Instrucciones -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Instrucciones"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etInstrucciones"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="Instrucciones del procedimiento"
+                        android:textColorHint="#BDBDBD"
+                        android:textColor="#333333"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Segunda tarjeta - Venta al público -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Título de la sección -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="VENTA AL PÚBLICO"
+                        android:textColor="#9C27B0"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Precio unitario -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Precio unitario"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etPrecioUnitario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="0.00"
+                        android:textColorHint="#BDBDBD"
+                        android:textColor="#333333"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- IVA -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Porcentaje IVA"
+                        android:textColor="#333333"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etIva"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="16"
+                        android:textColorHint="#BDBDBD"
+                        android:textColor="#333333"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Precio final calculado -->
+                    <EditText
+                        android:id="@+id/etPrecioFinal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#F5F5F5"
+                        android:hint="Precio unitario $0.00"
+                        android:textColorHint="#757575"
+                        android:textColor="#333333"
+                        android:inputType="none"
+                        android:enabled="false"
+                        android:padding="16dp"
+                        android:layout_marginBottom="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Botón guardar -->
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:textAllCaps="false"
+                android:padding="12dp"
+                android:backgroundTint="#9C27B0"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout> 
