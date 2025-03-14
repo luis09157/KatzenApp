@@ -26,6 +26,11 @@ class AddProductoAlimentoFragment : Fragment() {
     private var _binding: FragmentAddProductoAlimentoBinding? = null
     private val binding get() = _binding!!
     private val TAG = "AddProductoAlimentoFragment"
+    private val df = DecimalFormat("#,##0.00")
+    
+    // Flags para evitar cálculos recursivos
+    private var isCalculatingPrecioVenta = false
+    private var isCalculatingMargen = false
 
     companion object {
         private const val ARG_PRODUCTO = "producto"
@@ -76,19 +81,91 @@ class AddProductoAlimentoFragment : Fragment() {
     }
 
     private fun setupCalculations() {
-        // Calcular precio final cuando cambien los valores relevantes
-        val precioWatcher = object : TextWatcher {
+        // Watcher para costo de compra
+        binding.etCostoCompra.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!isCalculatingMargen && !isCalculatingPrecioVenta) {
+                    calcularPrecioVentaDesdeMargen()
+                }
+            }
+        })
+
+        // Watcher para margen de ganancia
+        binding.etMargenGanancia.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!isCalculatingMargen) {
+                    calcularPrecioVentaDesdeMargen()
+                }
+            }
+        })
+
+        // Watcher para precio de venta
+        binding.etPrecioVenta.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!isCalculatingPrecioVenta) {
+                    calcularMargenDesdePrecioVenta()
+                    calcularPrecioFinal()
+                }
+            }
+        })
+
+        // Watcher para IVA
+        binding.etPorcentajeIva.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 calcularPrecioFinal()
             }
-        }
+        })
+    }
 
-        binding.etCostoCompra.addTextChangedListener(precioWatcher)
-        binding.etPrecioVenta.addTextChangedListener(precioWatcher)
-        binding.etMargenGanancia.addTextChangedListener(precioWatcher)
-        binding.etPorcentajeIva.addTextChangedListener(precioWatcher)
+    private fun calcularPrecioVentaDesdeMargen() {
+        try {
+            val costoCompra = binding.etCostoCompra.text.toString().toDoubleOrNull() ?: 0.0
+            val margenGanancia = binding.etMargenGanancia.text.toString().toDoubleOrNull() ?: 0.0
+            
+            if (costoCompra > 0) {
+                isCalculatingPrecioVenta = true
+                
+                // Calcular precio de venta basado en costo y margen
+                val precioVenta = costoCompra * (1 + (margenGanancia / 100))
+                binding.etPrecioVenta.setText(df.format(precioVenta))
+                
+                // Actualizar precio final
+                calcularPrecioFinal()
+                
+                isCalculatingPrecioVenta = false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al calcular precio venta desde margen: ${e.message}")
+            isCalculatingPrecioVenta = false
+        }
+    }
+    
+    private fun calcularMargenDesdePrecioVenta() {
+        try {
+            val costoCompra = binding.etCostoCompra.text.toString().toDoubleOrNull() ?: 0.0
+            val precioVenta = binding.etPrecioVenta.text.toString().toDoubleOrNull() ?: 0.0
+            
+            if (costoCompra > 0 && precioVenta > 0) {
+                isCalculatingMargen = true
+                
+                // Calcular margen basado en costo y precio de venta
+                val margen = ((precioVenta / costoCompra) - 1) * 100
+                binding.etMargenGanancia.setText(df.format(margen))
+                
+                isCalculatingMargen = false
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error al calcular margen desde precio venta: ${e.message}")
+            isCalculatingMargen = false
+        }
     }
 
     private fun calcularPrecioFinal() {
@@ -100,7 +177,6 @@ class AddProductoAlimentoFragment : Fragment() {
             val iva = precioVenta * (porcentajeIva / 100)
             val precioFinal = precioVenta + iva
             
-            val df = DecimalFormat("#,##0.00")
             binding.etPrecioFinal.setText(df.format(precioFinal))
         } catch (e: Exception) {
             Log.e(TAG, "Error al calcular precio final: ${e.message}")
