@@ -303,4 +303,6 @@
 
     <string name="submenu_add_productos_alimentos">Agregar Alimento</string>
 
+    <string name="no_data">No hay datos disponibles</string>
+
 </resources>

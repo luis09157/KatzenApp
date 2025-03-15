@@ -120,11 +120,12 @@ class ListaServiciosFragment : Fragment() {
                 serviciosAdapter.notifyDataSetChanged()
 
                 if (serviciosList.size > 0) {
-                    requireActivity().title = "Servicios (${serviciosList.size})"
+                    requireActivity().title = "${getString(R.string.submenu_productos_servicios)} (${serviciosList.size})"
                     ConfigLoading.hideLoadingAnimation()
                 } else {
                     ConfigLoading.showNodata()
                     binding.fragmentNoData.tvNoDataMessage.text = "No hay servicios registrados. Agrega uno nuevo con el botón inferior."
+                    binding.fragmentNoData.btnAdd.visibility = View.GONE
                 }
             }
 
@@ -132,6 +133,7 @@ class ListaServiciosFragment : Fragment() {
                 if (!isAdded) return
                 ConfigLoading.showNodata()
                 binding.fragmentNoData.tvNoDataMessage.text = "Error al cargar servicios: ${error.message}"
+                binding.fragmentNoData.btnAdd.visibility = View.GONE
                 DialogMaterialHelper.mostrarErrorDialog(
                     requireActivity(),
                     "Error al cargar los servicios: ${error.message}"
