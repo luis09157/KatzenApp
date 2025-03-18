@@ -53,7 +53,7 @@ class YearListFragment : Fragment() {
     private fun initLoading() {
         ConfigLoading.init(
             binding.lottieAnimationView,
-            binding.root,
+            binding.contAddProducto,
             binding.fragmentNoData.contNoData
         )
     }

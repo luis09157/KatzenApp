@@ -21,14 +21,21 @@
         android:visibility="gone"/>
 
 
-    <ListView
-        android:id="@+id/listViewYears"
+    <LinearLayout
+        android:id="@+id/cont_add_producto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        android:padding="8dp"
-        android:visibility="visible"
-        android:background="@color/background_color"/>
+        android:orientation="vertical">
+        <ListView
+            android:id="@+id/listViewYears"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:padding="8dp"
+            android:visibility="visible"
+            android:background="@color/background_color"/>
+    </LinearLayout>
+
 
 </RelativeLayout> 
