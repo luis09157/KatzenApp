@@ -63,6 +63,35 @@ class PacienteDetalleFragment : Fragment() {
         )
         val adapter = MenuAdapter(requireContext(), menuList)
         binding.menuOpciones.adapter = adapter
+        
+        // Configurar listener para los elementos del menú
+        binding.menuOpciones.setOnItemClickListener { _, _, position, _ ->
+            handleMenuClick(position)
+        }
+    }
+
+    private fun handleMenuClick(position: Int) {
+        when (position) {
+            0 -> { // Recordatorios
+                // Implementar navegación a Recordatorios
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Funcionalidad de Recordatorios en desarrollo")
+            }
+            1 -> { // Consultas
+                // Implementar navegación a Consultas
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Funcionalidad de Consultas en desarrollo")
+            }
+            2 -> { // Vacunas
+                // Navegación a Vacunas
+                val idPaciente = EditarPacienteFragment.PACIENTE_EDIT.id
+                val idCliente = EditarPacienteFragment.PACIENTE_EDIT.idCliente
+                val fragment = VacunasListaFragment.newInstance(idPaciente, idCliente)
+                UtilFragment.changeFragment(requireContext(), fragment, TAG)
+            }
+            3 -> { // Estética
+                // Implementar navegación a Estética
+                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Funcionalidad de Estética en desarrollo")
+            }
+        }
     }
 
     fun setValues(){
