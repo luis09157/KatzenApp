@@ -10,16 +10,20 @@ data class ProductoMedicamentoModel(
     var id: String = "",
     var nombre: String = "",
     var descripcion: String = "",
-    var codigoInterno: String = "",
+    var precio: String = "",
+    var tipo: String = "",  // "Vacuna", "Medicamento", etc.
+    var categoria: String = "", // Podría ser igual a tipo o diferente
+    var activo: Boolean = true,
     var codigoBarras: String = "",
-    var tipo: String = "",
+    var codigoInterno: String = "",
+    var costoCompra: String = "",
+    var fechaRegistro: String = "",
+    var presentacion: String = "", // ml, pastillas, etc.
+    // Otros campos que podrían existir en tu base de datos
+    var stock: String = "",
     var unidadMedida: String = "",
-    var costoCompra: String = "0.00",
+    var imagenUrl: String = "",
     var margenGanancia: String = "0.00",
     var precioSinIva: String = "0.00",
-    var iva: String = "0.00",
-    var precio: String = "0.00",
-    var categoria: String = "",
-    var fechaRegistro: String = "",
-    var activo: Boolean = true
+    var iva: String = "0.00"
 ) : Parcelable

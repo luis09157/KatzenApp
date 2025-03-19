@@ -9,6 +9,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import java.util.UUID
 
 object FirebaseMedicamentoUtil {
@@ -156,5 +158,134 @@ object FirebaseMedicamentoUtil {
             Log.e("FirebaseMedicamentoUtil", "Error al eliminar medicamento: ${e.message}")
         }
         return task
+    }
+
+    /**
+     * Obtiene todos los medicamentos activos que son de tipo vacuna
+     */
+    fun obtenerMedicamentosTipoVacuna(callback: (Boolean, List<ProductoMedicamentoModel>) -> Unit) {
+        // Lista de rutas a probar en orden
+        val rutas = listOf(
+            "producto_medicamento",
+            "Productos/Medicamentos",
+            "Medicamentos"
+        )
+        
+        // Inicia la consulta recursiva con el primer índice
+        consultarSiguienteRuta(rutas, 0, callback)
+    }
+
+    /**
+     * Consulta recursivamente las rutas disponibles hasta encontrar medicamentos
+     */
+    private fun consultarSiguienteRuta(rutas: List<String>, index: Int, callback: (Boolean, List<ProductoMedicamentoModel>) -> Unit) {
+        // Si ya probamos todas las rutas, devolvemos lista vacía
+        if (index >= rutas.size) {
+            Log.e("FirebaseMedicamentoUtil", "No se encontraron datos en ninguna ruta")
+            callback(false, emptyList())
+            return
+        }
+        
+        // Obtener la ruta actual
+        val rutaActual = rutas[index]
+        val ref = database.getReference(rutaActual)
+        
+        Log.d("FirebaseMedicamentoUtil", "Consultando vacunas en: $rutaActual")
+        
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    Log.d("FirebaseMedicamentoUtil", "Datos en $rutaActual: ${snapshot.childrenCount} elementos")
+
+                    if (snapshot.childrenCount.toInt() == 0) {
+                        consultarSiguienteRuta(rutas, index + 1, callback)
+                        return
+                    }
+
+
+                    // Procesar los datos encontrados
+                    val medicamentos = mutableListOf<ProductoMedicamentoModel>()
+                    
+                    for (medicamentoSnapshot in snapshot.children) {
+                        try {
+                            // Datos básicos
+                            val id = medicamentoSnapshot.key ?: ""
+                            val nombre = medicamentoSnapshot.child("nombre").getValue(String::class.java) ?: ""
+                            
+                            // Detectar si es una vacuna - verificar tipo o categoría
+                            val tipo = medicamentoSnapshot.child("tipo").getValue(String::class.java) ?: ""
+                            val categoria = medicamentoSnapshot.child("categoria").getValue(String::class.java) ?: ""
+                            
+                            val esVacuna = tipo.equals("Vacuna", ignoreCase = true) || 
+                                           categoria.equals("Vacuna", ignoreCase = true)
+                            
+                            // Estado activo - manejo seguro sin comparar diferentes tipos
+                            var estaActivo = true // por defecto asumimos activo
+                            
+                            // Revisar Boolean directamente (el caso más común)
+                            if (medicamentoSnapshot.child("activo").exists()) {
+                                medicamentoSnapshot.child("activo").getValue(Boolean::class.java)?.let {
+                                    estaActivo = it
+                                }
+                            }
+                            
+                            // Si no es Boolean, intentar con otros tipos sin comparar directamente
+                            if (medicamentoSnapshot.child("activo").exists() && 
+                                medicamentoSnapshot.child("activo").getValue(Boolean::class.java) == null) {
+                                
+                                val activoValue = medicamentoSnapshot.child("activo").getValue()
+                                
+                                if (activoValue != null) {
+                                    // Convertir a String y evaluar
+                                    val activoStr = activoValue.toString()
+                                    estaActivo = activoStr == "true" || activoStr == "1"
+                                }
+                            }
+                            
+                            // Datos adicionales
+                            val descripcion = medicamentoSnapshot.child("descripcion").getValue(String::class.java) ?: ""
+                            val precio = medicamentoSnapshot.child("precio").getValue(String::class.java) ?: 
+                                         medicamentoSnapshot.child("costoCompra").getValue(String::class.java) ?: "0"
+                            
+                            if (esVacuna && estaActivo) {
+                                val medicamento = ProductoMedicamentoModel(
+                                    id = id,
+                                    nombre = nombre,
+                                    descripcion = descripcion,
+                                    precio = precio,
+                                    tipo = tipo,
+                                    categoria = categoria
+                                )
+                                medicamentos.add(medicamento)
+                                Log.d("FirebaseMedicamentoUtil", "Agregado: $nombre")
+                            }
+                        } catch (e: Exception) {
+                            Log.e("FirebaseMedicamentoUtil", "Error procesando item: ${e.message}")
+                        }
+                    }
+                    
+                    Log.d("FirebaseMedicamentoUtil", "Total vacunas encontradas: ${medicamentos.size}")
+                    
+                    if (medicamentos.isEmpty()) {
+                        // Si no encontramos vacunas, probar la siguiente ruta
+                        consultarSiguienteRuta(rutas, index + 1, callback)
+                    } else {
+                        // Encontramos vacunas, retornamos
+                        callback(true, medicamentos)
+                    }
+                    
+                } catch (e: Exception) {
+                    Log.e("FirebaseMedicamentoUtil", "Error en ruta $rutaActual: ${e.message}")
+                    // Si hay error, probar la siguiente ruta
+                    consultarSiguienteRuta(rutas, index + 1, callback)
+                }
+            }
+            
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseMedicamentoUtil", "Consulta cancelada en $rutaActual: ${error.message}")
+                // Si se cancela, probar la siguiente ruta
+                consultarSiguienteRuta(rutas, index + 1, callback)
+            }
+        })
     }
 } 

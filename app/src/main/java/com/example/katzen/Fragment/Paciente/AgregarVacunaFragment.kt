@@ -16,10 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseVacunaUtil
+import com.example.katzen.Dialog.SeleccionarMedicamentoDialog
 import com.example.katzen.Helper.DialogMaterialHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ProductoAplicadoModel
+import com.example.katzen.Model.ProductoMedicamentoModel
 import com.example.katzen.Model.VacunaModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.FragmentAgregarVacunaBinding
@@ -128,10 +130,14 @@ class AgregarVacunaFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // Configurar spinner de vacunas
-        val vacunas = arrayOf("Rabia", "Parvovirus", "Moquillo", "Hepatitis", "Leptospirosis", "Triple Felina", "Otra")
-        val vacunasAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, vacunas)
-        binding.actvVacuna.setAdapter(vacunasAdapter)
+        // Ya no usamos el ArrayAdapter para el spinner de vacunas
+        // En su lugar, configuramos el campo para abrir el diálogo de selección
+        
+        binding.actvVacuna.isFocusable = false
+        binding.actvVacuna.isClickable = true
+        binding.actvVacuna.setOnClickListener {
+            mostrarDialogoSeleccionMedicamento()
+        }
 
         // Configurar RecyclerView de productos aplicados
         productosAdapter = ProductosAplicadosAdapter(productosAplicados) { position ->
@@ -143,6 +149,31 @@ class AgregarVacunaFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = productosAdapter
         }
+    }
+
+    private fun mostrarDialogoSeleccionMedicamento() {
+        val dialog = SeleccionarMedicamentoDialog(requireContext()) { medicamento ->
+            if (medicamento.id.isNotEmpty()) {
+                binding.actvVacuna.setText(medicamento.nombre)
+                // Si deseas almacenar el medicamento seleccionado, puedes hacerlo aquí
+                // Verificamos primero si el campo dosis está vacío 
+                if (binding.etCantidadAplicada.text.toString().isEmpty()) {
+                    // Intentamos usar la dosis recomendada si está disponible como propiedad
+                    try {
+                        // Si hay una descripción, podríamos extraer la dosis de ahí
+                        if (medicamento.descripcion.isNotEmpty() && medicamento.descripcion.contains("dosis")) {
+                            binding.etCantidadAplicada.setText(medicamento.descripcion.split("dosis:")[1].trim().split(" ")[0])
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "No se pudo extraer la dosis de la descripción")
+                    }
+                }
+            } else {
+                // El usuario seleccionó "BORRAR SELECCIÓN"
+                binding.actvVacuna.setText("")
+            }
+        }
+        dialog.show()
     }
 
     private fun setupListeners() {
@@ -175,7 +206,8 @@ class AgregarVacunaFragment : Fragment() {
     private fun cargarDatosVacuna() {
         vacunaToEdit?.let { vacuna ->
             binding.etFecha.setText(vacuna.fecha)
-            binding.actvVacuna.setText(vacuna.vacuna, false)
+            // Ya no usamos setAdapter para el spinner, sólo establecemos el texto
+            binding.actvVacuna.setText(vacuna.vacuna)
             binding.etCantidadAplicada.setText(vacuna.cantidadAplicada)
             binding.etLote.setText(vacuna.lote)
             binding.etValidezDias.setText(vacuna.validezDias)
