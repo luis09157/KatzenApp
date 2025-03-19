@@ -93,7 +93,7 @@ class AgregarVacunaFragment : Fragment() {
         _binding = FragmentAgregarVacunaBinding.inflate(inflater, container, false)
 
         // Ocultar ActionBar de la actividad para usar nuestro Toolbar personalizado
-        (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.hide()
+
 
         // Configurar el Toolbar personalizado
         val titulo = if (isEditMode) "Editar Vacunación" else "Nueva Vacunación"
@@ -391,6 +391,7 @@ class AgregarVacunaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.hide()
         // No configuramos callback personalizado para permitir el retroceso normal
     }
 

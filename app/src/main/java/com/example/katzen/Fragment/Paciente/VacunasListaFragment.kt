@@ -70,7 +70,17 @@ class VacunasListaFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentListaVacunasBinding.inflate(inflater, container, false)
-        requireActivity().title = getString(R.string.submenu_vacunas)
+        
+        // Ocultar ActionBar de la actividad para usar nuestro Toolbar personalizado
+
+        
+        // Configurar el Toolbar personalizado
+        binding.toolbarVacunas.title = getString(R.string.submenu_vacunas)
+        
+        // Configurar el comportamiento de retroceso usando el Toolbar personalizado
+        binding.toolbarVacunas.setNavigationOnClickListener {
+            requireActivity().onBackPressed()
+        }
         
         initLoading()
         setupAdapter()
@@ -225,6 +235,7 @@ class VacunasListaFragment : Fragment() {
     
     override fun onResume() {
         super.onResume()
+        (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.hide()
         cargarVacunas()
         
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -238,6 +249,8 @@ class VacunasListaFragment : Fragment() {
     
     override fun onDestroyView() {
         super.onDestroyView()
+        // Restaurar la ActionBar al salir
+        (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.show()
         valueEventListener?.let {
             FirebaseVacunaUtil.removerListener(it)
         }
