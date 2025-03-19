@@ -1,8 +1,10 @@
 package com.example.katzen.Model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 data class ProductoMedicamentoModel(
     var id: String = "",
@@ -20,4 +22,4 @@ data class ProductoMedicamentoModel(
     var categoria: String = "",
     var fechaRegistro: String = "",
     var activo: Boolean = true
-) : Parcelable 
+) : Parcelable

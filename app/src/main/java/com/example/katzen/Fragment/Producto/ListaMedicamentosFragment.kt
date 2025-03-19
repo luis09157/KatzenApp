@@ -55,7 +55,6 @@ class ListaMedicamentosFragment : Fragment() {
         )
     }
 
-
     private fun setupAdapter() {
         medicamentosAdapter = MedicamentosAdapter(medicamentosList, { medicamento ->
             editarMedicamento(medicamento)
@@ -70,7 +69,7 @@ class ListaMedicamentosFragment : Fragment() {
         binding.btnAddMedicamento.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoMedicamentoFragment(), TAG)
         }
-        
+
         binding.lisMenuMedicamentos.setOnItemClickListener { _, _, position, _ ->
             editarMedicamento(medicamentosList[position])
         }
@@ -95,7 +94,7 @@ class ListaMedicamentosFragment : Fragment() {
         } else {
             val filteredList = medicamentosListOriginal.filter { medicamento ->
                 medicamento.nombre?.lowercase()?.contains(query.lowercase()) == true ||
-                medicamento.codigoInterno?.lowercase()?.contains(query.lowercase()) == true
+                        medicamento.codigoInterno?.lowercase()?.contains(query.lowercase()) == true
             }
             medicamentosList.clear()
             medicamentosList.addAll(filteredList)
@@ -104,46 +103,58 @@ class ListaMedicamentosFragment : Fragment() {
     }
 
     private fun cargarMedicamentos() {
-        ConfigLoading.showLoadingAnimation()
-        
-        valueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (!isAdded) return
-                
-                medicamentosList.clear()
-                medicamentosListOriginal.clear()
-                for (medicamentoSnapshot in snapshot.children) {
-                    val medicamento = medicamentoSnapshot.getValue(ProductoMedicamentoModel::class.java)
-                    medicamento?.let {
-                        medicamentosList.add(it)
-                        medicamentosListOriginal.add(it)
+        // Verificar si hay conexión a Internet antes de cargar los medicamentos
+        if (isInternetAvailable()) {
+            ConfigLoading.showLoadingAnimation()
+
+            valueEventListener = object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!isAdded) return
+
+                    medicamentosList.clear()
+                    medicamentosListOriginal.clear()
+                    for (medicamentoSnapshot in snapshot.children) {
+                        val medicamento = medicamentoSnapshot.getValue(ProductoMedicamentoModel::class.java)
+                        medicamento?.let {
+                            medicamentosList.add(it)
+                            medicamentosListOriginal.add(it)
+                        }
+                    }
+                    medicamentosAdapter.notifyDataSetChanged()
+
+                    if (medicamentosList.size > 0) {
+                        requireActivity().title = "${getString(R.string.submenu_productos_medicamentos)} (${medicamentosList.size})"
+                        ConfigLoading.hideLoadingAnimation()
+                    } else {
+                        ConfigLoading.showNodata()
+                        binding.fragmentNoData.tvNoDataMessage.text = "No hay medicamentos registrados. Agrega uno nuevo con el botón inferior."
                     }
                 }
-                medicamentosAdapter.notifyDataSetChanged()
 
-                if (medicamentosList.size > 0) {
-                    requireActivity().title = "${getString(R.string.submenu_productos_medicamentos)} (${medicamentosList.size})"
-                    ConfigLoading.hideLoadingAnimation()
-                } else {
+                override fun onCancelled(error: DatabaseError) {
+                    if (!isAdded) return
+                    ConfigLoading.hideLoadingAnimation()  // Asegurarse de ocultar la animación de carga en caso de error
                     ConfigLoading.showNodata()
-                    binding.fragmentNoData.tvNoDataMessage.text = "No hay medicamentos registrados. Agrega uno nuevo con el botón inferior."
+                    binding.fragmentNoData.tvNoDataMessage.text = "Error al cargar medicamentos: ${error.message}"
+                    DialogMaterialHelper.mostrarErrorDialog(
+                        requireActivity(),
+                        "Error al cargar los medicamentos: ${error.message}"
+                    )
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                if (!isAdded) return
-                ConfigLoading.showNodata()
-                binding.fragmentNoData.tvNoDataMessage.text = "Error al cargar medicamentos: ${error.message}"
-                DialogMaterialHelper.mostrarErrorDialog(
-                    requireActivity(),
-                    "Error al cargar los medicamentos: ${error.message}"
-                )
+            valueEventListener?.let {
+                FirebaseMedicamentoUtil.obtenerListaMedicamentos(it)
             }
+        } else {
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "No hay conexión a Internet")
         }
-        
-        valueEventListener?.let {
-            FirebaseMedicamentoUtil.obtenerListaMedicamentos(it)
-        }
+    }
+
+    // Verificar la conexión a Internet (agregado)
+    private fun isInternetAvailable(): Boolean {
+        // Aquí puedes implementar el chequeo de conexión a Internet (por ejemplo, usando ConnectivityManager)
+        return true  // Cambia esto a la implementación real
     }
 
     private fun editarMedicamento(medicamento: ProductoMedicamentoModel) {
@@ -187,4 +198,4 @@ class ListaMedicamentosFragment : Fragment() {
         }
         _binding = null
     }
-} 
+}

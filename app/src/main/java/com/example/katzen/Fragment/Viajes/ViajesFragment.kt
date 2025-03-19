@@ -132,31 +132,34 @@ class ViajesFragment : Fragment() {
                     for (mesKey in mesesValidos) {
                         val mesSnapshot = snapshot.child(mesKey)
                         Log.d(TAG, "Procesando mes-año: $mesKey")
-                        
-                        val ventaMesMap = mesSnapshot.getValue(object : GenericTypeIndicator<Map<String, Any>>() {})
-                        if (ventaMesMap == null) {
-                            Log.d(TAG, "ventaMesMap es null para $mesKey")
+
+                        val dataMap = mesSnapshot.value as? Map<String, Any>
+                        if (dataMap == null) {
+                            Log.d(TAG, "dataMap es null para $mesKey")
                             continue
                         }
 
                         val mesParts = mesKey.split("-")
                         if (mesParts.size != 2) continue
-                        
+
                         val mesNumero = mesParts[0]
                         val mesAbreviado = UtilHelper.getMonthYear(mesNumero.toInt())
 
                         val ventaMesModel = VentaMesModel(
-                            venta = ventaMesMap["venta"]?.toString() ?: "0.00",
-                            costo = ventaMesMap["costo"]?.toString() ?: "0.00",
+                            venta = dataMap["venta"]?.toString() ?: "0.00",
+                            costo = dataMap["costo"]?.toString() ?: "0.00",
                             mes = mesAbreviado,
                             anio = year,
-                            fecha = ventaMesMap["fecha"]?.toString() ?: "",
-                            ganancia = ventaMesMap["ganancia"]?.toString() ?: "0.00",
-                            cargos = ventaMesMap["cargos"]?.toString() ?: "0.00"
+                            fecha = dataMap["fecha"]?.toString() ?: "",
+                            ganancia = dataMap["ganancia"]?.toString() ?: "0.00",
+                            cargos = dataMap["cargos"]?.toString() ?: "0.00"
                         )
+
                         viajesList.add(ventaMesModel)
                         Log.d(TAG, "Viaje añadido: ${ventaMesModel.mes}-${ventaMesModel.anio}")
                     }
+
+
 
                     Log.d(TAG, "Total de viajes encontrados: ${viajesList.size}")
 

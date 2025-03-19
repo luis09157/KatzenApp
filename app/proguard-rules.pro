@@ -1,32 +1,68 @@
-# Add project specific ProGuard rules here.
+# Add project-specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
 #
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# For more details, see:
+#   https://developer.android.com/studio/build/shrink-code
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ==========================
+# 📌 General Debugging Rules
+# ==========================
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line number information for debugging stack traces
+-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
+# Hide original source file name in stack traces (optional)
 #-renamesourcefileattribute SourceFile
 
-# Mantener información genérica para Gson
+# ==========================
+# 📌 Gson Rules
+# ==========================
+
+# Keep generic type information for Gson
 -keepattributes Signature
 
-# Prevenir la eliminación de TypeToken
+# Prevent stripping TypeToken class, needed for Gson
 -keep class com.google.gson.reflect.TypeToken { *; }
 
-# Mantener cualquier modelo de datos que use Gson
+# Keep all data models that use Gson (adjust as necessary)
 -keep class com.ninodev.rutasmagicas.Model.** { *; }
 -keep class com.example.katzen.Model.PacienteCampañaModel { *; }
+
+# ==========================
+# 📌 Firebase Rules
+# ==========================
+
+# Prevent Firebase from stripping no-argument constructors
+-keepclassmembers class com.ninodev.katzen.Model.** {
+    public <init>();
+}
+
+# Keep all Firebase data models
+-keep class com.ninodev.katzen.Model.** { *; }
+
+# Keep Firebase SDK classes
+-keep class com.google.firebase.** { *; }
+
+# ==========================
+# 📌 Parcelable (@Parcelize) Rules
+# ==========================
+
+# Keep Parcelable implementations to avoid issues with @Parcelize
+-keep class kotlinx.parcelize.** { *; }
+-keep class android.os.Parcelable { *; }
+-keepclassmembers class com.example.katzen.Model.* {
+    public <init>();
+}
+
+# ==========================
+# 📌 Other Compatibility Rules
+# ==========================
+
+# Keep inner and anonymous classes to prevent deserialization issues
+-keepattributes InnerClasses
+-keep class *$* { *; }
+
+# Prevent removal of lambda functions needed for Firebase and Gson
+-dontwarn java.lang.invoke.LambdaMetafactory
 
