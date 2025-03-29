@@ -52,6 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
+                    app:errorEnabled="true"
                     android:hint="Fecha *">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -69,6 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
+                    app:errorEnabled="true"
                     android:hint="Vacuna *">
 
                     <AutoCompleteTextView
@@ -78,52 +80,21 @@
                         android:inputType="none" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Cantidad Aplicada -->
+                <!-- Dosis -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCantidadAplicada"
+                    android:id="@+id/tilDosis"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:hint="Cantidad aplicada *">
+                    app:errorEnabled="true"
+                    android:hint="Dosis (ml) *">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCantidadAplicada"
+                        android:id="@+id/etDosis"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Lote -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilLote"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="Lote">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLote"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Validez en días -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilValidezDias"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:hint="Validez en días">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etValidezDias"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Configurar recordatorio -->
@@ -137,6 +108,19 @@
                     android:drawablePadding="8dp"
                     android:text="Configurar recordatorio"
                     android:textAlignment="textStart" />
+
+                <!-- TextView para días restantes -->
+                <TextView
+                    android:id="@+id/tvDiasRestantes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/bg_dias_restantes"
+                    android:padding="12dp"
+                    android:textAlignment="center"
+                    android:textColor="#6750A4"
+                    android:visibility="gone"
+                    android:textSize="16sp" />
 
                 <!-- Observaciones -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -156,48 +140,6 @@
                         android:lines="3"
                         android:maxLines="5" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Sección de Productos Aplicados -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Productos aplicados"
-                    android:textAppearance="?attr/textAppearanceSubtitle1"
-                    android:layout_marginBottom="8dp" />
-
-                <LinearLayout
-                    android:id="@+id/containerProductosAplicados"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <TextView
-                        android:id="@+id/tvNoProductos"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Aún no hay elementos para mostrar"
-                        android:textAlignment="center"
-                        android:textColor="@color/gray_500"
-                        android:padding="16dp" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvProductosAplicados"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btnAgregarProducto"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    android:drawableEnd="@drawable/ic_mas"
-                    android:drawablePadding="8dp"
-                    android:text="Agregar producto"
-                    android:textAlignment="textStart" />
             </LinearLayout>
         </ScrollView>
 

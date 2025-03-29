@@ -279,39 +279,32 @@ class VacunasListaFragment : Fragment() {
             
             val tvNombreVacuna: TextView = view.findViewById(R.id.tvNombreVacuna)
             val tvFechaAplicacion: TextView = view.findViewById(R.id.tvFechaAplicacion)
-            val tvDosisAplicada: TextView = view.findViewById(R.id.tvDosisAplicada)
             val imgRecordatorio: ImageView = view.findViewById(R.id.imgRecordatorio)
             val tvProximaAplicacion: TextView = view.findViewById(R.id.tvProximaAplicacion)
             val tvObservaciones: TextView = view.findViewById(R.id.tvObservaciones)
             val btnEliminar: LinearLayout = view.findViewById(R.id.btnEliminar)
+            val tvDosisAplicada: TextView = view.findViewById(R.id.tvDosisAplicada)
             
+            // Configurar datos básicos
             tvNombreVacuna.text = vacuna.vacuna
             tvFechaAplicacion.text = "Fecha: ${vacuna.fecha}"
-            tvDosisAplicada.text = "Dosis: ${vacuna.cantidadAplicada}"
+            
+            // Mostrar dosis con "ml"
+            if (vacuna.dosis.isNotEmpty()) {
+                tvDosisAplicada.visibility = View.VISIBLE
+                tvDosisAplicada.text = "Dosis: ${vacuna.dosis} ml"
+            } else {
+                tvDosisAplicada.visibility = View.GONE
+            }
             
             // Manejo de próxima aplicación y recordatorio
-            if (vacuna.validezDias.isNotEmpty() && vacuna.validezDias != "0") {
-                try {
-                    val fechaAplicacion = dateFormat.parse(vacuna.fecha)
-                    val validezDias = vacuna.validezDias.toInt()
-                    
-                    if (fechaAplicacion != null) {
-                        val calendar = Calendar.getInstance()
-                        calendar.time = fechaAplicacion
-                        calendar.add(Calendar.DAY_OF_YEAR, validezDias)
-                        
-                        val proximaFecha = dateFormat.format(calendar.time)
-                        tvProximaAplicacion.text = "Próx: $proximaFecha"
-                        tvProximaAplicacion.visibility = View.VISIBLE
-                        
-                        // Mostrar icono de recordatorio si está configurado
-                        if (vacuna.recordatorio) {
-                            imgRecordatorio.visibility = View.VISIBLE
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error al calcular próxima aplicación: ${e.message}")
-                }
+            if (vacuna.recordatorio && vacuna.fechaRecordatorio.isNotEmpty()) {
+                tvProximaAplicacion.text = "Próx: ${vacuna.fechaRecordatorio}"
+                tvProximaAplicacion.visibility = View.VISIBLE
+                imgRecordatorio.visibility = View.VISIBLE
+            } else {
+                tvProximaAplicacion.visibility = View.GONE
+                imgRecordatorio.visibility = View.GONE
             }
             
             // Mostrar observaciones si existen
@@ -322,6 +315,7 @@ class VacunasListaFragment : Fragment() {
                 tvObservaciones.visibility = View.GONE
             }
             
+            // Configurar listeners
             btnEliminar.setOnClickListener {
                 onDeleteClick(vacuna)
             }

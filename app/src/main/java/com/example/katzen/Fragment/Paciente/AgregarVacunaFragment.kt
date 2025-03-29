@@ -39,11 +39,10 @@ class AgregarVacunaFragment : Fragment() {
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     private val calendar = Calendar.getInstance()
 
-    private lateinit var productosAdapter: ProductosAplicadosAdapter
-    private val productosAplicados = mutableListOf<ProductoAplicadoModel>()
-
     private var isRecordatorioConfigured = false
     private var fechaRecordatorio = ""
+
+    private var selectedVacunaId: String = ""
 
     companion object {
         fun newInstance(idPaciente: String, idCliente: String): AgregarVacunaFragment {
@@ -130,24 +129,16 @@ class AgregarVacunaFragment : Fragment() {
     }
 
     private fun setupUI() {
-        // Ya no usamos el ArrayAdapter para el spinner de vacunas
-        // En su lugar, configuramos el campo para abrir el diálogo de selección
-        
         binding.actvVacuna.isFocusable = false
         binding.actvVacuna.isClickable = true
         binding.actvVacuna.setOnClickListener {
+            binding.tilVacuna.error = null
             mostrarDialogoSeleccionMedicamento()
         }
 
-        // Configurar RecyclerView de productos aplicados
-        productosAdapter = ProductosAplicadosAdapter(productosAplicados) { position ->
-            productosAplicados.removeAt(position)
-            actualizarVistaProductos()
-        }
-
-        binding.rvProductosAplicados.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = productosAdapter
+        binding.etFecha.setOnClickListener {
+            binding.tilFecha.error = null
+            showDatePicker()
         }
     }
 
@@ -155,22 +146,11 @@ class AgregarVacunaFragment : Fragment() {
         val dialog = SeleccionarMedicamentoDialog(requireContext()) { medicamento ->
             if (medicamento.id.isNotEmpty()) {
                 binding.actvVacuna.setText(medicamento.nombre)
-                // Si deseas almacenar el medicamento seleccionado, puedes hacerlo aquí
-                // Verificamos primero si el campo dosis está vacío 
-                if (binding.etCantidadAplicada.text.toString().isEmpty()) {
-                    // Intentamos usar la dosis recomendada si está disponible como propiedad
-                    try {
-                        // Si hay una descripción, podríamos extraer la dosis de ahí
-                        if (medicamento.descripcion.isNotEmpty() && medicamento.descripcion.contains("dosis")) {
-                            binding.etCantidadAplicada.setText(medicamento.descripcion.split("dosis:")[1].trim().split(" ")[0])
-                        }
-                    } catch (e: Exception) {
-                        Log.d(TAG, "No se pudo extraer la dosis de la descripción")
-                    }
-                }
+                selectedVacunaId = medicamento.id
             } else {
                 // El usuario seleccionó "BORRAR SELECCIÓN"
                 binding.actvVacuna.setText("")
+                selectedVacunaId = ""
             }
         }
         dialog.show()
@@ -184,17 +164,7 @@ class AgregarVacunaFragment : Fragment() {
 
         // Botón para configurar recordatorio
         binding.btnConfigurarRecordatorio.setOnClickListener {
-            if (binding.etFecha.text.toString().isEmpty() || binding.etValidezDias.text.toString().isEmpty()) {
-                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Para configurar un recordatorio, primero ingresa la fecha y los días de validez")
-                return@setOnClickListener
-            }
-
-            showDateTimePicker()
-        }
-
-        // Botón para agregar producto
-        binding.btnAgregarProducto.setOnClickListener {
-            agregarProductoDemo()
+            mostrarDatePicker()
         }
 
         // Botón guardar
@@ -203,15 +173,74 @@ class AgregarVacunaFragment : Fragment() {
         }
     }
 
+    private fun mostrarDatePicker() {
+        val calendar = Calendar.getInstance()
+        
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            R.style.DatePickerTheme,
+            { _, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, month, dayOfMonth)
+                // Establecer hora fija a las 10:00 AM
+                selectedDate.set(Calendar.HOUR_OF_DAY, 10)
+                selectedDate.set(Calendar.MINUTE, 0)
+                
+                // Formatear la fecha para mostrarla
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(selectedDate.time)
+                
+                // Guardar fecha y hora del recordatorio
+                fechaRecordatorio = "$formattedDate 10:00"
+                isRecordatorioConfigured = true
+                
+                // Actualizar UI del botón
+                binding.btnConfigurarRecordatorio.text = "Recordatorio: $fechaRecordatorio"
+                binding.btnConfigurarRecordatorio.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_recordatorio_activo, 
+                    0, 
+                    0, 
+                    0
+                )
+                
+                // Calcular y mostrar días restantes
+                actualizarDiasRestantes(selectedDate.timeInMillis)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        
+        // Establecer fecha mínima (mañana, ya que hoy no tiene sentido un recordatorio)
+        val tomorrow = Calendar.getInstance()
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1)
+        datePickerDialog.datePicker.minDate = tomorrow.timeInMillis
+        
+        datePickerDialog.show()
+    }
+
+    private fun actualizarDiasRestantes(fechaRecordatorioMillis: Long) {
+        val today = Calendar.getInstance().timeInMillis
+        val diffInMillis = fechaRecordatorioMillis - today
+        val diffInDays = diffInMillis / (1000 * 60 * 60 * 24)
+        
+        binding.tvDiasRestantes.apply {
+            visibility = View.VISIBLE
+            text = when {
+                diffInDays == 1L -> "Falta 1 día para el recordatorio"
+                diffInDays > 1L -> "Faltan $diffInDays días para el recordatorio"
+                else -> "El recordatorio se activará hoy"
+            }
+        }
+    }
+
     private fun cargarDatosVacuna() {
         vacunaToEdit?.let { vacuna ->
             binding.etFecha.setText(vacuna.fecha)
-            // Ya no usamos setAdapter para el spinner, sólo establecemos el texto
             binding.actvVacuna.setText(vacuna.vacuna)
-            binding.etCantidadAplicada.setText(vacuna.cantidadAplicada)
-            binding.etLote.setText(vacuna.lote)
-            binding.etValidezDias.setText(vacuna.validezDias)
+            binding.etDosis.setText(vacuna.dosis)
             binding.etObservaciones.setText(vacuna.observaciones)
+            selectedVacunaId = vacuna.idVacuna
 
             // Configurar recordatorio si existe
             isRecordatorioConfigured = vacuna.recordatorio
@@ -219,24 +248,23 @@ class AgregarVacunaFragment : Fragment() {
 
             if (isRecordatorioConfigured) {
                 binding.btnConfigurarRecordatorio.text = "Recordatorio: ${vacuna.fechaRecordatorio}"
-                binding.btnConfigurarRecordatorio.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_recordatorio_activo, 0, 0, 0)
+                binding.btnConfigurarRecordatorio.setCompoundDrawablesWithIntrinsicBounds(
+                    R.drawable.ic_recordatorio_activo, 
+                    0, 
+                    0, 
+                    0
+                )
+                
+                try {
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                    val fechaRecordatorio = dateFormat.parse(vacuna.fechaRecordatorio)
+                    fechaRecordatorio?.let {
+                        actualizarDiasRestantes(it.time)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error al parsear fecha de recordatorio: ${e.message}")
+                }
             }
-
-            // Cargar productos aplicados
-            productosAplicados.clear()
-            productosAplicados.addAll(vacuna.productosAplicados)
-            actualizarVistaProductos()
-        }
-    }
-
-    private fun actualizarVistaProductos() {
-        if (productosAplicados.isEmpty()) {
-            binding.tvNoProductos.visibility = View.VISIBLE
-            binding.rvProductosAplicados.visibility = View.GONE
-        } else {
-            binding.tvNoProductos.visibility = View.GONE
-            binding.rvProductosAplicados.visibility = View.VISIBLE
-            productosAdapter.notifyDataSetChanged()
         }
     }
 
@@ -264,11 +292,9 @@ class AgregarVacunaFragment : Fragment() {
         try {
             // Calcular fecha futura basada en la validez
             val fechaAplicacion = dateFormat.parse(binding.etFecha.text.toString())
-            val validezDias = binding.etValidezDias.text.toString().toInt()
 
             if (fechaAplicacion != null) {
                 futureCalendar.time = fechaAplicacion
-                futureCalendar.add(Calendar.DAY_OF_YEAR, validezDias)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error al calcular fecha futura: ${e.message}")
@@ -308,98 +334,112 @@ class AgregarVacunaFragment : Fragment() {
         datePicker.show()
     }
 
-    private fun agregarProductoDemo() {
-        // En una implementación real, aquí se mostraría un diálogo para seleccionar productos
-        // Por ahora, agregamos uno de demostración
-        val nuevoProducto = ProductoAplicadoModel(
-            id = UUID.randomUUID().toString(),
-            nombre = "Producto ${productosAplicados.size + 1}",
-            cantidad = "${(1..10).random()} ml",
-            tipo = if ((0..1).random() == 0) "Medicamento" else "Alimento"
-        )
-
-        productosAplicados.add(nuevoProducto)
-        actualizarVistaProductos()
-    }
-
     private fun guardarVacuna() {
         // Validar campos obligatorios
         val fecha = binding.etFecha.text.toString().trim()
         val vacunaNombre = binding.actvVacuna.text.toString().trim()
-        val cantidadAplicada = binding.etCantidadAplicada.text.toString().trim()
+        val dosis = binding.etDosis.text.toString().trim()
+        var hayErrores = false
 
-        if (fecha.isEmpty() || vacunaNombre.isEmpty() || cantidadAplicada.isEmpty()) {
-            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Los campos marcados con * son obligatorios")
+        // Validar cada campo individualmente
+        if (fecha.isEmpty()) {
+            binding.tilFecha.error = "Selecciona una fecha de aplicación"
+            hayErrores = true
+        } else {
+            binding.tilFecha.error = null
+        }
+
+        if (vacunaNombre.isEmpty() || selectedVacunaId.isEmpty()) {
+            binding.tilVacuna.error = "Selecciona una vacuna"
+            hayErrores = true
+        } else {
+            binding.tilVacuna.error = null
+        }
+
+        if (dosis.isEmpty()) {
+            binding.tilDosis.error = "Ingresa la dosis aplicada"
+            hayErrores = true
+        } else {
+            binding.tilDosis.error = null
+        }
+
+        if (hayErrores) {
             return
         }
 
         ConfigLoading.showLoadingAnimation()
 
         try {
-            val lote = binding.etLote.text.toString().trim()
-            val validezDias = binding.etValidezDias.text.toString().trim()
             val observaciones = binding.etObservaciones.text.toString().trim()
 
             val vacuna = if (isEditMode && vacunaToEdit != null) {
                 vacunaToEdit!!.apply {
                     this.fecha = fecha
                     this.vacuna = vacunaNombre
-                    this.cantidadAplicada = cantidadAplicada
-                    this.lote = lote
-                    this.validezDias = validezDias
+                    this.idVacuna = selectedVacunaId
+                    this.dosis = dosis
                     this.recordatorio = isRecordatorioConfigured
                     this.fechaRecordatorio = fechaRecordatorio
                     this.observaciones = observaciones
-                    this.productosAplicados = productosAplicados
                 }
             } else {
                 VacunaModel(
                     id = UUID.randomUUID().toString(),
                     idPaciente = idPaciente,
-                    idCliente = idCliente,
                     fecha = fecha,
                     vacuna = vacunaNombre,
-                    cantidadAplicada = cantidadAplicada,
-                    lote = lote,
-                    validezDias = validezDias,
+                    idVacuna = selectedVacunaId,
+                    dosis = dosis,
                     recordatorio = isRecordatorioConfigured,
                     fechaRecordatorio = fechaRecordatorio,
                     observaciones = observaciones,
-                    productosAplicados = productosAplicados,
                     fechaRegistro = UtilHelper.getDate()
                 )
             }
 
-            // Llamar directamente a los métodos con sus callbacks
+            // Guardar la vacuna
             if (isEditMode) {
                 FirebaseVacunaUtil.actualizarVacuna(vacuna) { success, message ->
                     ConfigLoading.hideLoadingAnimation()
-
                     if (success) {
-                        DialogMaterialHelper.mostrarSuccessClickDialog(requireActivity(), "Vacuna actualizada correctamente") {
+                        DialogMaterialHelper.mostrarSuccessClickDialog(
+                            requireActivity(), 
+                            "Vacuna actualizada correctamente"
+                        ) {
                             requireActivity().onBackPressed()
                         }
                     } else {
-                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: $message")
+                        DialogMaterialHelper.mostrarErrorDialog(
+                            requireActivity(), 
+                            "Error al actualizar: $message"
+                        )
                     }
                 }
             } else {
                 FirebaseVacunaUtil.agregarVacuna(vacuna) { success, message ->
                     ConfigLoading.hideLoadingAnimation()
-
                     if (success) {
-                        DialogMaterialHelper.mostrarSuccessClickDialog(requireActivity(), "Vacuna registrada correctamente") {
+                        DialogMaterialHelper.mostrarSuccessClickDialog(
+                            requireActivity(), 
+                            "Vacuna registrada correctamente"
+                        ) {
                             requireActivity().onBackPressed()
                         }
                     } else {
-                        DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: $message")
+                        DialogMaterialHelper.mostrarErrorDialog(
+                            requireActivity(), 
+                            "Error al guardar: $message"
+                        )
                     }
                 }
             }
 
         } catch (e: Exception) {
             ConfigLoading.hideLoadingAnimation()
-            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
+            DialogMaterialHelper.mostrarErrorDialog(
+                requireActivity(), 
+                "Error inesperado: ${e.message}"
+            )
             Log.e(TAG, "Error al guardar vacuna: ${e.message}", e)
         }
     }
@@ -425,40 +465,5 @@ class AgregarVacunaFragment : Fragment() {
         super.onResume()
         (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.hide()
         // No configuramos callback personalizado para permitir el retroceso normal
-    }
-
-    inner class ProductosAplicadosAdapter(
-        private val productos: List<ProductoAplicadoModel>,
-        private val onRemoveClick: (Int) -> Unit
-    ) : RecyclerView.Adapter<ProductosAplicadosAdapter.ViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_producto_aplicado, parent, false)
-            return ViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val producto = productos[position]
-            holder.bind(producto, position)
-        }
-
-        override fun getItemCount(): Int = productos.size
-
-        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            private val tvNombreProducto: TextView = itemView.findViewById(R.id.tvNombreProducto)
-            private val tvCantidad: TextView = itemView.findViewById(R.id.tvCantidad)
-            private val tvTipo: TextView = itemView.findViewById(R.id.tvTipo)
-            private val btnRemover: View = itemView.findViewById(R.id.btnRemover)
-
-            fun bind(producto: ProductoAplicadoModel, position: Int) {
-                tvNombreProducto.text = producto.nombre
-                tvCantidad.text = producto.cantidad
-                tvTipo.text = producto.tipo
-
-                btnRemover.setOnClickListener {
-                    onRemoveClick(position)
-                }
-            }
-        }
     }
 }

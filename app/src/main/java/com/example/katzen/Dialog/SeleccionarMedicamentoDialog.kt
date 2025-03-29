@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -20,6 +21,9 @@ import com.example.katzen.Adapter.MedicamentoAdapter
 import com.example.katzen.DataBaseFirebase.FirebaseMedicamentoUtil
 import com.example.katzen.Model.ProductoMedicamentoModel
 import com.ninodev.katzen.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 /**
  * Diálogo para seleccionar un medicamento de tipo vacuna
@@ -55,12 +59,6 @@ class SeleccionarMedicamentoDialog(
         tvLoading = findViewById(R.id.tvLoading)
         btnBorrarSeleccion = findViewById(R.id.btnBorrarSeleccion)
         llResultados = findViewById(R.id.llResultados)
-        
-        // Estados iniciales correctos
-        tvLoading.visibility = View.VISIBLE
-        llResultados.visibility = View.GONE
-        recyclerView.visibility = View.GONE
-        tvNoResults.visibility = View.VISIBLE
         
         val btnClose = findViewById<ImageView>(R.id.btnClose)
         
@@ -104,44 +102,26 @@ class SeleccionarMedicamentoDialog(
     private fun cargarMedicamentos() {
         showLoading(true)
         
-        FirebaseMedicamentoUtil.obtenerMedicamentosTipoVacuna { success, result ->
-            Log.d("SeleccionarMedicamentoDialog", "Callback recibido, success: $success, resultados: ${result.size}")
-            
-            try {
-                // Asegurarnos de ejecutar en el hilo principal para actualizar la UI
-                (context as? android.app.Activity)?.runOnUiThread {
-                    if (success && result.isNotEmpty()) {
-                        Log.d("SeleccionarMedicamentoDialog", "Mostrando ${result.size} medicamentos")
-                        
-                        // Actualizar las listas
-                        medicamentos.clear()
-                        medicamentos.addAll(result)
-                        filteredMedicamentos.clear()
-                        filteredMedicamentos.addAll(medicamentos)
-                        
-                        // Mostrar la lista
-                        llResultados.visibility = View.VISIBLE
-                        tvLoading.visibility = View.GONE
-                        recyclerView.visibility = View.VISIBLE
-                        tvNoResults.visibility = View.GONE
-                        
-                        // Notificar al adaptador
-                        adapter.notifyDataSetChanged()
-                        
-                        Log.d("SeleccionarMedicamentoDialog", "Lista actualizada con ${filteredMedicamentos.size} medicamentos visibles")
-                    } else {
-                        Log.d("SeleccionarMedicamentoDialog", "No se encontraron medicamentos o hubo un error")
-                        llResultados.visibility = View.VISIBLE
-                        tvLoading.visibility = View.GONE
-                        recyclerView.visibility = View.GONE
-                        tvNoResults.visibility = View.VISIBLE
+        FirebaseMedicamentoUtil.obtenerListaMedicamentos(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                medicamentos.clear()
+                for (medicamentoSnapshot in snapshot.children) {
+                    val medicamento = medicamentoSnapshot.getValue(ProductoMedicamentoModel::class.java)
+                    medicamento?.let {
+                        medicamentos.add(it)
                     }
                 }
-            } catch (e: Exception) {
-                Log.e("SeleccionarMedicamentoDialog", "Error al actualizar UI: ${e.message}")
-                e.printStackTrace()
+                
+                filterMedicamentos(etSearch.text.toString())
+                showLoading(false)
             }
-        }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("SeleccionarMedicamentoDialog", "Error al cargar medicamentos: ${error.message}")
+                showLoading(false)
+                showNoResults(true)
+            }
+        })
     }
     
     private fun filterMedicamentos(query: String) {
@@ -157,7 +137,6 @@ class SeleccionarMedicamentoDialog(
             })
         }
         
-        Log.d("SeleccionarMedicamentoDialog", "Filtrado: ${filteredMedicamentos.size} medicamentos coinciden con '$query'")
         adapter.notifyDataSetChanged()
         
         if (filteredMedicamentos.isEmpty()) {
@@ -170,12 +149,10 @@ class SeleccionarMedicamentoDialog(
     private fun showLoading(show: Boolean) {
         tvLoading.visibility = if (show) View.VISIBLE else View.GONE
         llResultados.visibility = if (show) View.GONE else View.VISIBLE
-        Log.d("SeleccionarMedicamentoDialog", "showLoading: $show")
     }
     
     private fun showNoResults(show: Boolean) {
         tvNoResults.visibility = if (show) View.VISIBLE else View.GONE
         recyclerView.visibility = if (show) View.GONE else View.VISIBLE
-        Log.d("SeleccionarMedicamentoDialog", "showNoResults: $show")
     }
 } 

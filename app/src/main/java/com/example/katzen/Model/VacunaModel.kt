@@ -3,22 +3,20 @@ package com.example.katzen.Model
 import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Keep
 @Parcelize
 data class VacunaModel(
-    var id: String = "",
+    var id: String = UUID.randomUUID().toString(),
     var idPaciente: String = "",
-    var idCliente: String = "", 
+    var idVacuna: String = "",
     var fecha: String = "",
     var vacuna: String = "",
-    var cantidadAplicada: String = "",
-    var lote: String = "",
-    var validezDias: String = "",
+    var dosis: String = "",
     var recordatorio: Boolean = false,
     var fechaRecordatorio: String = "",
     var observaciones: String = "",
-    var productosAplicados: List<ProductoAplicadoModel> = emptyList(),
     var fechaRegistro: String = ""
 ) : Parcelable
 
