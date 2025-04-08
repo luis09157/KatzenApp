@@ -1,5 +1,8 @@
 package com.example.katzen
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,33 +11,41 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
-import com.example.katzen.Config.Config
-import com.example.katzen.Fragment.Campaña.CampañaFragment
+import com.example.katzen.Fragment.Campaña.YearListFragment
 import com.example.katzen.Fragment.Cliente.ClienteFragment
 import com.example.katzen.Fragment.Inventario.InventarioFragment
 import com.example.katzen.Fragment.Paciente.PacienteFragment
+import com.example.katzen.Fragment.Producto.MenuProductosFragment
 import com.example.katzen.Fragment.Venta.VentasFragment
-import com.example.katzen.Fragment.Viajes.ViajesFragment
-import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.Model.MenuModel
-import com.example.katzen.Model.ProductoModel
-import com.ninodev.katzen.databinding.MenuFragmentBinding
+import com.example.katzen.Fragment.Viajes.YearViajeListFragment
 import com.example.katzen.Fragment.Card.PaymetCardFragment
 import com.example.katzen.Fragment.Gasolina.FuellFragment
-import com.example.katzen.Fragment.Producto.MenuProductosFragment
+import com.example.katzen.Helper.UtilFragment
+import com.example.katzen.Model.MenuModel
+import com.example.katzen.Service.Notificador
+import com.ninodev.katzen.databinding.MenuFragmentBinding
 import com.ninodev.katzen.R
-import com.example.katzen.Fragment.Campaña.YearListFragment
-import com.example.katzen.Fragment.Viajes.YearViajeListFragment
 
 class MenuFragment : Fragment() {
-    val TAG : String  = "MenuFragment"
+
+    val TAG: String = "MenuFragment"
 
     private var _binding: MenuFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var menuList: List<MenuModel>
+    private lateinit var notificador: Notificador
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            notificador.mostrarNotificacion("¡Gracias!", "Permiso concedido, ahora puedes recibir notificaciones.")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +56,7 @@ class MenuFragment : Fragment() {
         val root: View = binding.root
 
         requireActivity().title = getString(R.string.nav_home)
+        notificador = Notificador(requireActivity())
 
         menuList = listOf(
             MenuModel(requireActivity().getString(R.string.menu_gasolina), R.drawable.img_gasolina),
@@ -55,39 +67,41 @@ class MenuFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.menu_viajes), R.drawable.img_viajes),
             MenuModel(requireActivity().getString(R.string.menu_campania), R.drawable.img_campania)
         )
+
         val adapter = MenuAdapter(requireContext(), menuList)
         binding.lisMenu.adapter = adapter
 
-        binding.lisMenu.setOnItemClickListener { adapterView, view, position, l ->
+        binding.lisMenu.setOnItemClickListener { _, _, position, _ ->
             val menuItem = menuList[position]
             val titulo = menuItem.titulo
 
             when (titulo) {
                 "Venta" -> {
-                    UtilFragment.changeFragment(requireActivity(), VentasFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), VentasFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_productos) -> {
-                    UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(), TAG)
                 }
                 "Balance General" -> {
+                    // Función aún no implementada
                 }
                 "Lista Productos" -> {
-                    //UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(),TAG)
+                    // UtilFragment.changeFragment(requireActivity(), MenuProductosFragment(), TAG)
                 }
                 "Inventario" -> {
-                    UtilFragment.changeFragment(requireActivity(), InventarioFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), InventarioFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_paciente) -> {
-                    UtilFragment.changeFragment(requireActivity(), PacienteFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), PacienteFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_cliente) -> {
-                    UtilFragment.changeFragment(requireActivity(), ClienteFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), ClienteFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_gasolina) -> {
-                    UtilFragment.changeFragment(requireActivity(), FuellFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), FuellFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_pago_tarjeta) -> {
-                    UtilFragment.changeFragment(requireActivity(), PaymetCardFragment(),TAG)
+                    UtilFragment.changeFragment(requireActivity(), PaymetCardFragment(), TAG)
                 }
                 requireActivity().getString(R.string.menu_viajes) -> {
                     UtilFragment.changeFragment(requireActivity(), YearViajeListFragment(), TAG)
@@ -98,8 +112,31 @@ class MenuFragment : Fragment() {
             }
         }
 
+        // Notificación de prueba
+        if (verificarPermisoDeNotificaciones()) {
+            notificador.mostrarNotificacion("Hola!", "Esta es una notificación de prueba.")
+        } else {
+            pedirPermisoDeNotificaciones()
+        }
 
         return root
+    }
+
+    private fun verificarPermisoDeNotificaciones(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
+    private fun pedirPermisoDeNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 
     override fun onResume() {
@@ -112,7 +149,6 @@ class MenuFragment : Fragment() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (doubleBackToExitPressedOnce) {
-                        // Si se presionó dos veces, se sale de la aplicación
                         requireActivity().finish()
                         return
                     }
@@ -120,15 +156,12 @@ class MenuFragment : Fragment() {
                     doubleBackToExitPressedOnce = true
                     Toast.makeText(requireContext(), "Presione de nuevo para salir", Toast.LENGTH_SHORT).show()
 
-                    // Se establece el tiempo de espera para el segundo botón de retroceso
                     Handler(Looper.getMainLooper()).postDelayed({
                         doubleBackToExitPressedOnce = false
-                    }, 2000) // 2 segundos
+                    }, 2000)
                 }
             })
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
