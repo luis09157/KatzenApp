@@ -99,10 +99,33 @@ class ClienteFragment : Fragment() {
                 // Limpiar la lista antes de agregar los nuevos datos
                 clientesList.clear()
 
-                // Recorrer los datos obtenidos y agregarlos a la lista de productos
+                // Recorrer los datos obtenidos y agregarlos a la lista de clientes
                 for (productoSnapshot in snapshot.children) {
-                    val producto = productoSnapshot.getValue(ClienteModel::class.java)
-                    producto?.let { clientesList.add(it) }
+                    try {
+                        val map = productoSnapshot.value as? Map<String, Any?>
+                        if (map != null) {
+                            val cliente = ClienteModel()
+                            cliente.id = map["id"]?.toString() ?: ""
+                            cliente.nombre = map["nombre"]?.toString() ?: ""
+                            cliente.apellidoPaterno = map["apellidoPaterno"]?.toString() ?: ""
+                            cliente.apellidoMaterno = map["apellidoMaterno"]?.toString() ?: ""
+                            cliente.expediente = map["expediente"]?.toString() ?: ""
+                            cliente.correo = map["correo"]?.toString() ?: ""
+                            cliente.telefono = map["telefono"]?.toString() ?: ""
+                            cliente.calle = map["calle"]?.toString() ?: ""
+                            cliente.numero = map["numero"]?.toString() ?: ""
+                            cliente.colonia = map["colonia"]?.toString() ?: ""
+                            cliente.municipio = map["municipio"]?.toString() ?: ""
+                            cliente.urlGoogleMaps = map["urlGoogleMaps"]?.toString() ?: ""
+                            cliente.kilometrosCasa = map["kilometrosCasa"]?.toString() ?: ""
+                            cliente.fecha = map["fecha"]?.toString() ?: ""
+                            cliente.imageUrl = map["imageUrl"]?.toString() ?: ""
+                            cliente.imageFileName = map["imageFileName"]?.toString() ?: ""
+                            clientesList.add(cliente)
+                        }
+                    } catch (e: Exception) {
+                        // Puedes loguear el error si lo deseas
+                    }
                 }
 
                 // Notificar al adaptador que los datos han cambiado

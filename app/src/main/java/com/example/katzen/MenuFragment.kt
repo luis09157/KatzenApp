@@ -27,8 +27,12 @@ import com.example.katzen.Fragment.Gasolina.FuellFragment
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.MenuModel
 import com.example.katzen.Service.Notificador
+import com.google.firebase.database.FirebaseDatabase
 import com.ninodev.katzen.databinding.MenuFragmentBinding
 import com.ninodev.katzen.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MenuFragment : Fragment() {
 
@@ -43,7 +47,7 @@ class MenuFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
-            notificador.mostrarNotificacion("¡Gracias!", "Permiso concedido, ahora puedes recibir notificaciones.")
+            verificarRecordatoriosHoy()
         }
     }
 
@@ -114,7 +118,7 @@ class MenuFragment : Fragment() {
 
         // Notificación de prueba
         if (verificarPermisoDeNotificaciones()) {
-            notificador.mostrarNotificacion("Hola!", "Esta es una notificación de prueba.")
+            verificarRecordatoriosHoy()
         } else {
             pedirPermisoDeNotificaciones()
         }
@@ -167,4 +171,54 @@ class MenuFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun verificarRecordatoriosHoy() {
+        val database = FirebaseDatabase.getInstance().reference
+        val vacunasRef = database.child("Katzen/Vacunas")
+        val mascotasRef = database.child("Katzen/Mascota")
+        val clientesRef = database.child("Katzen/Cliente")
+        val hoy = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
+
+        vacunasRef.get().addOnSuccessListener { snapshot ->
+            for (vacunaSnapshot in snapshot.children) {
+                val fechaRecordatorio = vacunaSnapshot.child("fechaRecordatorio").getValue(String::class.java)
+                val idMascota = vacunaSnapshot.child("idPaciente").getValue(String::class.java)
+                val nombreVacuna = vacunaSnapshot.child("vacuna").getValue(String::class.java) ?: "Vacuna"
+
+                fechaRecordatorio?.let {
+                    val fechaSolo = it.split(" ")[0]
+                    if (fechaSolo == hoy && !idMascota.isNullOrBlank()) {
+
+                        // Obtener mascota
+                        mascotasRef.child(idMascota).get().addOnSuccessListener { mascotaSnapshot ->
+                            val nombreMascota = mascotaSnapshot.child("nombre").getValue(String::class.java) ?: "tu mascota"
+                            val idCliente = mascotaSnapshot.child("idCliente").getValue(String::class.java)
+
+                            if (!idCliente.isNullOrBlank()) {
+                                // Obtener cliente
+                                clientesRef.child(idCliente).get().addOnSuccessListener { clienteSnapshot ->
+                                    val nombreCliente = clienteSnapshot.child("nombre").getValue(String::class.java) ?: "el dueño"
+                                    val apellidoPaterno = clienteSnapshot.child("apellidoPaterno").getValue(String::class.java) ?: ""
+                                    val apellidoMaterno = clienteSnapshot.child("apellidoMaterno").getValue(String::class.java) ?: ""
+                                    val nombreCompletoCliente = "$nombreCliente $apellidoPaterno $apellidoMaterno".trim()
+
+                                    if (verificarPermisoDeNotificaciones()) {
+                                        notificador.mostrarNotificacion(
+                                            "Recordatorio",
+                                            "Hoy $nombreMascota (de $nombreCompletoCliente) tiene que recibir la vacuna: $nombreVacuna"
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }.addOnFailureListener {
+            Toast.makeText(requireContext(), "Error al cargar vacunas", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
 }

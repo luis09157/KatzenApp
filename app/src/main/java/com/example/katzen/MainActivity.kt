@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -84,6 +85,12 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+        // Mostrar automáticamente la versionName en el menú
+        val versionTextView = findViewById<TextView>(R.id.version_text)
+        val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+        versionTextView.text = "Versión $versionName"
+
+
 
         drawerToggle = ActionBarDrawerToggle(
             this, drawerLayout, binding.appBarMain.toolbar,
