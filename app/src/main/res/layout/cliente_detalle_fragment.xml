@@ -1,255 +1,483 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/background_color"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen">
 
     <include
         android:id="@+id/fragment_no_data"
-        layout="@layout/fragment_no_data"/>
+        layout="@layout/fragment_no_data" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:lottie_autoPlay="true"
         android:background="@color/white"
-        app:lottie_loop="true"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 
-    <LinearLayout
-        android:id="@+id/cont_add_producto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-      <androidx.cardview.widget.CardView
-          android:layout_width="match_parent"
-          android:layout_height="250dp"
-          android:layout_margin="15dp"
-          app:cardCornerRadius="30dp">
-
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-              <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_weight="2"
-                  android:orientation="horizontal"
-                  android:background="@color/katzen_verde">
-
-                  <LinearLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="horizontal">
-                      <TextView
-                          android:id="@+id/text_nombre_cliente"
-                          android:textColor="@color/white"
-                          android:gravity="center"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          app:autoSizeMaxTextSize="16sp"
-                          app:autoSizeMinTextSize="10sp"
-                          app:autoSizeTextType="uniform"
-                          android:lines="1"
-                          android:fontFamily="@font/poppins_bold"
-                          android:textStyle="bold"
-                          android:text="Nombre del producto" />
-                      <androidx.cardview.widget.CardView
-                          android:id="@+id/btn_edit"
-                          android:layout_weight="5"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent">
-                          <ImageView
-                              android:background="@color/katzen_verde"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:padding="15dp"
-                              android:src="@drawable/ic_edit_blanco"/>
-                      </androidx.cardview.widget.CardView>
-
-
-                  </LinearLayout>
-
-              </LinearLayout>
-              <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_weight="1"
-                  android:orientation="vertical">
-                  <LinearLayout
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:orientation="vertical">
-                      <LinearLayout
-                          android:id="@+id/btn_expediente"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          android:orientation="horizontal">
-                          <ImageView
-                              android:layout_margin="4dp"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:layout_weight="5"
-                              android:src="@drawable/ic_expediente"/>
-                          <TextView
-                              android:id="@+id/text_expediente"
-                              android:textColor="@color/black"
-                              android:gravity="left|center"
-                              android:layout_weight="1"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              app:autoSizeTextType="uniform"
-                              app:autoSizeMinTextSize="10sp"
-                              app:autoSizeMaxTextSize="15sp"
-                              android:lines="1"
-                              android:fontFamily="@font/poppins_regular"
-                              android:textStyle="bold"/>
-                      </LinearLayout>
-                      <LinearLayout
-                          android:id="@+id/btn_telefono"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          android:orientation="horizontal">
-                          <ImageView
-                              android:layout_margin="4dp"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:layout_weight="5"
-                              android:src="@drawable/ic_telefono_rosa"/>
-                          <TextView
-                              android:id="@+id/text_telefono"
-                              android:textColor="@color/black"
-                              android:gravity="left|center"
-                              android:layout_weight="1"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              app:autoSizeTextType="uniform"
-                              app:autoSizeMinTextSize="10sp"
-                              app:autoSizeMaxTextSize="15sp"
-                              android:lines="1"
-                              android:fontFamily="@font/poppins_regular"
-                              android:textStyle="bold"/>
-                      </LinearLayout>
-                      <LinearLayout
-                          android:id="@+id/btn_googleMaps"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          android:orientation="horizontal">
-                          <ImageView
-                              android:layout_margin="4dp"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:layout_weight="5"
-                              android:src="@drawable/ic_ubicacion_rosa"/>
-                          <TextView
-                              android:id="@+id/txt_direccion"
-                              android:textColor="@color/black"
-                              android:gravity="left|center"
-                              android:layout_weight="1"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              app:autoSizeTextType="uniform"
-                              app:autoSizeMinTextSize="10sp"
-                              app:autoSizeMaxTextSize="15sp"
-                              android:lines="2"
-                              android:fontFamily="@font/poppins_regular"
-                              android:textStyle="bold"/>
-                      </LinearLayout>
-                      <LinearLayout
-                          android:id="@+id/btn_whatssap"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          android:orientation="horizontal">
-                          <ImageView
-                              android:layout_margin="4dp"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:layout_weight="5"
-                              android:src="@drawable/ic_whatssap_rosa"/>
-                          <TextView
-                              android:id="@+id/txt_whatssap"
-                              android:textColor="@color/black"
-                              android:gravity="left|center"
-                              android:layout_weight="1"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              app:autoSizeTextType="uniform"
-                              app:autoSizeMinTextSize="10sp"
-                              app:autoSizeMaxTextSize="15sp"
-                              android:lines="1"
-                              android:fontFamily="@font/poppins_regular"
-                              android:textStyle="bold" />
-                      </LinearLayout>
-                      <LinearLayout
-                          android:id="@+id/btn_correo"
-                          android:layout_width="match_parent"
-                          android:layout_height="match_parent"
-                          android:layout_weight="1"
-                          android:orientation="horizontal">
-                          <ImageView
-                              android:layout_margin="4dp"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              android:layout_weight="5"
-                              android:src="@drawable/ic_correo_rosa"/>
-                          <TextView
-                              android:id="@+id/text_correo"
-                              android:textColor="@color/black"
-                              android:gravity="left|center"
-                              android:layout_weight="1"
-                              android:layout_width="match_parent"
-                              android:layout_height="match_parent"
-                              app:autoSizeTextType="uniform"
-                              app:autoSizeMinTextSize="10sp"
-                              app:autoSizeMaxTextSize="15sp"
-                              android:lines="1"
-                              android:fontFamily="@font/poppins_regular"
-                              android:textStyle="bold"/>
-                      </LinearLayout>
-                  </LinearLayout>
-
-              </LinearLayout>
-          </LinearLayout>
-
-      </androidx.cardview.widget.CardView>
-
-        <ListView
-            android:id="@+id/lista_pacientes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-
+            android:id="@+id/cont_add_producto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right">
-            <Button
-                android:id="@+id/btn_add_cliente"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Paciente"
-                android:fontFamily="@font/poppins_bold"
-                android:drawableLeft="@drawable/ic_mas_blanco"
-                android:layout_margin="10dp"/>
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/list_fab_scroll_padding">
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Katzen.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/screen_padding">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="20dp">
+
+                    <View
+                        android:id="@+id/hero_header"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/paciente_hero_header_height"
+                        android:background="@drawable/bg_paciente_hero_header"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/btn_edit"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_margin="@dimen/list_item_padding"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:cardBackgroundColor="#33FFFFFF"
+                        app:cardCornerRadius="22dp"
+                        app:cardElevation="0dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeWidth="0dp">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/cliente_edit"
+                            android:src="@drawable/ic_edit_m3" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/avatar_container"
+                        android:layout_width="@dimen/paciente_avatar_size"
+                        android:layout_height="@dimen/paciente_avatar_size"
+                        app:cardCornerRadius="56dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintBottom_toBottomOf="@id/hero_header"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/hero_header"
+                        app:strokeColor="@color/surface_card"
+                        app:strokeWidth="4dp">
+
+                        <ImageView
+                            android:id="@+id/imgPerfil"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="@string/menu_cliente_detalle"
+                            android:scaleType="centerCrop"
+                            tools:src="@drawable/avatar_sin_imagen" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/text_nombre_cliente"
+                        style="@style/TextAppearance.Katzen.Headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/screen_padding"
+                        android:layout_marginTop="16dp"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/avatar_container"
+                        tools:text="Luis Alfonso Niño" />
+
+                    <TextView
+                        android:id="@+id/text_expediente"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/screen_padding"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/poppins_light"
+                        android:gravity="center"
+                        android:textColor="?attr/colorSecondary"
+                        android:textSize="13sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/text_nombre_cliente"
+                        tools:text="Exp: 12345" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Katzen.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/list_item_spacing_half">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/list_item_padding">
+
+                        <FrameLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_icon_action">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_phone_m3"
+                                app:tint="?attr/colorPrimary"
+                                tools:ignore="ContentDescription" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Katzen.ListSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cliente_label_telefono" />
+
+                            <TextView
+                                android:id="@+id/text_telefono"
+                                style="@style/TextAppearance.Katzen.ListTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                tools:text="81 1234 5678" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="@dimen/list_item_padding"
+                        android:background="@color/divider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/list_item_padding">
+
+                        <FrameLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_icon_action">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_email_m3"
+                                app:tint="?attr/colorPrimary"
+                                tools:ignore="ContentDescription" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Katzen.ListSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cliente_label_correo" />
+
+                            <TextView
+                                android:id="@+id/text_correo"
+                                style="@style/TextAppearance.Katzen.ListTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                tools:text="correo@ejemplo.com" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="@dimen/list_item_padding"
+                        android:background="@color/divider" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/list_item_padding">
+
+                        <FrameLayout
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_icon_action">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_location_m3"
+                                app:tint="?attr/colorPrimary"
+                                tools:ignore="ContentDescription" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TextAppearance.Katzen.ListSubtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/cliente_label_direccion" />
+
+                            <TextView
+                                android:id="@+id/txt_direccion"
+                                style="@style/TextAppearance.Katzen.ListTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:maxLines="3"
+                                tools:text="Calle #123, Colonia, Municipio" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_portal"
+                style="@style/Widget.Katzen.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/list_item_spacing_half">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/list_item_padding">
+
+                    <TextView
+                        style="@style/TextAppearance.Katzen.Headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cliente_portal_title" />
+
+                    <TextView
+                        android:id="@+id/text_portal_estado"
+                        style="@style/TextAppearance.Katzen.ListSubtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        tools:text="Portal no activado" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_activar_portal"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/cliente_portal_activate" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                style="@style/TextAppearance.Katzen.ListSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/list_item_spacing_half"
+                android:gravity="center"
+                android:text="@string/cliente_detail_contact" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/btn_telefono"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/bg_icon_action"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/cliente_action_call"
+                        android:src="@drawable/ic_phone_m3"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/btn_whatssap"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/bg_icon_action"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/cliente_action_whatsapp"
+                        android:src="@drawable/ic_share_m3"
+                        app:tint="?attr/colorSecondary" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/btn_correo"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/bg_icon_action"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/cliente_action_email"
+                        android:src="@drawable/ic_email_m3"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/btn_googleMaps"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/bg_icon_action"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/cliente_action_location"
+                        android:src="@drawable/ic_location_m3"
+                        app:tint="?attr/colorPrimary" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_expediente"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txt_whatssap"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/TextAppearance.Katzen.Headline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="@dimen/list_item_spacing"
+                android:text="@string/cliente_detail_pacientes" />
+
+            <TextView
+                android:id="@+id/tv_empty_pacientes"
+                style="@style/TextAppearance.Katzen.ListSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/screen_padding"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/cliente_no_pacientes"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lista_pacientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                tools:itemCount="2"
+                tools:listitem="@layout/view_list_paciente" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btn_add_cliente"
+        style="@style/Widget.Katzen.ExtendedFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:text="@string/menu_add_paciente"
+        app:icon="@drawable/ic_add_m3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

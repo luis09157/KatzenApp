@@ -1,0 +1,14 @@
+{
+  "authUid": "vje6BLSP2yZHAOq2ELkELv7OzVh1",
+  "email": "luisk2ify@gmail.com",
+  "role": "dual",
+  "roles": {
+    "0": "staff",
+    "1": "client"
+  },
+  "staffRole": "admin",
+  "clienteId": "9b969f00-dd8d-4b95-830e-849d92c5871c",
+  "activo": true,
+  "creado": "2026-06-05T07:50:00.000Z",
+  "actualizado": "2026-06-05T12:00:00.000Z"
+}

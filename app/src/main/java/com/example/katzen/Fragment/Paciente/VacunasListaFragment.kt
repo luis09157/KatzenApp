@@ -5,17 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+import com.example.katzen.Adapter.Paciente.VacunasAdapter
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseVacunaUtil
 import com.example.katzen.Helper.CalendarioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.VacunaModel
 import com.google.firebase.database.DataSnapshot
@@ -60,7 +62,7 @@ class VacunasListaFragment : Fragment() {
         if (idPaciente.isEmpty()) {
             Log.e(TAG, "ID del paciente no proporcionado")
             DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: No se pudo identificar al paciente")
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -79,7 +81,7 @@ class VacunasListaFragment : Fragment() {
         
         // Configurar el comportamiento de retroceso usando el Toolbar personalizado
         binding.toolbarVacunas.setNavigationOnClickListener {
-            requireActivity().onBackPressed()
+            UtilFragment.goBackOrHome(requireContext())
         }
         
         initLoading()
@@ -104,14 +106,11 @@ class VacunasListaFragment : Fragment() {
     }
     
     private fun setupAdapter() {
-        vacunasAdapter = VacunasAdapter(vacunasList, 
-            onItemClick = { vacuna ->
-                editarVacuna(vacuna)
-            },
-            onDeleteClick = { vacuna ->
-                eliminarVacuna(vacuna)
-            }
+        vacunasAdapter = VacunasAdapter(
+            onItemClick = { vacuna -> editarVacuna(vacuna) },
+            onDeleteClick = { vacuna -> eliminarVacuna(vacuna) }
         )
+        ListUiHelper.setupVerticalList(binding.listaVacunas)
         binding.listaVacunas.adapter = vacunasAdapter
     }
     
@@ -131,15 +130,14 @@ class VacunasListaFragment : Fragment() {
         }
         
         // Cargar imagen del paciente
-        if (paciente.imageUrl.isNotEmpty()) {
-            Glide.with(binding.imgPaciente.context)
-                .load(paciente.imageUrl)
-                .placeholder(R.drawable.ic_perfil)
-                .error(R.drawable.no_disponible_rosa)
-                .into(binding.imgPaciente)
-        } else {
-            binding.imgPaciente.setImageResource(R.drawable.no_disponible_rosa)
-        }
+        ImageLoaderHelper.load(
+            imageView = binding.imgPaciente,
+            imageUrl = paciente.imageUrl,
+            placeholderRes = R.drawable.avatar_sin_imagen_mascota,
+            errorRes = R.drawable.avatar_sin_imagen_mascota,
+            storageFolder = "Mascotas",
+            imageFileName = paciente.imageFileName
+        )
     }
 
     private fun setupListeners() {
@@ -172,8 +170,13 @@ class VacunasListaFragment : Fragment() {
                 // Ordenar vacunas por fecha (más reciente primero)
                 vacunasList.sortByDescending { it.fecha }
                 
-                vacunasAdapter.notifyDataSetChanged()
-                
+                vacunasAdapter.updateList(vacunasList.toList())
+                ListUiHelper.restoreScrollIfPending(
+                    ListScrollKeys.VACUNAS,
+                    binding.listaVacunas,
+                    vacunasList.map { it.id }
+                )
+
                 if (vacunasList.isNotEmpty()) {
                     binding.tvHistorialVacunas.text = "Historial de Vacunas (${vacunasList.size})"
                     ConfigLoading.hideLoadingAnimation()
@@ -181,7 +184,7 @@ class VacunasListaFragment : Fragment() {
                     ConfigLoading.showNodata()
                     binding.fragmentNoData.tvNoDataMessage.text = "No hay vacunas registradas para este paciente"
                     binding.fragmentNoData.btnAdd?.apply {
-                        visibility = View.GONE
+                        visibility = View.VISIBLE
                         text = "Agregar Vacuna"
                         setOnClickListener {
                             val fragment = AgregarVacunaFragment.newInstance(idPaciente, idCliente)
@@ -211,7 +214,14 @@ class VacunasListaFragment : Fragment() {
     
     private fun editarVacuna(vacuna: VacunaModel) {
         val fragment = AgregarVacunaFragment.newInstance(idPaciente, idCliente, vacuna)
-        UtilFragment.changeFragment(requireActivity(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireActivity(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.VACUNAS,
+            listRecyclerView = binding.listaVacunas,
+            selectedItemId = vacuna.id
+        )
     }
     
     private fun eliminarVacuna(vacuna: VacunaModel) {
@@ -236,13 +246,12 @@ class VacunasListaFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         (requireActivity() as androidx.appcompat.app.AppCompatActivity).supportActionBar?.hide()
-        cargarVacunas()
-        
+
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), PacienteDetalleFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }
@@ -255,76 +264,5 @@ class VacunasListaFragment : Fragment() {
             FirebaseVacunaUtil.removerListener(it)
         }
         _binding = null
-    }
-    
-    inner class VacunasAdapter(
-        private val vacunas: List<VacunaModel>,
-        private val onItemClick: (VacunaModel) -> Unit,
-        private val onDeleteClick: (VacunaModel) -> Unit
-    ) : BaseAdapter() {
-        
-        private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        
-        override fun getCount(): Int = vacunas.size
-        
-        override fun getItem(position: Int): Any = vacunas[position]
-        
-        override fun getItemId(position: Int): Long = position.toLong()
-        
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_vacuna, parent, false)
-            
-            val vacuna = vacunas[position]
-            
-            val tvNombreVacuna: TextView = view.findViewById(R.id.tvNombreVacuna)
-            val tvFechaAplicacion: TextView = view.findViewById(R.id.tvFechaAplicacion)
-            val imgRecordatorio: ImageView = view.findViewById(R.id.imgRecordatorio)
-            val tvProximaAplicacion: TextView = view.findViewById(R.id.tvProximaAplicacion)
-            val tvObservaciones: TextView = view.findViewById(R.id.tvObservaciones)
-            val btnEliminar: LinearLayout = view.findViewById(R.id.btnEliminar)
-            val tvDosisAplicada: TextView = view.findViewById(R.id.tvDosisAplicada)
-            
-            // Configurar datos básicos
-            tvNombreVacuna.text = vacuna.vacuna
-            tvFechaAplicacion.text = "Fecha: ${vacuna.fecha}"
-            
-            // Mostrar dosis con "ml"
-            if (vacuna.dosis.isNotEmpty()) {
-                tvDosisAplicada.visibility = View.VISIBLE
-                tvDosisAplicada.text = "Dosis: ${vacuna.dosis} ml"
-            } else {
-                tvDosisAplicada.visibility = View.GONE
-            }
-            
-            // Manejo de próxima aplicación y recordatorio
-            if (vacuna.recordatorio && vacuna.fechaRecordatorio.isNotEmpty()) {
-                tvProximaAplicacion.text = "Próx: ${vacuna.fechaRecordatorio}"
-                tvProximaAplicacion.visibility = View.VISIBLE
-                imgRecordatorio.visibility = View.VISIBLE
-            } else {
-                tvProximaAplicacion.visibility = View.GONE
-                imgRecordatorio.visibility = View.GONE
-            }
-            
-            // Mostrar observaciones si existen
-            if (vacuna.observaciones.isNotEmpty()) {
-                tvObservaciones.text = "Observaciones: ${vacuna.observaciones}"
-                tvObservaciones.visibility = View.VISIBLE
-            } else {
-                tvObservaciones.visibility = View.GONE
-            }
-            
-            // Configurar listeners
-            btnEliminar.setOnClickListener {
-                onDeleteClick(vacuna)
-            }
-            
-            view.setOnClickListener {
-                onItemClick(vacuna)
-            }
-            
-            return view
-        }
     }
 } 

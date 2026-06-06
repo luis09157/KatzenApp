@@ -1,53 +1,62 @@
 package com.example.katzen.Adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.Model.MenuModel
 import com.ninodev.katzen.R
 
-class MenuAdapter(private val context: Context, private val menuList: List<MenuModel>) : BaseAdapter() {
+class MenuAdapter(
+    private val onItemClick: (MenuModel) -> Unit
+) : ListAdapter<MenuModel, MenuAdapter.ViewHolder>(DIFF) {
 
-    override fun getCount(): Int {
-        return menuList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_view_gridview, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItem(position: Int): Any {
-        return menuList[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
+    fun updateList(newList: List<MenuModel>) {
+        submitList(newList.toList())
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var view = convertView
-        val holder: ViewHolder
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imagen: ImageView = itemView.findViewById(R.id.imagen)
+        private val titulo: TextView = itemView.findViewById(R.id.titulo)
 
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.item_view_gridview, parent, false)
-            holder = ViewHolder()
-            holder.imagen = view.findViewById(R.id.imagen)
-            holder.titulo = view.findViewById(R.id.titulo)
-            view.tag = holder
-        } else {
-            holder = view.tag as ViewHolder
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onItemClick(getItem(pos))
+                }
+            }
         }
 
-        val menu = menuList[position]
-
-        holder.titulo?.text = menu.titulo
-        holder.imagen?.setImageResource(menu.imagen)
-
-        return view!!
+        fun bind(menu: MenuModel) {
+            titulo.text = menu.titulo
+            imagen.setImageResource(menu.imagen)
+        }
     }
 
-    private class ViewHolder {
-        var titulo: TextView? = null
-        var imagen: ImageView? = null
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<MenuModel>() {
+            override fun areItemsTheSame(oldItem: MenuModel, newItem: MenuModel): Boolean {
+                return oldItem.titulo == newItem.titulo
+            }
+
+            override fun areContentsTheSame(oldItem: MenuModel, newItem: MenuModel): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

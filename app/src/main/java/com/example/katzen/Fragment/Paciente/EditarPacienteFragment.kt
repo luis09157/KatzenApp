@@ -1,6 +1,6 @@
 package com.example.katzen.Fragment.Paciente
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
@@ -22,9 +22,10 @@ import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.VistaAgregarMascotaBinding
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
 
@@ -35,7 +36,11 @@ class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
     val FOLDER_NAME = "Mascotas"
     val PATH_FIREBASE = "Katzen/Mascota"
     companion object {
-        var PACIENTE_EDIT: PacienteModel = PacienteModel()
+        var PACIENTE_EDIT: PacienteModel
+            get() = com.example.katzen.Helper.StaffEditSessionBridge.pacienteEdit
+            set(value) {
+                com.example.katzen.Helper.StaffEditSessionBridge.pacienteEdit = value
+            }
     }
 
     private lateinit var mediaHelper: MediaHelper
@@ -81,15 +86,14 @@ class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
     }
     fun initValues() {
         PACIENTE_EDIT?.let { paciente ->
-            if (paciente.imageUrl.isNotEmpty()) {
-                Glide.with(binding.fotoMascota.context)
-                    .load(paciente.imageUrl)
-                    .placeholder(R.drawable.ic_perfil)
-                    .error(R.drawable.no_disponible_rosa)
-                    .into(binding.fotoMascota)
-            } else {
-                binding.fotoMascota.setImageResource(R.drawable.no_disponible_rosa)
-            }
+            ImageLoaderHelper.load(
+                imageView = binding.fotoMascota,
+                imageUrl = paciente.imageUrl,
+                placeholderRes = R.drawable.avatar_sin_imagen_mascota,
+                errorRes = R.drawable.avatar_sin_imagen_mascota,
+                storageFolder = FOLDER_NAME,
+                imageFileName = paciente.imageFileName
+            )
 
             binding.textNombre.setText(paciente.nombre)
             binding.textPeso.setText(paciente.peso)
@@ -117,7 +121,7 @@ class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
 
             val validationResult = PacienteModel.validarMascota(requireContext(), PACIENTE_EDIT)
             if (validationResult.isValid) {
-                GlobalScope.launch(Dispatchers.IO) {
+                lifecycleScope.launch {
                     editarCliente(PACIENTE_EDIT)
                 }
             } else {
@@ -141,62 +145,38 @@ class EditarPacienteFragment : Fragment(), MediaHelper.MediaCallback {
         PACIENTE_EDIT.color = binding.textColor.text.toString()
         PACIENTE_EDIT.nombreCliente = binding.textCliente.text.toString()
     }
-    fun editarCliente(pacienteModel: PacienteModel) {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()) {
-                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
-                val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
-                println("URL de descarga de la imagen: $imageUrl")
-                pacienteModel.imageUrl = imageUrl
+    private suspend fun editarCliente(pacienteModel: PacienteModel) {
+        withContext(Dispatchers.Main) { ConfigLoading.showLoadingAnimation() }
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    try {
-                        val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
-                        result.onSuccess { message ->
-                            requireActivity().runOnUiThread {
-                                limpiarCampos()  // Limpiar los campos después de guardar
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
-                            }
-                        }
-                        result.onFailure { exception ->
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
-                        }
-                    }
-                }
-            } else {
-                GlobalScope.launch(Dispatchers.IO) {
-                    try {
-                        val result = FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
-                        result.onSuccess { message ->
-                            requireActivity().runOnUiThread {
-                                limpiarCampos()  // Limpiar los campos después de guardar
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
-                            }
-                        }
-                        result.onFailure { exception ->
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
-                        }
-                    }
-                }
+        if (FirebaseStorageManager.hasSelectedImage()) {
+            val imageUrl = withContext(Dispatchers.IO) {
+                FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
             }
+            pacienteModel.imageUrl = imageUrl
+        }
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                FirebasePacienteUtil.editarMascota(pacienteModel.id, pacienteModel)
+            }
+            if (!isAdded) return
+
+            result.onSuccess { message ->
+                limpiarCampos()
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
+            }
+            result.onFailure { exception ->
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarErrorDialog(
+                    requireActivity(),
+                    "Error al editar el paciente: ${exception.message}"
+                )
+            }
+        } catch (e: Exception) {
+            if (!isAdded) return
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
         }
     }
     override fun onMediaSelected(uri: Uri?) {

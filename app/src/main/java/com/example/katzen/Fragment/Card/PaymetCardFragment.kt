@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import com.example.katzen.Helper.FirebaseUiHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.MenuFragment
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.FragmentCardBinding
 import com.google.android.material.snackbar.Snackbar
@@ -35,7 +35,10 @@ class PaymetCardFragment : Fragment() {
                     .setAction("Action", null).show()
                 return@setOnClickListener
             }
-            calcular(binding.etCosto.text.toString().toDouble())
+            val costo = FirebaseUiHelper.parsePositiveDouble(binding.etCosto.text.toString()) {
+                Snackbar.make(it, getString(R.string.error_invalid_number_input), Snackbar.LENGTH_LONG).show()
+            } ?: return@setOnClickListener
+            calcular(costo)
         }
 
         binding.btnClean.setOnClickListener {
@@ -76,7 +79,7 @@ class PaymetCardFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                    UtilFragment.goHome(requireContext())
                 }
             })
     }

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Model.ProductoModel
 import com.ninodev.katzen.R
 
@@ -44,10 +44,13 @@ class ProductosAdapter(context: Context, private val productList: List<ProductoM
 
         // Cargar la imagen del producto utilizando Picasso
         if (producto.rutaImagen.isNotEmpty()) {
-            // Si hay una URL de imagen disponible, cargar desde la URL
-            Glide.with(holder.imageView!!.context)
-                .load(producto.rutaImagen)
-                .into(holder.imageView!!)
+            ImageLoaderHelper.load(
+                imageView = holder.imageView!!,
+                imageUrl = producto.rutaImagen,
+                placeholderRes = R.drawable.img_venta,
+                errorRes = R.drawable.no_disponible_rosa,
+                storageFolder = "Productos"
+            )
         } else {
             // Si no hay una URL de imagen, cargar desde el recurso drawable
             holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)

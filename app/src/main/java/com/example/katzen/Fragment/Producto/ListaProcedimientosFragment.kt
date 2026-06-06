@@ -11,6 +11,8 @@ import com.example.katzen.Adapter.ProcedimientosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseProcedimientoUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProcedimientoModel
 import com.google.firebase.database.DataSnapshot
@@ -57,12 +59,11 @@ class ListaProcedimientosFragment : Fragment() {
 
     private fun setupAdapter() {
         procedimientosAdapter = ProcedimientosAdapter(
-            procedimientosList,
             { procedimiento -> editarProcedimiento(procedimiento) },
             { procedimiento -> eliminarProcedimiento(procedimiento) }
         )
+        ListUiHelper.setupVerticalList(binding.lisMenuProcedimientos)
         binding.lisMenuProcedimientos.adapter = procedimientosAdapter
-        binding.lisMenuProcedimientos.divider = null
     }
 
     private fun setupSearchBar() {
@@ -85,6 +86,15 @@ class ListaProcedimientosFragment : Fragment() {
             procedimientosList.addAll(filteredList)
         }
         procedimientosAdapter.updateList(procedimientosList)
+        restoreProcedimientosScroll()
+    }
+
+    private fun restoreProcedimientosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.PROCEDIMIENTOS,
+            binding.lisMenuProcedimientos,
+            procedimientosList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
@@ -110,6 +120,7 @@ class ListaProcedimientosFragment : Fragment() {
                     }
                 }
                 procedimientosAdapter.updateList(procedimientosList)
+                restoreProcedimientosScroll()
 
                 if (procedimientosList.size > 0) {
                     requireActivity().title = "Procedimientos (${procedimientosList.size})"
@@ -138,7 +149,14 @@ class ListaProcedimientosFragment : Fragment() {
 
     private fun editarProcedimiento(procedimiento: ProcedimientoModel) {
         val fragment = AddProcedimientoFragment.newInstance(procedimiento)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.PROCEDIMIENTOS,
+            listRecyclerView = binding.lisMenuProcedimientos,
+            selectedItemId = procedimiento.id
+        )
     }
 
     private fun eliminarProcedimiento(procedimiento: ProcedimientoModel) {
@@ -162,7 +180,7 @@ class ListaProcedimientosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

@@ -1,6 +1,6 @@
 package com.example.katzen.PDF
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog

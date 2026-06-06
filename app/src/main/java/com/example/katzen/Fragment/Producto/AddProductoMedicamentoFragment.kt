@@ -280,7 +280,7 @@ class AddProductoMedicamentoFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

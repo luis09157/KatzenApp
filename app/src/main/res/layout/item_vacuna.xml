@@ -1,105 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Katzen.ListItemCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
-    app:cardUseCompatPadding="true">
+    app:rippleColor="@color/ripple_light">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
-        
+        android:padding="14dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
-            
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_portal_menu_accent" />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
-                
+
                 <TextView
                     android:id="@+id/tvNombreVacuna"
+                    style="@style/TextAppearance.Katzen.ListTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nombre de la Vacuna"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                
+                    tools:text="Triple Felina" />
+
                 <TextView
                     android:id="@+id/tvFechaAplicacion"
+                    style="@style/TextAppearance.Katzen.ListSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Fecha: 01/01/2023"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-                
+                    android:layout_marginTop="4dp"
+                    tools:text="Fecha: 05/06/2026" />
+
                 <TextView
                     android:id="@+id/tvDosisAplicada"
+                    style="@style/TextAppearance.Katzen.ListSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dosis: 2ml"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="2dp"
+                    tools:text="Dosis: 1 ml" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center">
-                
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageView
                     android:id="@+id/imgRecordatorio"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_recordatorio"
-                    android:visibility="gone" />
-                
+                    android:visibility="gone"
+                    app:tint="@color/portal_vacunas_accent" />
+
                 <TextView
                     android:id="@+id/tvProximaAplicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Próx: 30/06/2023"
-                    android:textColor="@color/purple_500"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
+                    android:background="@drawable/bg_portal_date_badge"
+                    android:fontFamily="@font/poppins_bold"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:textColor="@color/portal_vacunas_accent"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    tools:text="Próx: 30/06/2026" />
             </LinearLayout>
-            
-            <LinearLayout
+
+            <FrameLayout
                 android:id="@+id/btnEliminar"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="8dp">
-                
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_delete_action"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
+
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_delete"
-                    app:tint="@color/red_500" />
-            </LinearLayout>
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/cliente_action_delete"
+                    android:src="@drawable/ic_delete_m3"
+                    app:tint="@color/white" />
+            </FrameLayout>
         </LinearLayout>
-        
+
         <TextView
             android:id="@+id/tvObservaciones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Observaciones: Lorem ipsum dolor sit amet"
-            android:textColor="@color/grey_700"
-            android:textSize="13sp"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:visibility="gone" />
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_portal_note_box"
+            android:fontFamily="@font/poppins_light"
+            android:padding="10dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="Observaciones de la vacuna" />
     </LinearLayout>
-</androidx.cardview.widget.CardView> 
+
+</com.google.android.material.card.MaterialCardView>

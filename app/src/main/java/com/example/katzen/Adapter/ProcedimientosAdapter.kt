@@ -3,59 +3,61 @@ package com.example.katzen.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.Model.ProcedimientoModel
 import com.ninodev.katzen.R
 
 class ProcedimientosAdapter(
-    private var procedimientosList: List<ProcedimientoModel>,
     private val onItemClick: (ProcedimientoModel) -> Unit,
     private val onDeleteClick: (ProcedimientoModel) -> Unit
-) : BaseAdapter() {
+) : ListAdapter<ProcedimientoModel, ProcedimientosAdapter.ViewHolder>(DIFF) {
 
-    override fun getCount(): Int = procedimientosList.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_procedimiento, parent, false)
+    )
 
-    override fun getItem(position: Int): Any = procedimientosList[position]
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
-    override fun getItemId(position: Int): Long = position.toLong()
+    fun updateList(newList: List<ProcedimientoModel>) = submitList(newList.toList())
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_procedimiento, parent, false)
-        
-        val procedimiento = procedimientosList[position]
-        
-        val tvNombre: TextView = view.findViewById(R.id.tvNombre)
-        val tvPrecio: TextView = view.findViewById(R.id.tvPrecio)
-        val tvTipo: TextView = view.findViewById(R.id.tvTipo)
-        val btnEstado: Button = view.findViewById(R.id.btnEstado)
-        val btnEliminar: LinearLayout = view.findViewById(R.id.btnEliminar)
-        
-        tvNombre.text = procedimiento.nombre
-        tvPrecio.text = "Precio: $${procedimiento.precioFinal}"
-        tvTipo.text = "Tipo: ${procedimiento.tipo}"
-        
-        btnEstado.text = if (procedimiento.activo) "Activo" else "Inactivo"
-        btnEstado.backgroundTintList = view.context.getColorStateList(
-            if (procedimiento.activo) R.color.green_300 else R.color.grey_300
-        )
-        
-        btnEliminar.setOnClickListener {
-            onDeleteClick(procedimiento)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvNombre: TextView = itemView.findViewById(R.id.tvNombre)
+        private val tvPrecio: TextView = itemView.findViewById(R.id.tvPrecio)
+        private val tvTipo: TextView = itemView.findViewById(R.id.tvTipo)
+        private val btnEstado: Button = itemView.findViewById(R.id.btnEstado)
+        private val btnEliminar: View = itemView.findViewById(R.id.btnEliminar)
+
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) onItemClick(getItem(pos))
+            }
+            btnEliminar.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) onDeleteClick(getItem(pos))
+            }
         }
-        
-        view.setOnClickListener {
-            onItemClick(procedimiento)
+
+        fun bind(procedimiento: ProcedimientoModel) {
+            tvNombre.text = procedimiento.nombre
+            tvPrecio.text = "Precio: $${procedimiento.precioFinal}"
+            tvTipo.text = "Tipo: ${procedimiento.tipo}"
+            btnEstado.text = if (procedimiento.activo) "Activo" else "Inactivo"
+            btnEstado.backgroundTintList = itemView.context.getColorStateList(
+                if (procedimiento.activo) R.color.green_300 else R.color.grey_300
+            )
         }
-        
-        return view
     }
 
-    fun updateList(newList: List<ProcedimientoModel>) {
-        procedimientosList = newList
-        notifyDataSetChanged()
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<ProcedimientoModel>() {
+            override fun areItemsTheSame(a: ProcedimientoModel, b: ProcedimientoModel) = a.id == b.id
+            override fun areContentsTheSame(a: ProcedimientoModel, b: ProcedimientoModel) = a == b
+        }
     }
-} 
+}

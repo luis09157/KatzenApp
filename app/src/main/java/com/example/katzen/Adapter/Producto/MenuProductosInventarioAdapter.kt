@@ -1,104 +1,78 @@
 package com.example.katzen.Adapter.Producto
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Filter
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Model.ProductoModel
 import com.ninodev.katzen.R
 
 class MenuProductosInventarioAdapter(
-    context: Context,
-    private var productList: List<ProductoModel>
-) : ArrayAdapter<ProductoModel>(context, R.layout.producto_venta_view_fragment, productList) {
+    private val onItemClick: (ProductoModel) -> Unit = {}
+) : ListAdapter<ProductoModel, MenuProductosInventarioAdapter.ViewHolder>(DIFF) {
 
-    private var originalList: List<ProductoModel> = productList.toList()
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
-
-        if (itemView == null) {
-            itemView = LayoutInflater.from(context).inflate(R.layout.producto_venta_view_fragment, parent, false)
-            holder = ViewHolder()
-            holder.imageView = itemView.findViewById(R.id.imagen)
-            holder.nombreTextView = itemView.findViewById(R.id.textViewNombre)
-            holder.precioTextView = itemView.findViewById(R.id.textViewPrecio)
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
-        }
-
-        val producto = productList[position]
-
-        holder.nombreTextView?.text = producto.nombre
-        holder.precioTextView?.text = "$${producto.precioVenta}"
-
-        // Cargar la imagen del producto utilizando Picasso
-        if (producto.rutaImagen.isNotEmpty()) {
-            // Si hay una URL de imagen disponible, cargar desde la URL
-            Glide.with(holder.imageView!!.context)
-                .load(producto.rutaImagen)
-                .placeholder(R.drawable.ic_imagen) // Establecer la imagen predeterminada mientras se carga
-                .error(R.drawable.ic_imagen) // Establecer una imagen en caso de error al cargar
-                .into(holder.imageView!!)
-        } else {
-            // Si no hay una URL de imagen, cargar desde el recurso drawable
-            holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)
-        }
-
-
-        return itemView!!
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.producto_venta_view_fragment, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getCount(): Int {
-        return productList.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
-    override fun getItem(position: Int): ProductoModel? {
-        return productList[position]
-    }
-
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val filteredList = mutableListOf<ProductoModel>()
-                if (constraint.isNullOrEmpty()) {
-                    filteredList.addAll(originalList)
-                } else {
-                    val filterPattern = constraint.toString().toLowerCase().trim()
-                    for (item in originalList) {
-                        if (item.nombre.toLowerCase().contains(filterPattern)) {
-                            filteredList.add(item)
-                        }
-                    }
-                }
-                val results = FilterResults()
-                results.values = filteredList
-                return results
-            }
-
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                productList = results?.values as List<ProductoModel>
-                notifyDataSetChanged()
-            }
-        }
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.clearImage()
+        super.onViewRecycled(holder)
     }
 
     fun updateList(newList: List<ProductoModel>) {
-        productList = newList
-        originalList = newList.toList()
-        notifyDataSetChanged()
+        submitList(newList.toList())
     }
 
-    private class ViewHolder {
-        var imageView: ImageView? = null
-        var nombreTextView: TextView? = null
-        var precioTextView: TextView? = null
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView: ImageView = itemView.findViewById(R.id.imagen)
+        private val nombreTextView: TextView = itemView.findViewById(R.id.textViewNombre)
+        private val precioTextView: TextView = itemView.findViewById(R.id.textViewPrecio)
+
+        fun bind(producto: ProductoModel) {
+            nombreTextView.text = producto.nombre
+            precioTextView.text = "$${producto.precioVenta}"
+
+            if (producto.rutaImagen.isNotEmpty()) {
+                ImageLoaderHelper.loadListImage(
+                    imageView = imageView,
+                    progressBar = null,
+                    imageUrl = producto.rutaImagen,
+                    placeholderRes = R.drawable.ic_imagen,
+                    errorRes = R.drawable.ic_imagen
+                )
+            } else {
+                imageView.setImageResource(R.drawable.no_disponible_rosa)
+            }
+
+            itemView.setOnClickListener { onItemClick(producto) }
+        }
+
+        fun clearImage() {
+            ImageLoaderHelper.clearListImage(imageView, null, R.drawable.ic_imagen)
+        }
+    }
+
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<ProductoModel>() {
+            override fun areItemsTheSame(oldItem: ProductoModel, newItem: ProductoModel): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: ProductoModel, newItem: ProductoModel): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

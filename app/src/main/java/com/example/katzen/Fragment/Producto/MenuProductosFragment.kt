@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.MenuAdapter
 import com.example.katzen.Fragment.Campaña.CampañaFragment
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.MenuModel
@@ -17,11 +17,10 @@ import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.MenuFragmentBinding
 
 class MenuProductosFragment : Fragment() {
-    val TAG : String  = "MenuFragment"
+    val TAG: String = "MenuFragment"
 
     private var _binding: MenuFragmentBinding? = null
     private val binding get() = _binding!!
-    private lateinit var menuList: List<MenuModel>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +30,6 @@ class MenuProductosFragment : Fragment() {
         _binding = MenuFragmentBinding.inflate(inflater, container, false)
         requireActivity().title = getString(R.string.menu_productos)
         setupMenu()
-        setupListeners()
         return binding.root
     }
 
@@ -41,13 +39,13 @@ class MenuProductosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }
 
     private fun setupMenu() {
-        menuList = listOf(
+        val menuList = listOf(
             MenuModel(requireActivity().getString(R.string.submenu_productos_prod_varios), R.drawable.img_prod_varios),
             MenuModel(requireActivity().getString(R.string.submenu_productos_alimentos), R.drawable.img_alimento),
             MenuModel(requireActivity().getString(R.string.submenu_productos_servicios), R.drawable.img_servicios),
@@ -56,42 +54,44 @@ class MenuProductosFragment : Fragment() {
             MenuModel(requireActivity().getString(R.string.submenu_productos_m_complementarios), R.drawable.img_prod_complementario),
             MenuModel(requireActivity().getString(R.string.submenu_productos_estetica), R.drawable.img_prod_estetica)
         )
-        val adapter = MenuAdapter(requireContext(), menuList)
-        binding.lisMenu.adapter = adapter
-    }
 
-    private fun setupListeners() {
-        binding.lisMenu.setOnItemClickListener { adapterView, view, position, l ->
-            val menuItem = menuList[position]
-            val titulo = menuItem.titulo
-
-            when (titulo) {
-                requireActivity().getString(R.string.submenu_productos_medicamentos) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaMedicamentosFragment(), TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_estetica) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaProductosEsteticaFragment(), TAG)
-                }
-                requireActivity().getString(R.string.menu_campania) -> {
-                    UtilFragment.changeFragment(requireActivity(), CampañaFragment(),TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_alimentos) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaAlimentosFragment(),TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_prod_varios) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaProductosVariosFragment(),TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_servicios) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaServiciosFragment(),TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_procedimientos) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaProcedimientosFragment(),TAG)
-                }
-                requireActivity().getString(R.string.submenu_productos_m_complementarios) -> {
-                    UtilFragment.changeFragment(requireActivity(), ListaAuxiliaresFragment(),TAG)
-                }
+        val adapter = MenuAdapter { menuItem ->
+            val fragment = when (menuItem.titulo) {
+                requireActivity().getString(R.string.submenu_productos_medicamentos) ->
+                    ListaMedicamentosFragment()
+                requireActivity().getString(R.string.submenu_productos_estetica) ->
+                    ListaProductosEsteticaFragment()
+                requireActivity().getString(R.string.menu_campania) ->
+                    CampañaFragment()
+                requireActivity().getString(R.string.submenu_productos_alimentos) ->
+                    ListaAlimentosFragment()
+                requireActivity().getString(R.string.submenu_productos_prod_varios) ->
+                    ListaProductosVariosFragment()
+                requireActivity().getString(R.string.submenu_productos_servicios) ->
+                    ListaServiciosFragment()
+                requireActivity().getString(R.string.submenu_productos_procedimientos) ->
+                    ListaProcedimientosFragment()
+                requireActivity().getString(R.string.submenu_productos_m_complementarios) ->
+                    ListaAuxiliaresFragment()
+                else -> return@MenuAdapter
             }
+            UtilFragment.changeFragment(
+                requireActivity(),
+                fragment,
+                TAG,
+                listKey = ListScrollKeys.MENU_PRODUCTOS,
+                listRecyclerView = binding.lisMenu,
+                selectedItemId = menuItem.titulo
+            )
         }
+        adapter.updateList(menuList)
+        ListUiHelper.setupGridList(binding.lisMenu, 2)
+        binding.lisMenu.adapter = adapter
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.MENU_PRODUCTOS,
+            binding.lisMenu,
+            menuList.map { it.titulo }
+        )
     }
 
     override fun onDestroyView() {

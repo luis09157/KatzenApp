@@ -1,0 +1,14 @@
+{
+  "activo": true,
+  "cliente": "LUIS NIÑO",
+  "cliente_id": "9b969f00-dd8d-4b95-830e-849d92c5871c",
+  "estado": "Confirmada",
+  "fecha": "2026-06-12T06:00:00.000Z",
+  "fecha_hora": "2026-06-12T16:00",
+  "hora": "16:00",
+  "motivo": "Consulta de seguimiento (PRUEBA)",
+  "observaciones": "Cita de prueba para visualizar en el portal",
+  "paciente": "Oreon",
+  "paciente_id": "99f5856b-0419-4807-ba5b-a83fb146585b",
+  "veterinario": "Dra. KatzenVet"
+}

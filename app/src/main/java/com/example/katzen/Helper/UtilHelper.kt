@@ -1,6 +1,6 @@
 package com.example.katzen.Helper
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -221,7 +221,7 @@ class UtilHelper {
             }
         }
         fun obtenerNumeroMes(mesAbreviado: String): String {
-            return when (mesAbreviado.toUpperCase()) {
+            return when (mesAbreviado.uppercase()) {
                 "ENE" -> "01"
                 "FEB" -> "02"
                 "MAR" -> "03"

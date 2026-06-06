@@ -1,6 +1,6 @@
 package com.example.katzen.Fragment.Paciente
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
@@ -33,9 +33,10 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.MainActivity
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.VistaAgregarMascotaBinding
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class AddPacienteFragment : Fragment(), MediaHelper.MediaCallback {
@@ -141,8 +142,32 @@ class AddPacienteFragment : Fragment(), MediaHelper.MediaCallback {
         )
     }
 
-    fun guardarMascota(){
+    private suspend fun guardarMascotaEnFirebase() {
+        withContext(Dispatchers.Main) { ConfigLoading.showLoadingAnimation() }
 
+        if (FirebaseStorageManager.hasSelectedImage()) {
+            val imageUrl = withContext(Dispatchers.IO) {
+                FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
+            }
+            ADD_PACIENTE.imageUrl = imageUrl
+        }
+
+        val (flag, message) = withContext(Dispatchers.IO) {
+            FirebaseDatabaseManager.insertModel(ADD_PACIENTE, ADD_PACIENTE.id, PATH_FIREBASE)
+        }
+        if (!isAdded) return
+
+        if (flag) {
+            limpiarCampos()
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El paciente se guardó exitosamente.")
+        } else {
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
+        }
+    }
+
+    fun guardarMascota() {
        setPacienteModel()
 
         // Validar la mascota
@@ -150,47 +175,8 @@ class AddPacienteFragment : Fragment(), MediaHelper.MediaCallback {
 
         if (validationResult.isValid) {
 
-            GlobalScope.launch(Dispatchers.IO) {
-                if (FirebaseStorageManager.hasSelectedImage()){
-                    requireActivity().runOnUiThread {  ConfigLoading.showLoadingAnimation() }
-                    val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
-                    println("URL de descarga de la imagen: $imageUrl")
-                    ADD_PACIENTE.imageUrl = imageUrl
-
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(ADD_PACIENTE, ADD_PACIENTE.id,PATH_FIREBASE)
-
-                        if (flag) {
-                            limpiarCampos()
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El paciente se guardó exitosamente.")
-                            }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
-                            }
-                        }
-                    }
-                }else{
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val ( flag,message ) =  FirebaseDatabaseManager.insertModel(ADD_PACIENTE, ADD_PACIENTE.id,PATH_FIREBASE)
-
-                        if (flag) {
-                            limpiarCampos()
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), "El paciente se guardó exitosamente.")
-                            }
-                        } else {
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
-                            }
-                        }
-                    }
-                }
+            lifecycleScope.launch {
+                guardarMascotaEnFirebase()
             }
         }else {
             // La mascota no es válida, mostrar mensaje de error

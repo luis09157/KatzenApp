@@ -21,8 +21,8 @@ import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.AddClienteFragmentBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
@@ -124,7 +124,7 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
 
             val validationResult = ClienteModel.validarCliente(requireContext(), cliente)
             if (validationResult.isValid) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {  // Reemplazo de GlobalScope
+                viewLifecycleOwner.lifecycleScope.launch {
                     guardarCliente(cliente)
                 }
             } else {
@@ -138,56 +138,32 @@ class AddClienteFragment : Fragment(), MediaHelper.MediaCallback {
         }
     }
 
-    fun guardarCliente(clienteModel: ClienteModel) {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()) {
-                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
-                val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
-                println("URL de descarga de la imagen: $imageUrl")
-                clienteModel.imageUrl = imageUrl
+    private suspend fun guardarCliente(clienteModel: ClienteModel) {
+        withContext(Dispatchers.Main) { ConfigLoading.showLoadingAnimation() }
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    val (flag, message) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
+        if (FirebaseStorageManager.hasSelectedImage()) {
+            val imageUrl = withContext(Dispatchers.IO) {
+                FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
+            }
+            clienteModel.imageUrl = imageUrl
+        }
 
-                    if (flag) {
-                        limpiarCampos()  // Limpiar los campos después de guardar
-                        requireActivity().runOnUiThread {
-                            DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
-                                if (confirmed) {
-                                    ConfigLoading.hideLoadingAnimation()
-                                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
-                                }
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
-                        }
-                    }
-                }
-            } else {
-                GlobalScope.launch(Dispatchers.IO) {
-                    val (flag, message) = FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
+        val (flag, message) = withContext(Dispatchers.IO) {
+            FirebaseDatabaseManager.insertModel(clienteModel, clienteModel.id, PATH_FIREBASE)
+        }
+        if (!isAdded) return
 
-                    if (flag) {
-                        limpiarCampos()  // Limpiar los campos después de guardar
-                        requireActivity().runOnUiThread {
-                            DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
-                                if (confirmed) {
-                                    ConfigLoading.hideLoadingAnimation()
-                                    UtilFragment.changeFragment(requireContext(), ClienteFragment(), TAG)
-                                }
-                            }
-                        }
-                    } else {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
-                        }
-                    }
+        if (flag) {
+            limpiarCampos()
+            DialogMaterialHelper.mostrarConfirmDialog(requireActivity(), "El cliente se guardó exitosamente.") { confirmed ->
+                if (confirmed) {
+                    ConfigLoading.hideLoadingAnimation()
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             }
+        } else {
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), message)
         }
     }
     override fun onMediaSelected(uri: Uri?) {

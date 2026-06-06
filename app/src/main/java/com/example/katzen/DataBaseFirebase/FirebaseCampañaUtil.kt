@@ -1,6 +1,6 @@
 package com.example.katzen.DataBaseFirebase
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.util.Log
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.CalendarioUtil
@@ -21,12 +21,12 @@ import kotlinx.coroutines.withContext
 
 class FirebaseCampañaUtil {
     companion object {
-        private const val CAMPANAS_PATH = "Katzen/Campaña" // Ruta donde se guardan las campañas
-        private const val PACIENTES_PATH = "Katzen/Paciente"
+        private const val CAMPANAS_PATH = "Katzen/Campaña"
+        private const val MASCOTAS_PATH = "Katzen/Mascota"
         private const val CLIENTES_PATH = "Katzen/Cliente"
         val database: FirebaseDatabase = FirebaseDatabase.getInstance()
         val referenciaCampaña: DatabaseReference = database.getReference(CAMPANAS_PATH)
-        val referenciaPaciente: DatabaseReference = database.getReference(PACIENTES_PATH)
+        val referenciaMascota: DatabaseReference = database.getReference(MASCOTAS_PATH)
         val referenciaCliente: DatabaseReference = database.getReference(CLIENTES_PATH)
 
         @JvmStatic
@@ -34,6 +34,12 @@ class FirebaseCampañaUtil {
             val referenciaCampañas = database.getReference("$CAMPANAS_PATH/${CampañaFragment.ADD_CAMPAÑA.año}/${CampañaFragment.ADD_CAMPAÑA.mes}-${CampañaFragment.ADD_CAMPAÑA.año}")
 
             referenciaCampañas.addValueEventListener(listener)
+        }
+
+        @JvmStatic
+        fun removerListenerCampañas(listener: ValueEventListener) {
+            val referenciaCampañas = database.getReference("$CAMPANAS_PATH/${CampañaFragment.ADD_CAMPAÑA.año}/${CampañaFragment.ADD_CAMPAÑA.mes}-${CampañaFragment.ADD_CAMPAÑA.año}")
+            referenciaCampañas.removeEventListener(listener)
         }
         suspend fun contarCampañasPorMes(mesKey: String): Long {
             return try {

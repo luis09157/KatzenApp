@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/portal_nav_mascotas"
+        android:icon="@drawable/ic_pets_m3"
+        android:title="@string/portal_nav_mascotas" />
+    <item
+        android:id="@+id/portal_nav_notificaciones"
+        android:icon="@drawable/ic_notifications_m3"
+        android:title="@string/portal_nav_notificaciones" />
+    <item
+        android:id="@+id/portal_nav_perfil"
+        android:icon="@drawable/ic_account_m3"
+        android:title="@string/portal_nav_perfil" />
+</menu>

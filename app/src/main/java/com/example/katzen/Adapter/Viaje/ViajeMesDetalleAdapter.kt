@@ -4,9 +4,11 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
 import com.example.katzen.Helper.DialogMaterialHelper
@@ -15,116 +17,63 @@ import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.VentaMesDetalleModel
 import com.ninodev.katzen.R
 
-class ViajeMesDetalleAdapter (
-    activity: Activity,
-    private var viajeDetalleList: List<VentaMesDetalleModel>
-) : ArrayAdapter<VentaMesDetalleModel>(activity, R.layout.vista_viajes_detalle, viajeDetalleList) {
+class ViajeMesDetalleAdapter(
+    private val activity: Activity,
+    private val onEditViaje: (VentaMesDetalleModel) -> Unit = { viaje ->
+        AddViajeFragment.EDIT_VIAJE = viaje
+        UtilFragment.changeFragment(activity, AddViajeFragment(), "ViajeMesDetalleAdapter")
+    }
+) : ListAdapter<VentaMesDetalleModel, ViajeMesDetalleAdapter.ViewHolder>(DIFF) {
 
-    private var originalList: List<VentaMesDetalleModel> = viajeDetalleList.toList()
-    var activity : Activity = activity
-    var TAG : String = "ViajeMesDetalleAdapter"
+    var tag: String = "ViajeMesDetalleAdapter"
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.vista_viajes_detalle, parent, false)
+    )
 
-        if (itemView == null) {
-            itemView = LayoutInflater.from(activity).inflate(R.layout.vista_viajes_detalle, parent, false)
-            holder = ViewHolder()
-            holder.card_cont = itemView.findViewById(R.id.card_cont)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
-            holder.txt_paciente = itemView.findViewById(R.id.txt_paciente)
-            holder.txt_categoria = itemView.findViewById(R.id.txt_categoria)
-            holder.txt_domicilio = itemView.findViewById(R.id.txt_domicilio)
-            holder.txt_kilometros = itemView.findViewById(R.id.txt_kilometros)
-            holder.txt_fecha = itemView.findViewById(R.id.txt_fecha)
+    fun updateList(newList: List<VentaMesDetalleModel>) = submitList(newList.toList())
 
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val cardCont: CardView = itemView.findViewById(R.id.card_cont)
+        private val txtPaciente: TextView = itemView.findViewById(R.id.txt_paciente)
+        private val txtCategoria: TextView = itemView.findViewById(R.id.txt_categoria)
+        private val txtDomicilio: TextView = itemView.findViewById(R.id.txt_domicilio)
+        private val txtKilometros: TextView = itemView.findViewById(R.id.txt_kilometros)
+        private val txtFecha: TextView = itemView.findViewById(R.id.txt_fecha)
+        private val txtGanancia: TextView = itemView.findViewById(R.id.txt_ganancia)
+        private val txtCosto: TextView = itemView.findViewById(R.id.txt_costo)
+        private val txtVenta: TextView = itemView.findViewById(R.id.txt_venta)
+        private val btnEditar: CardView = itemView.findViewById(R.id.btn_edit)
+        private val btnEliminar: CardView = itemView.findViewById(R.id.btn_eliminar)
 
-            holder.txt_mes = itemView.findViewById(R.id.txt_mes)
-            holder.txt_costo = itemView.findViewById(R.id.txt_costo)
-            holder.txt_ganancia = itemView.findViewById(R.id.txt_ganancia)
-            holder.txt_venta = itemView.findViewById(R.id.txt_venta)
+        fun bind(viaje: VentaMesDetalleModel) {
+            txtPaciente.text = viaje.nombreDomicilio
+            txtCategoria.text = viaje.categoria
+            txtDomicilio.text = viaje.domicilio
+            txtKilometros.text = viaje.kilometros
+            txtFecha.text = viaje.fecha
+            txtGanancia.text = "$ ${viaje.ganancia}"
+            txtCosto.text = "$ ${viaje.costo}"
+            txtVenta.text = "$ ${viaje.venta}"
 
-            holder.btnEditar = itemView.findViewById(R.id.btn_edit)
-            holder.btnEliminar = itemView.findViewById(R.id.btn_eliminar)
-
-
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
-        }
-        val viaje = viajeDetalleList[position]
-
-        holder.txt_paciente?.text = ""
-        holder.txt_categoria?.text = ""
-        holder.txt_domicilio?.text = ""
-        holder.txt_kilometros?.text = ""
-        holder.txt_fecha?.text = ""
-        holder.txt_costo?.text = ""
-        holder.txt_mes?.text = ""
-        holder.txt_ganancia?.text = ""
-        holder.txt_venta?.text = ""
-
-        holder.txt_paciente!!.text = viaje.nombreDomicilio
-        holder.txt_categoria!!.text = viaje.categoria
-        holder.txt_domicilio!!.text = viaje.domicilio
-        holder.txt_kilometros!!.text = viaje.kilometros
-        holder.txt_fecha!!.text = viaje.fecha
-
-        holder.txt_ganancia!!.text = "$ ${viaje.ganancia}"
-        holder.txt_costo!!.text = "$ ${viaje.costo}"
-        holder.txt_venta!!.text = "$ ${viaje.venta}"
-
-
-        holder.card_cont!!.setOnClickListener {
-            UtilHelper.abrirGoogleMaps(activity, viaje.linkMaps)
-        }
-        holder.btnEditar!!.setOnClickListener {
-            AddViajeFragment.EDIT_VIAJE = viaje
-            UtilFragment.changeFragment(activity, AddViajeFragment(),TAG)
-        }
-        holder.btnEliminar!!.setOnClickListener {
-            val mensaje = "¿Estás seguro de que deseas eliminar este elemento?"
-            DialogMaterialHelper.mostrarConfirmDeleteDialog(activity, mensaje) { confirmed ->
-                if (confirmed) {
-                    FirebaseViajesUtil.eliminarViaje(viaje)
-                } else {
+            cardCont.setOnClickListener {
+                UtilHelper.abrirGoogleMaps(activity, viaje.linkMaps)
+            }
+            btnEditar.setOnClickListener { onEditViaje(viaje) }
+            btnEliminar.setOnClickListener {
+                DialogMaterialHelper.mostrarConfirmDeleteDialog(activity, "¿Estás seguro de que deseas eliminar este elemento?") { confirmed ->
+                    if (confirmed) FirebaseViajesUtil.eliminarViaje(viaje)
                 }
             }
         }
-
-
-        return itemView!!
     }
 
-    override fun getCount(): Int {
-        return viajeDetalleList.size
-    }
-
-    override fun getItem(position: Int): VentaMesDetalleModel? {
-        return viajeDetalleList[position]
-    }
-    fun updateList(newList: List<VentaMesDetalleModel>) {
-        viajeDetalleList = newList
-        originalList = newList.toList()
-        notifyDataSetChanged()
-    }
-
-    private class ViewHolder {
-        var card_cont: CardView? = null
-        var txt_paciente: TextView? = null
-        var txt_categoria: TextView? = null
-        var txt_domicilio: TextView? = null
-        var txt_kilometros: TextView? = null
-        var txt_fecha: TextView? = null
-
-        var txt_mes: TextView? = null
-        var txt_costo: TextView? = null
-        var txt_ganancia: TextView? = null
-        var txt_venta: TextView? = null
-
-        var btnEditar: CardView? = null
-        var btnEliminar: CardView? = null
-
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<VentaMesDetalleModel>() {
+            override fun areItemsTheSame(a: VentaMesDetalleModel, b: VentaMesDetalleModel) = a.id == b.id
+            override fun areContentsTheSame(a: VentaMesDetalleModel, b: VentaMesDetalleModel) = a == b
+        }
     }
 }

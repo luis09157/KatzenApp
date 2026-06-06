@@ -1,6 +1,6 @@
 package com.example.katzen.Config
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import com.example.katzen.Model.ProductoModel
 
 class Config {

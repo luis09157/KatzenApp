@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.FirebaseStorageManager
@@ -19,9 +19,10 @@ import com.example.katzen.Helper.UtilHelper.Companion.hideKeyboard
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.AddClienteFragmentBinding
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
 
@@ -32,7 +33,11 @@ class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
     val FOLDER_NAME = "Clientes"
     val PATH_FIREBASE = "Katzen/Cliente"
     companion object {
-        var CLIENTE_EDIT: ClienteModel = ClienteModel()
+        var CLIENTE_EDIT: ClienteModel
+            get() = com.example.katzen.Helper.StaffEditSessionBridge.clienteEdit
+            set(value) {
+                com.example.katzen.Helper.StaffEditSessionBridge.clienteEdit = value
+            }
     }
 
     private lateinit var mediaHelper: MediaHelper
@@ -81,15 +86,14 @@ class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
     }
     fun initValues() {
         CLIENTE_EDIT?.let { cliente ->
-            if (cliente.imageUrl.isNotEmpty()) {
-                Glide.with(binding.imgPerfil.context)
-                    .load(cliente.imageUrl)
-                    .placeholder(R.drawable.ic_perfil)
-                    .error(R.drawable.no_disponible_rosa)
-                    .into(binding.imgPerfil)
-            } else {
-                binding.imgPerfil?.setImageResource(R.drawable.no_disponible_rosa)
-            }
+            ImageLoaderHelper.load(
+                imageView = binding.imgPerfil,
+                imageUrl = cliente.imageUrl,
+                placeholderRes = R.drawable.avatar_sin_imagen,
+                errorRes = R.drawable.avatar_sin_imagen,
+                storageFolder = "Clientes",
+                imageFileName = cliente.imageFileName
+            )
 
             binding.textNombre.setText(cliente.nombre)
             binding.textAppellidoPaterno.setText(cliente.apellidoPaterno)
@@ -121,7 +125,7 @@ class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
 
             val validationResult = ClienteModel.validarCliente(requireContext(), CLIENTE_EDIT)
             if (validationResult.isValid) {
-                GlobalScope.launch(Dispatchers.IO) {
+                lifecycleScope.launch {
                     editarCliente(CLIENTE_EDIT)
                 }
             } else {
@@ -156,62 +160,38 @@ class EditClienteFragment : Fragment(), MediaHelper.MediaCallback {
         CLIENTE_EDIT.municipio = municipio
         CLIENTE_EDIT.urlGoogleMaps = googleMaps
     }
-    fun editarCliente(clienteModel: ClienteModel) {
-        GlobalScope.launch(Dispatchers.IO) {
-            if (FirebaseStorageManager.hasSelectedImage()) {
-                requireActivity().runOnUiThread { ConfigLoading.showLoadingAnimation() }
-                val imageUrl = FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
-                println("URL de descarga de la imagen: $imageUrl")
-                clienteModel.imageUrl = imageUrl
+    private suspend fun editarCliente(clienteModel: ClienteModel) {
+        withContext(Dispatchers.Main) { ConfigLoading.showLoadingAnimation() }
 
-                GlobalScope.launch(Dispatchers.IO) {
-                    try {
-                        val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
-                        result.onSuccess { message ->
-                            requireActivity().runOnUiThread {
-                                limpiarCampos()  // Limpiar los campos después de editar
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
-                            }
-                        }
-                        result.onFailure { exception ->
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
-                        }
-                    }
-                }
-            } else {
-                GlobalScope.launch(Dispatchers.IO) {
-                    try {
-                        val result = FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
-                        result.onSuccess { message ->
-                            requireActivity().runOnUiThread {
-                                limpiarCampos()  // Limpiar los campos después de editar
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
-                            }
-                        }
-                        result.onFailure { exception ->
-                            requireActivity().runOnUiThread {
-                                ConfigLoading.hideLoadingAnimation()
-                                DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error al editar el cliente: ${exception.message}")
-                            }
-                        }
-                    } catch (e: Exception) {
-                        requireActivity().runOnUiThread {
-                            ConfigLoading.hideLoadingAnimation()
-                            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
-                        }
-                    }
-                }
+        if (FirebaseStorageManager.hasSelectedImage()) {
+            val imageUrl = withContext(Dispatchers.IO) {
+                FirebaseStorageManager.uploadImage(FirebaseStorageManager.URI_IMG_SELECTED, FOLDER_NAME)
             }
+            clienteModel.imageUrl = imageUrl
+        }
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                FirebaseClienteUtil.editarCliente(clienteModel.id, clienteModel)
+            }
+            if (!isAdded) return
+
+            result.onSuccess { message ->
+                limpiarCampos()
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarSuccessDialog(requireActivity(), message)
+            }
+            result.onFailure { exception ->
+                ConfigLoading.hideLoadingAnimation()
+                DialogMaterialHelper.mostrarErrorDialog(
+                    requireActivity(),
+                    "Error al editar el cliente: ${exception.message}"
+                )
+            }
+        } catch (e: Exception) {
+            if (!isAdded) return
+            ConfigLoading.hideLoadingAnimation()
+            DialogMaterialHelper.mostrarErrorDialog(requireActivity(), "Error: ${e.message}")
         }
     }
     override fun onMediaSelected(uri: Uri?) {

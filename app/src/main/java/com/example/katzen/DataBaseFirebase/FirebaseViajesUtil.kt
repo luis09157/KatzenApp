@@ -24,12 +24,27 @@ class FirebaseViajesUtil {
             referencia.addValueEventListener(listener)
         }
         fun obtenerListaCargosViajes(listener: ValueEventListener) {
-            val referenciaViajesCargos: DatabaseReference = database.getReference(VIAJES_PATH)
+            referenciaCargosViajes()
+                .orderByChild("fecha")
+                .limitToLast(100)
+                .addValueEventListener(listener)
+        }
+
+        @JvmStatic
+        fun removerListenerViajes(year: String, listener: ValueEventListener) {
+            database.getReference(VIAJES_PATH).child(year).removeEventListener(listener)
+        }
+
+        @JvmStatic
+        fun removerListenerCargosViajes(listener: ValueEventListener) {
+            referenciaCargosViajes().removeEventListener(listener)
+        }
+
+        private fun referenciaCargosViajes(): DatabaseReference {
+            return database.getReference(VIAJES_PATH)
                 .child(Config.MES_DETALLE.split("-")[1])
                 .child(Config.MES_DETALLE)
                 .child("cargos")
-
-            referenciaViajesCargos.orderByChild("fecha").limitToLast(100).addValueEventListener(listener)
         }
 
         fun eliminarViaje(ventaMesDetalleModel: VentaMesDetalleModel): Pair<Boolean, String> {

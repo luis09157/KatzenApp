@@ -5,13 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Viaje.ViajeAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.MenuFragment
@@ -30,6 +32,7 @@ class ViajesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viajesList: MutableList<VentaMesModel>
     private lateinit var viajesAdapter: ViajeAdapter
+    private var viajesListener: ValueEventListener? = null
 
     companion object {
         private var lastSelectedYear: String? = null
@@ -71,9 +74,19 @@ class ViajesFragment : Fragment() {
     private fun init() {
         ConfigLoading.showLoadingAnimation()
         viajesList = mutableListOf()
-        viajesAdapter = ViajeAdapter(requireActivity(), viajesList)
+        viajesAdapter = ViajeAdapter { viaje ->
+            Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viaje.mes)}-${viaje.anio}"
+            UtilFragment.changeFragment(
+                requireContext(),
+                ViajesDetalleFragment(),
+                TAG,
+                listKey = ListScrollKeys.VIAJES_MESES,
+                listRecyclerView = binding.lisMenuViaje,
+                selectedItemId = viajeScrollId(viaje)
+            )
+        }
+        ListUiHelper.setupVerticalList(binding.lisMenuViaje)
         binding.lisMenuViaje.adapter = viajesAdapter
-        binding.lisMenuViaje.divider = null
 
         obtenerViajes()
     }
@@ -83,24 +96,24 @@ class ViajesFragment : Fragment() {
             viaje.mes.contains(text, ignoreCase = true)
         }
         viajesAdapter.updateList(filteredList)
+        restoreViajesScroll(filteredList)
+    }
+
+    private fun viajeScrollId(viaje: VentaMesModel) = "${viaje.anio}_${viaje.mes}"
+
+    private fun restoreViajesScroll(list: List<VentaMesModel>) {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.VIAJES_MESES,
+            binding.lisMenuViaje,
+            list.map { viajeScrollId(it) }
+        )
     }
 
     private fun listeners() {
-        binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterClientes(newText?.trim().orEmpty())
-                return true
-            }
-        })
-
-        binding.lisMenuViaje.setOnItemClickListener { _, _, i, _ ->
-            Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesList[i].mes)}-${viajesList[i].anio}"
-            UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(), TAG)
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterClientes(query)
         }
+
     }
 
     fun initLoading() {
@@ -116,7 +129,9 @@ class ViajesFragment : Fragment() {
         val year = selectedYear ?: return
         
         Log.d(TAG, "Obteniendo viajes para el año: $year")
-        FirebaseViajesUtil.obtenerListaViajes(year, object : ValueEventListener {
+        viajesListener?.let { FirebaseViajesUtil.removerListenerViajes(year, it) }
+
+        viajesListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
                     Log.d(TAG, "¿Existe snapshot? ${snapshot.exists()}")
@@ -163,7 +178,8 @@ class ViajesFragment : Fragment() {
 
                     Log.d(TAG, "Total de viajes encontrados: ${viajesList.size}")
 
-                    viajesAdapter.notifyDataSetChanged()
+                    viajesAdapter.updateList(viajesList.toList())
+                    restoreViajesScroll(viajesList)
                     if (viajesList.isEmpty()) {
                         if (year == UtilHelper.getDateYear()) {
                             initYearFirebase(viajesList)
@@ -185,7 +201,8 @@ class ViajesFragment : Fragment() {
                 Log.e(TAG, "Error en la consulta a Firebase: ${error.message}")
                 ConfigLoading.showNodata()
             }
-        })
+        }
+        viajesListener?.let { FirebaseViajesUtil.obtenerListaViajes(year, it) }
     }
 
     private fun initYearFirebase(viajesList: MutableList<VentaMesModel>) {
@@ -216,17 +233,22 @@ class ViajesFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        selectedYear?.let { year ->
+            viajesListener?.let { FirebaseViajesUtil.removerListenerViajes(year, it) }
+        }
+        viajesListener = null
         super.onDestroyView()
         _binding = null
     }
 
     override fun onResume() {
         super.onResume()
-        init()
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), YearViajeListFragment(), TAG)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.goBackOrHome(requireContext())
+                }
+            })
     }
 }

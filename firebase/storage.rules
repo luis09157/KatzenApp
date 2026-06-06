@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isStaff() {
+      return request.auth != null && request.auth.token.role != 'client';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Staff / web admin: acceso completo (compatible con portal web actual)
+    match /{allPaths=**} {
+      allow read, write: if isStaff();
+    }
+
+    // Portal cliente: solo lectura de imágenes y archivos clínicos por path conocido
+    match /Clientes/{allPaths=**} {
+      allow read: if isSignedIn();
+    }
+
+    match /Mascotas/{allPaths=**} {
+      allow read: if isSignedIn();
+    }
+
+    match /imagenes_mascotas/{allPaths=**} {
+      allow read: if isSignedIn();
+    }
+
+    match /historiales_clinicos/{pacienteId}/{allPaths=**} {
+      allow read: if isSignedIn();
+    }
+  }
+}

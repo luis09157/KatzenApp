@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Cliente.ClienteAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
+import com.example.katzen.Helper.RtdbActiveRecords
+import com.example.katzen.Helper.FirebaseUiHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
-import com.example.katzen.MenuFragment
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.ClienteFragmentBinding
@@ -38,24 +41,35 @@ class ClienteFragment : Fragment() {
         requireActivity().title = getString(R.string.menu_cliente)
 
         initLoading()
+        setupScreenHeader()
         init()
         listeners()
 
         return root
     }
 
+    private fun setupScreenHeader() {
+        binding.screenHeader.tvHeaderTitle.text = getString(R.string.staff_header_clientes_title)
+        binding.screenHeader.tvHeaderSubtitle.text = getString(R.string.staff_header_clientes_sub)
+        binding.screenHeader.imgHeaderIcon.setImageResource(R.drawable.ic_person)
+    }
+
     fun init(){
         ConfigLoading.showLoadingAnimation()
         clientesList = mutableListOf()
-        clientesAdapter = ClienteAdapter(requireActivity(), clientesList)
-        binding.lisMenuClientes.adapter = clientesAdapter
-        binding.lisMenuClientes.divider = null
-        binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
-            EditClienteFragment.CLIENTE_EDIT = ClienteModel()
-            EditClienteFragment.CLIENTE_EDIT = clientesAdapter.getItem(i)!!
-
-            UtilFragment.changeFragment(requireActivity() , ClienteDetalleFragment() ,TAG)
+        clientesAdapter = ClienteAdapter(requireActivity()) { cliente ->
+            EditClienteFragment.CLIENTE_EDIT = cliente
+            UtilFragment.changeFragment(
+                requireActivity(),
+                ClienteDetalleFragment(),
+                TAG,
+                listKey = ListScrollKeys.CLIENTES,
+                listRecyclerView = binding.lisMenuClientes,
+                selectedItemId = cliente.id
+            )
         }
+        ListUiHelper.setupVerticalList(binding.lisMenuClientes)
+        binding.lisMenuClientes.adapter = clientesAdapter
 
         obtenerClientes()
     }
@@ -65,24 +79,19 @@ class ClienteFragment : Fragment() {
             fullName.contains(text, ignoreCase = true)
         }
          clientesAdapter.updateList(filteredList)
-         clientesAdapter.notifyDataSetChanged()
+         ListUiHelper.restoreScrollIfPending(
+             ListScrollKeys.CLIENTES,
+             binding.lisMenuClientes,
+             filteredList.map { it.id }
+         )
     }
     fun listeners(){
         binding.btnAddCliente.setOnClickListener {
             UtilFragment.changeFragment(requireActivity(), AddClienteFragment(),TAG)
         }
-        binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Aplicar el filtro del adaptador al escribir en el SearchView
-                filterClientes(newText.toString())
-                return true
-            }
-        })
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterClientes(query)
+        }
     }
     fun initLoading() {
         ConfigLoading.init(
@@ -94,7 +103,7 @@ class ClienteFragment : Fragment() {
 
 
     fun obtenerClientes(){
-        FirebaseClienteUtil.obtenerListaClientes(object : ValueEventListener {
+        FirebaseClienteUtil.obtenerListaClientesUnaVez(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 // Limpiar la lista antes de agregar los nuevos datos
                 clientesList.clear()
@@ -102,34 +111,22 @@ class ClienteFragment : Fragment() {
                 // Recorrer los datos obtenidos y agregarlos a la lista de clientes
                 for (productoSnapshot in snapshot.children) {
                     try {
-                        val map = productoSnapshot.value as? Map<String, Any?>
-                        if (map != null) {
-                            val cliente = ClienteModel()
-                            cliente.id = map["id"]?.toString() ?: ""
-                            cliente.nombre = map["nombre"]?.toString() ?: ""
-                            cliente.apellidoPaterno = map["apellidoPaterno"]?.toString() ?: ""
-                            cliente.apellidoMaterno = map["apellidoMaterno"]?.toString() ?: ""
-                            cliente.expediente = map["expediente"]?.toString() ?: ""
-                            cliente.correo = map["correo"]?.toString() ?: ""
-                            cliente.telefono = map["telefono"]?.toString() ?: ""
-                            cliente.calle = map["calle"]?.toString() ?: ""
-                            cliente.numero = map["numero"]?.toString() ?: ""
-                            cliente.colonia = map["colonia"]?.toString() ?: ""
-                            cliente.municipio = map["municipio"]?.toString() ?: ""
-                            cliente.urlGoogleMaps = map["urlGoogleMaps"]?.toString() ?: ""
-                            cliente.kilometrosCasa = map["kilometrosCasa"]?.toString() ?: ""
-                            cliente.fecha = map["fecha"]?.toString() ?: ""
-                            cliente.imageUrl = map["imageUrl"]?.toString() ?: ""
-                            cliente.imageFileName = map["imageFileName"]?.toString() ?: ""
+                        if (!RtdbActiveRecords.isActive(productoSnapshot)) continue
+                        val cliente = FirebaseClienteUtil.parseCliente(productoSnapshot)
+                        if (cliente != null && cliente.id.isNotBlank()) {
                             clientesList.add(cliente)
                         }
-                    } catch (e: Exception) {
-                        // Puedes loguear el error si lo deseas
+                    } catch (_: Exception) {
                     }
                 }
 
                 // Notificar al adaptador que los datos han cambiado
-                clientesAdapter.notifyDataSetChanged()
+                clientesAdapter.updateList(clientesList)
+                ListUiHelper.restoreScrollIfPending(
+                    ListScrollKeys.CLIENTES,
+                    binding.lisMenuClientes,
+                    clientesList.map { it.id }
+                )
                 if (clientesList.size > 0){
                     requireActivity().title = "${getString(R.string.menu_cliente)} (${clientesList.size})"
                     ConfigLoading.hideLoadingAnimation()
@@ -139,9 +136,9 @@ class ClienteFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                ConfigLoading.showNodata()
-                // Manejar errores de la consulta a la base de datos
-                // Por ejemplo, mostrar un mensaje de error
+                FirebaseUiHelper.handleLoadError(requireContext(), error) {
+                    obtenerClientes()
+                }
             }
         })
     }
@@ -152,10 +149,9 @@ class ClienteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        init()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext() , MenuFragment() ,TAG)
+                UtilFragment.goHome(requireContext())
             }
         })
     }

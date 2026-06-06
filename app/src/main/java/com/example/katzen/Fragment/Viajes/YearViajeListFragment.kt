@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Viajes.YearViajeListAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.YearViajeModel
@@ -36,12 +38,18 @@ class YearViajeListFragment : Fragment() {
         
         requireActivity().title = "Viajes"
         
-        adapter = YearViajeListAdapter(requireActivity(), yearList)
-        binding.listViewYears.setOnItemClickListener { _, _, position, _ ->
-            val selectedYear = yearList[position].year
-            val fragment = ViajesFragment.newInstance(selectedYear)
-            UtilFragment.changeFragment(requireActivity(), fragment, TAG)
+        adapter = YearViajeListAdapter { yearModel ->
+            val fragment = ViajesFragment.newInstance(yearModel.year)
+            UtilFragment.changeFragment(
+                requireActivity(),
+                fragment,
+                TAG,
+                listKey = ListScrollKeys.VIAJES_ANIOS,
+                listRecyclerView = binding.listViewYears,
+                selectedItemId = yearModel.year
+            )
         }
+        ListUiHelper.setupVerticalList(binding.listViewYears)
         binding.listViewYears.adapter = adapter
         
         initLoading()
@@ -98,7 +106,12 @@ class YearViajeListFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         yearList.clear()
                         yearList.addAll(yearModelList)
-                        adapter.notifyDataSetChanged()
+                        adapter.updateList(yearModelList)
+                        ListUiHelper.restoreScrollIfPending(
+                            ListScrollKeys.VIAJES_ANIOS,
+                            binding.listViewYears,
+                            yearModelList.map { it.year }
+                        )
                         ConfigLoading.hideLoadingAnimation()
 
                         yearList.forEach { 
@@ -130,7 +143,7 @@ class YearViajeListFragment : Fragment() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                UtilFragment.goBackOrHome(requireContext())
             }
         })
     }

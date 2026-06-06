@@ -1,0 +1,14 @@
+{
+  "activo": true,
+  "aplicada": true,
+  "dosis": "1 ml",
+  "fecha": "05/06/2026",
+  "fechaAplicacion": "2026-06-05T18:00:00.000Z",
+  "fechaRegistro": "2026-06-05 13:45:00",
+  "idCliente": "9b969f00-dd8d-4b95-830e-849d92c5871c",
+  "idPaciente": "99f5856b-0419-4807-ba5b-a83fb146585b",
+  "observaciones": "Registro de prueba para portal del dueño",
+  "recordatorio": false,
+  "vacuna": "Triple Felina (PRUEBA)",
+  "veterinario": "KatzenVet"
+}

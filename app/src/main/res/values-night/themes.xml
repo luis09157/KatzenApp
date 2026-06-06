@@ -1,19 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.Katzen" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/katzen_verde</item>
-        <item name="colorPrimaryVariant">@color/katzen_verde_fuerte</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/katzen_rosa</item>
-        <item name="colorSecondaryVariant">@color/katzen_rosa_fuerte</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-    </style>
-  <!-- Base application theme. -->
-    <style name="Base.Theme.Katzen" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Base application theme for night mode. -->
+    <style name="Base.Theme.Katzen" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_on_primary</item>
+        <!-- Add other color overrides if needed for dark mode -->
     </style>
 </resources>

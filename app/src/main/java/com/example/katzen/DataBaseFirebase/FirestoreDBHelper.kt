@@ -10,7 +10,7 @@ class FirestoreDBHelper {
     val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     companion object{
-        val _URL_STORAGE_FIREBASE = "https://firebasestorage.googleapis.com/v0/b/rutasmagicas-2514a.appspot.com/o/"
+        val _URL_STORAGE_FIREBASE = "https://firebasestorage.googleapis.com/v0/b/katzen-a0e3e.appspot.com/o/"
     }
 
 

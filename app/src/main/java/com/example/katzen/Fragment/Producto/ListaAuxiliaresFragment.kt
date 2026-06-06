@@ -12,6 +12,8 @@ import com.example.katzen.Adapter.AuxiliaresAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseAuxiliarUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.AuxiliarModel
 import com.google.firebase.database.DataSnapshot
@@ -57,13 +59,13 @@ class ListaAuxiliaresFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        auxiliaresAdapter = AuxiliaresAdapter(auxiliaresList, { auxiliar ->
+        auxiliaresAdapter = AuxiliaresAdapter({ auxiliar ->
             editarAuxiliar(auxiliar)
         }, { auxiliar ->
             eliminarAuxiliar(auxiliar)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuAuxiliares)
         binding.lisMenuAuxiliares.adapter = auxiliaresAdapter
-        binding.lisMenuAuxiliares.divider = null
     }
 
     private fun setupSearchBar() {
@@ -90,16 +92,21 @@ class ListaAuxiliaresFragment : Fragment() {
             auxiliaresList.clear()
             auxiliaresList.addAll(filteredList)
         }
-        auxiliaresAdapter.notifyDataSetChanged()
+        auxiliaresAdapter.updateList(auxiliaresList.toList())
+        restoreAuxiliaresScroll()
+    }
+
+    private fun restoreAuxiliaresScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.AUXILIARES,
+            binding.lisMenuAuxiliares,
+            auxiliaresList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
         binding.btnAddAuxiliar.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddAuxiliarFragment(), TAG)
-        }
-        
-        binding.lisMenuAuxiliares.setOnItemClickListener { _, _, position, _ ->
-            editarAuxiliar(auxiliaresList[position])
         }
     }
 
@@ -119,7 +126,8 @@ class ListaAuxiliaresFragment : Fragment() {
                         auxiliaresListOriginal.add(it)
                     }
                 }
-                auxiliaresAdapter.notifyDataSetChanged()
+                auxiliaresAdapter.updateList(auxiliaresList.toList())
+                restoreAuxiliaresScroll()
 
                 if (auxiliaresList.size > 0) {
                     requireActivity().title = "${getString(R.string.submenu_productos_m_complementarios)} (${auxiliaresList.size})"
@@ -150,7 +158,14 @@ class ListaAuxiliaresFragment : Fragment() {
 
     private fun editarAuxiliar(auxiliar: AuxiliarModel) {
         val fragment = AddAuxiliarFragment.newInstance(auxiliar)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.AUXILIARES,
+            listRecyclerView = binding.lisMenuAuxiliares,
+            selectedItemId = auxiliar.id
+        )
     }
     
     private fun eliminarAuxiliar(auxiliar: AuxiliarModel) {
@@ -177,7 +192,7 @@ class ListaAuxiliaresFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

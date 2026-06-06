@@ -1,0 +1,13 @@
+{
+  "nombre": "Soldad",
+  "apellidoPaterno": "Cowboy",
+  "apellidoMaterno": "",
+  "correo": "soldad_cowboy@hotmail.com",
+  "telefono": "8100000000",
+  "expediente": "PORTAL-001",
+  "activo": true,
+  "fecha": "05/06/2026",
+  "authUid": "imJAaNtDyRQOb4RrJkTnJaYu09T2",
+  "portalActivo": true,
+  "fechaInvitacion": "2026-06-05T07:50:00.000Z"
+}

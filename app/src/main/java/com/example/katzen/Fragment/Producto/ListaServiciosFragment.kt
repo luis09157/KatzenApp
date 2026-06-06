@@ -12,6 +12,8 @@ import com.example.katzen.Adapter.ServiciosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseServicioUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ServicioModel
 import com.google.firebase.database.DataSnapshot
@@ -57,13 +59,13 @@ class ListaServiciosFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        serviciosAdapter = ServiciosAdapter(serviciosList, { servicio ->
+        serviciosAdapter = ServiciosAdapter({ servicio ->
             editarServicio(servicio)
         }, { servicio ->
             eliminarServicio(servicio)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuServicios)
         binding.lisMenuServicios.adapter = serviciosAdapter
-        binding.lisMenuServicios.divider = null
     }
 
     private fun setupSearchBar() {
@@ -88,16 +90,21 @@ class ListaServiciosFragment : Fragment() {
             serviciosList.clear()
             serviciosList.addAll(filteredList)
         }
-        serviciosAdapter.notifyDataSetChanged()
+        serviciosAdapter.updateList(serviciosList.toList())
+        restoreServiciosScroll()
+    }
+
+    private fun restoreServiciosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.SERVICIOS,
+            binding.lisMenuServicios,
+            serviciosList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
         binding.btnAddServicio.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddServicioFragment(), TAG)
-        }
-        
-        binding.lisMenuServicios.setOnItemClickListener { _, _, position, _ ->
-            editarServicio(serviciosList[position])
         }
     }
 
@@ -117,7 +124,8 @@ class ListaServiciosFragment : Fragment() {
                         serviciosListOriginal.add(it)
                     }
                 }
-                serviciosAdapter.notifyDataSetChanged()
+                serviciosAdapter.updateList(serviciosList.toList())
+                restoreServiciosScroll()
 
                 if (serviciosList.size > 0) {
                     requireActivity().title = "${getString(R.string.submenu_productos_servicios)} (${serviciosList.size})"
@@ -148,7 +156,14 @@ class ListaServiciosFragment : Fragment() {
 
     private fun editarServicio(servicio: ServicioModel) {
         val fragment = AddServicioFragment.newInstance(servicio)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.SERVICIOS,
+            listRecyclerView = binding.lisMenuServicios,
+            selectedItemId = servicio.id
+        )
     }
 
     private fun eliminarServicio(servicio: ServicioModel) {
@@ -172,7 +187,7 @@ class ListaServiciosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

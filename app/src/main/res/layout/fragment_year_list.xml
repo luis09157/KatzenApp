@@ -26,12 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <ListView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listViewYears"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"
             android:padding="8dp"
             android:visibility="visible"
             android:background="@color/background_color"/>

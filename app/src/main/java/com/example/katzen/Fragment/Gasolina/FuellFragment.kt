@@ -8,10 +8,10 @@ import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.Config
+import com.example.katzen.Helper.FirebaseUiHelper
 import com.example.katzen.Helper.GasHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Helper.UtilHelper
-import com.example.katzen.MenuFragment
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.FragmentGasolinaBinding
 import com.google.android.material.snackbar.Snackbar
@@ -44,7 +44,11 @@ class FuellFragment : Fragment() {
                     .setAction("Action", null).show()
                 return@setOnClickListener
             }
-            val (costo,ganancia,venta) =  GasHelper.calcular(binding.etCosto.text.toString().toDouble(),binding.spCategorias.text.toString())
+            val km = FirebaseUiHelper.parsePositiveDouble(binding.etCosto.text.toString()) {
+                Snackbar.make(it, getString(R.string.error_invalid_number_input), Snackbar.LENGTH_LONG).show()
+            } ?: return@setOnClickListener
+
+            val (costo, ganancia, venta) = GasHelper.calcular(km, binding.spCategorias.text.toString())
 
             binding.txtGanancia.text = ganancia
             binding.txtCosto.text = costo
@@ -89,7 +93,7 @@ class FuellFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuFragment(), TAG)
+                    UtilFragment.goHome(requireContext())
                 }
             })
     }

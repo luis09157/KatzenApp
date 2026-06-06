@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.AlimentosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
-import com.ninodev.katzen.DataBaseFirebase.FirebaseAlimentoUtil
-import com.ninodev.katzen.Model.ProductoAlimentoModel
+import com.example.katzen.DataBaseFirebase.FirebaseAlimentoUtil
+import com.example.katzen.Model.ProductoAlimentoModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -57,13 +59,13 @@ class ListaAlimentosFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        alimentosAdapter = AlimentosAdapter(alimentosList, { alimento ->
+        alimentosAdapter = AlimentosAdapter({ alimento ->
             editarAlimento(alimento)
         }, { alimento ->
             eliminarAlimento(alimento)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuAlimentos)
         binding.lisMenuAlimentos.adapter = alimentosAdapter
-        binding.lisMenuAlimentos.divider = null
     }
 
     private fun setupSearchBar() {
@@ -91,15 +93,20 @@ class ListaAlimentosFragment : Fragment() {
             alimentosList.addAll(filteredList)
         }
         alimentosAdapter.updateList(alimentosList)
+        restoreAlimentosScroll()
+    }
+
+    private fun restoreAlimentosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.ALIMENTOS,
+            binding.lisMenuAlimentos,
+            alimentosList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
         binding.btnAddAlimento.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoAlimentoFragment(), TAG)
-        }
-        
-        binding.lisMenuAlimentos.setOnItemClickListener { _, _, position, _ ->
-            editarAlimento(alimentosList[position])
         }
     }
 
@@ -120,6 +127,7 @@ class ListaAlimentosFragment : Fragment() {
                     }
                 }
                 alimentosAdapter.updateList(alimentosList)
+                restoreAlimentosScroll()
 
                 if (alimentosList.size > 0) {
                     requireActivity().title = "${getString(R.string.submenu_productos_alimentos)} (${alimentosList.size})"
@@ -147,7 +155,14 @@ class ListaAlimentosFragment : Fragment() {
 
     private fun editarAlimento(alimento: ProductoAlimentoModel) {
         val fragment = AddProductoAlimentoFragment.newInstance(alimento)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.ALIMENTOS,
+            listRecyclerView = binding.lisMenuAlimentos,
+            selectedItemId = alimento.id
+        )
     }
 
     private fun eliminarAlimento(alimento: ProductoAlimentoModel) {
@@ -171,7 +186,7 @@ class ListaAlimentosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

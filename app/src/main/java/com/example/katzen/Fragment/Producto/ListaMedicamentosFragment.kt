@@ -12,6 +12,9 @@ import com.example.katzen.Adapter.MedicamentosAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseMedicamentoUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ConnectivityHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProductoMedicamentoModel
 import com.google.firebase.database.DataSnapshot
@@ -56,22 +59,18 @@ class ListaMedicamentosFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        medicamentosAdapter = MedicamentosAdapter(medicamentosList, { medicamento ->
+        medicamentosAdapter = MedicamentosAdapter({ medicamento ->
             editarMedicamento(medicamento)
         }, { medicamento ->
             eliminarMedicamento(medicamento)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuMedicamentos)
         binding.lisMenuMedicamentos.adapter = medicamentosAdapter
-        binding.lisMenuMedicamentos.divider = null
     }
 
     private fun setupListeners() {
         binding.btnAddMedicamento.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoMedicamentoFragment(), TAG)
-        }
-
-        binding.lisMenuMedicamentos.setOnItemClickListener { _, _, position, _ ->
-            editarMedicamento(medicamentosList[position])
         }
     }
 
@@ -99,7 +98,16 @@ class ListaMedicamentosFragment : Fragment() {
             medicamentosList.clear()
             medicamentosList.addAll(filteredList)
         }
-        medicamentosAdapter.notifyDataSetChanged()
+        medicamentosAdapter.updateList(medicamentosList.toList())
+        restoreMedicamentosScroll()
+    }
+
+    private fun restoreMedicamentosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.MEDICAMENTOS,
+            binding.lisMenuMedicamentos,
+            medicamentosList.map { it.id }
+        )
     }
 
     private fun cargarMedicamentos() {
@@ -120,7 +128,8 @@ class ListaMedicamentosFragment : Fragment() {
                             medicamentosListOriginal.add(it)
                         }
                     }
-                    medicamentosAdapter.notifyDataSetChanged()
+                    medicamentosAdapter.updateList(medicamentosList.toList())
+                    restoreMedicamentosScroll()
 
                     if (medicamentosList.size > 0) {
                         requireActivity().title = "${getString(R.string.submenu_productos_medicamentos)} (${medicamentosList.size})"
@@ -152,14 +161,19 @@ class ListaMedicamentosFragment : Fragment() {
     }
 
     // Verificar la conexión a Internet (agregado)
-    private fun isInternetAvailable(): Boolean {
-        // Aquí puedes implementar el chequeo de conexión a Internet (por ejemplo, usando ConnectivityManager)
-        return true  // Cambia esto a la implementación real
-    }
+    private fun isInternetAvailable(): Boolean =
+        ConnectivityHelper.isInternetAvailable(requireContext())
 
     private fun editarMedicamento(medicamento: ProductoMedicamentoModel) {
         val fragment = AddProductoMedicamentoFragment.newInstance(medicamento)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.MEDICAMENTOS,
+            listRecyclerView = binding.lisMenuMedicamentos,
+            selectedItemId = medicamento.id
+        )
     }
 
     private fun eliminarMedicamento(medicamento: ProductoMedicamentoModel) {
@@ -186,7 +200,7 @@ class ListaMedicamentosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

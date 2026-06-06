@@ -4,9 +4,11 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Fragment.Campaña.CampañaFragment
 import com.example.katzen.Helper.CalendarioUtil
@@ -19,41 +21,46 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CampañaEventoAdapter(
-    activity: Activity,
-    private var campañaList: List<CampañaModel>
-) : ArrayAdapter<CampañaModel>(activity, R.layout.view_campania_evento_detalle, campañaList) {
+    private val activity: Activity,
+    private val onItemClick: ((CampañaModel) -> Unit)? = null
+) : ListAdapter<CampañaModel, CampañaEventoAdapter.ViewHolder>(DIFF) {
 
-    private var originalList: List<CampañaModel> = campañaList.toList()
-    var activity : Activity = activity
-    var TAG : String = "CampañaEventoAdapter"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.view_campania_evento_detalle, parent, false)
+        return ViewHolder(view)
+    }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
 
-        if (itemView == null) {
-            itemView = LayoutInflater.from(activity).inflate(R.layout.view_campania_evento_detalle, parent, false)
-            holder = ViewHolder()
+    fun updateList(newList: List<CampañaModel>) {
+        submitList(newList.toList())
+    }
 
-            holder.diaTextView = itemView.findViewById(R.id.textViewDia)
-            holder.fechaTextView = itemView.findViewById(R.id.textViewFecha)
-            holder.cantidadPacientesTextView = itemView.findViewById(R.id.textViewCantidadPacientes)
-            holder.btnEliminar = itemView.findViewById(R.id.btnEliminar)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val diaTextView: TextView = itemView.findViewById(R.id.textViewDia)
+        private val fechaTextView: TextView = itemView.findViewById(R.id.textViewFecha)
+        private val cantidadPacientesTextView: TextView = itemView.findViewById(R.id.textViewCantidadPacientes)
+        private val btnEliminar: View = itemView.findViewById(R.id.btnEliminar)
 
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
-        }
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(getItem(pos))
+                }
+            }
 
-        val campaña = campañaList[position]
-
-        holder.fechaTextView?.text = campaña.fecha
-        holder.cantidadPacientesTextView?.text = "${campaña.cantidadPacientes} Pacientes"
-        holder.diaTextView?.text = CalendarioUtil.obtenerDiaDesdeString(campaña.fecha)
-
-        holder.btnEliminar?.setOnClickListener {
-            activity.runOnUiThread {
-                DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar la campaña?") { confirmed ->
+            btnEliminar.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+                val campaña = getItem(pos)
+                DialogMaterialHelper.mostrarConfirmDialog(
+                    activity,
+                    "¿Estás seguro de que deseas eliminar la campaña?"
+                ) { confirmed ->
                     if (confirmed) {
                         CoroutineScope(Dispatchers.IO).launch {
                             CampañaFragment.ADD_CAMPAÑA.id = campaña.id
@@ -61,8 +68,6 @@ class CampañaEventoAdapter(
                             withContext(Dispatchers.Main) {
                                 if (success) {
                                     DialogMaterialHelper.mostrarSuccessDialog(activity, message)
-                                    notifyDataSetChanged()
-                                    //updateList(originalList.filter { it.id != campaña.id })
                                 } else {
                                     DialogMaterialHelper.mostrarErrorDialog(activity, message)
                                 }
@@ -73,28 +78,24 @@ class CampañaEventoAdapter(
             }
         }
 
-        return itemView!!
+        fun bind(campaña: CampañaModel) {
+            fechaTextView.text = campaña.fecha
+            cantidadPacientesTextView.text = "${campaña.cantidadPacientes} Pacientes"
+            diaTextView.text = CalendarioUtil.obtenerDiaDesdeString(campaña.fecha)
+        }
     }
 
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<CampañaModel>() {
+            override fun areItemsTheSame(oldItem: CampañaModel, newItem: CampañaModel): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-    override fun getCount(): Int {
-        return campañaList.size
-    }
-
-    override fun getItem(position: Int): CampañaModel? {
-        return campañaList[position]
-    }
-    fun updateList(newList: List<CampañaModel>) {
-        campañaList = newList.toList()
-        originalList = newList.toList()
-        notifyDataSetChanged()
-    }
-
-    private class ViewHolder {
-        var fechaTextView: TextView? = null
-        var cantidadPacientesTextView: TextView? = null
-        var diaTextView: TextView? = null
-        var btnEliminar: LinearLayout? = null
-
+            override fun areContentsTheSame(oldItem: CampañaModel, newItem: CampañaModel): Boolean {
+                return oldItem.id == newItem.id &&
+                    oldItem.fecha == newItem.fecha &&
+                    oldItem.cantidadPacientes == newItem.cantidadPacientes
+            }
+        }
     }
 }

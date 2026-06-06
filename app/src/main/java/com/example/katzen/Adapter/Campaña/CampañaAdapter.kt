@@ -1,67 +1,45 @@
 package com.example.katzen.Adapter.Campaña
 
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.Model.CampañaModel
 import com.ninodev.katzen.R
 
 class CampañaAdapter(
-activity: Activity,
-private var campañaList: List<CampañaModel>
-) : ArrayAdapter<CampañaModel>(activity, R.layout.view_detalle_calendario, campañaList) {
+    private val onItemClick: (Int, CampañaModel) -> Unit
+) : ListAdapter<CampañaModel, CampañaAdapter.ViewHolder>(DIFF) {
 
-    private var originalList: List<CampañaModel> = campañaList.toList()
-    var activity : Activity = activity
-    var TAG : String = "CampañaAdapter"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.view_detalle_calendario, parent, false)
+    )
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position), position)
 
-        if (itemView == null) {
-            itemView = LayoutInflater.from(activity).inflate(R.layout.view_detalle_calendario, parent, false)
-            holder = ViewHolder()
+    fun updateList(newList: List<CampañaModel>) = submitList(newList.toList())
 
-            holder.mesTextView = itemView.findViewById(R.id.mesTextView)
-            holder.cantidadEventos = itemView.findViewById(R.id.eventosTextView)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val mesTextView: TextView = itemView.findViewById(R.id.mesTextView)
+        private val cantidadEventos: TextView = itemView.findViewById(R.id.eventosTextView)
 
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
+        fun bind(campaña: CampañaModel, position: Int) {
+            mesTextView.text = campaña.mes
+            cantidadEventos.text = "${campaña.cantidadCampañas} Eventos"
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) onItemClick(pos, getItem(pos))
+            }
         }
-        val campaña = campañaList[position]
-
-        holder.mesTextView?.text = ""
-        holder.cantidadEventos?.text = ""
-
-        holder.mesTextView?.text =  campaña.mes
-        holder.cantidadEventos?.text = "${campaña.cantidadCampañas} Eventos"
-
-
-
-        return itemView!!
     }
 
-    override fun getCount(): Int {
-        return campañaList.size
-    }
-
-    override fun getItem(position: Int): CampañaModel? {
-        return campañaList[position]
-    }
-    fun updateList(newList: List<CampañaModel>) {
-        campañaList = newList.toList()
-        originalList = newList.toList()
-        notifyDataSetChanged()
-    }
-
-    private class ViewHolder {
-        var mesTextView: TextView? = null
-        var cantidadEventos: TextView? = null
-
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<CampañaModel>() {
+            override fun areItemsTheSame(a: CampañaModel, b: CampañaModel) = a.mes == b.mes
+            override fun areContentsTheSame(a: CampañaModel, b: CampañaModel) = a == b
+        }
     }
 }

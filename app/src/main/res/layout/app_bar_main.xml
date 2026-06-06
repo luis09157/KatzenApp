@@ -10,12 +10,14 @@
         android:layout_height="wrap_content"
         android:theme="@style/Theme.Katzen.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.Katzen.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Katzen.PopupOverlay" />
+            android:background="@color/katzen_verde"
+            app:popupTheme="@style/Theme.Katzen.PopupOverlay"
+            app:titleTextAppearance="@style/TextAppearance.Katzen.Headline" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

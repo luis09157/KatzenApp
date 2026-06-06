@@ -1,107 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/list_item_padding"
+    android:layout_marginVertical="6dp"
+    app:cardBackgroundColor="@color/surface_card"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:cardCornerRadius="20dp"
-        tools:ignore="MissingConstraints">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="96dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <View
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_portal_menu_accent" />
+
+        <include
+            layout="@layout/view_image_avatar_loading"
+            android:layout_width="72dp"
+            android:layout_height="72dp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:gravity="center"
-                android:orientation="vertical">
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardCornerRadius="50dp">
-                    <ImageView
-                        android:id="@+id/imgPerfil"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_person"></ImageView>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-            <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_nombre"
+                style="@style/TextAppearance.Katzen.ListTitle"
                 android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/text_nombre"
-                    android:textColor="@color/black"
-                    android:gravity="left|bottom"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:autoSizeTextType="uniform"
-                    app:autoSizeMinTextSize="10sp"
-                    app:autoSizeMaxTextSize="15sp"
-                    android:text="Roket"
-                    android:lines="1"
-                    android:fontFamily="@font/poppins_regular"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/text_descripcion"
-                    android:textColor="@color/black"
-                    android:gravity="left|center"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:autoSizeTextType="uniform"
-                    app:autoSizeMinTextSize="10sp"
-                    app:autoSizeMaxTextSize="15sp"
-                    android:text="Canino, 3 a;os"
-                    android:lines="1"
-                    android:fontFamily="@font/poppins_light"
-                    android:textStyle="bold" />
-            </LinearLayout>
-            <LinearLayout
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Roket" />
+
+            <TextView
+                android:id="@+id/text_descripcion"
+                style="@style/TextAppearance.Katzen.ListSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Canino, 3 años" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
                 android:id="@+id/btnCompartir"
                 android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_icon_action"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
+
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:background="@color/katzen_rosa"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_compartir"/>
-            </LinearLayout>
-            <LinearLayout
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_share_m3"
+                    app:tint="?attr/colorSecondary"
+                    tools:ignore="ContentDescription" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/btnPDF"
                 android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_icon_action"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
+
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:background="@color/katzen_verde"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_print"/>
-            </LinearLayout>
-            <LinearLayout
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_print_m3"
+                    app:tint="?attr/colorPrimary"
+                    tools:ignore="ContentDescription" />
+            </FrameLayout>
+
+            <FrameLayout
                 android:id="@+id/btnEliminar"
                 android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:background="@color/katzen_rosa"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_delete"/>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_height="40dp"
+                android:background="@drawable/bg_delete_action"
+                android:foreground="?attr/selectableItemBackgroundBorderless">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_delete_m3"
+                    app:tint="@color/white"
+                    tools:ignore="ContentDescription" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

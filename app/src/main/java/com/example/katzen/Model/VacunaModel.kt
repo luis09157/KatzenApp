@@ -17,7 +17,8 @@ data class VacunaModel(
     var recordatorio: Boolean = false,
     var fechaRecordatorio: String = "",
     var observaciones: String = "",
-    var fechaRegistro: String = ""
+    var fechaRegistro: String = "",
+    var veterinario: String = ""
 ) : Parcelable
 
 @Keep

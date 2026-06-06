@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="portal_mascotas_count">
+        <item quantity="one">%d mascota</item>
+        <item quantity="other">%d mascotas</item>
+    </plurals>
+    <plurals name="portal_records_count">
+        <item quantity="one">%d registro</item>
+        <item quantity="other">%d registros</item>
+    </plurals>
+    <plurals name="portal_notif_unread_count">
+        <item quantity="one">%d sin leer</item>
+        <item quantity="other">%d sin leer</item>
+    </plurals>
+    <plurals name="portal_notif_minutes_ago">
+        <item quantity="one">Hace %d minuto</item>
+        <item quantity="other">Hace %d minutos</item>
+    </plurals>
+    <plurals name="portal_notif_hours_ago">
+        <item quantity="one">Hace %d hora</item>
+        <item quantity="other">Hace %d horas</item>
+    </plurals>
+    <plurals name="portal_notif_days_ago">
+        <item quantity="one">Hace %d día</item>
+        <item quantity="other">Hace %d días</item>
+    </plurals>
+</resources>

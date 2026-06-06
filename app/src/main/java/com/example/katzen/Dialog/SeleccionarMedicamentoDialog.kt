@@ -130,10 +130,10 @@ class SeleccionarMedicamentoDialog(
         if (query.isEmpty()) {
             filteredMedicamentos.addAll(medicamentos)
         } else {
-            val lowerCaseQuery = query.toLowerCase()
+            val lowerCaseQuery = query.lowercase()
             filteredMedicamentos.addAll(medicamentos.filter {
-                it.nombre.toLowerCase().contains(lowerCaseQuery) ||
-                it.descripcion.toLowerCase().contains(lowerCaseQuery)
+                it.nombre.lowercase().contains(lowerCaseQuery) ||
+                it.descripcion.lowercase().contains(lowerCaseQuery)
             })
         }
         

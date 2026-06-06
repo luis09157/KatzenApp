@@ -4,19 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Producto.ProductoInventarioAdapter
 import com.example.katzen.Config.ConfigLoading
+import com.example.katzen.DataBaseFirebase.FirebaseCatalogoUtil
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProductoModel
 import com.ninodev.katzen.databinding.InventarioFragmentBinding
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.ninodev.katzen.R
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class InventarioFragment : Fragment() {
-    val TAG : String  = "InventarioFragment"
+    val TAG: String = "InventarioFragment"
 
     private var _binding: InventarioFragmentBinding? = null
     private val binding get() = _binding!!
@@ -31,20 +35,14 @@ class InventarioFragment : Fragment() {
         _binding = InventarioFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        requireActivity().title = getString(R.string.menu_inventario)
         initLoading()
         init()
-
-
-        binding.menuListProductoInventario.setOnItemClickListener { adapterView, view, i, l ->
-            var addProductoInventarioFragment = AddProductoInventarioFragment()
-            addProductoInventarioFragment.setProducto(productosList.get(i))
-            UtilFragment.changeFragment(requireContext(),addProductoInventarioFragment,TAG)
-        }
 
         return root
     }
 
-    fun initLoading() {
+    private fun initLoading() {
         ConfigLoading.init(
             binding.lottieAnimationView,
             binding.contAddProducto,
@@ -52,53 +50,84 @@ class InventarioFragment : Fragment() {
         )
     }
 
-    fun init(){
+    private fun init() {
         ConfigLoading.showLoadingAnimation()
         productosList = mutableListOf()
-        productosAdapter = ProductoInventarioAdapter(requireContext(), productosList)
+        productosAdapter = ProductoInventarioAdapter { producto ->
+            val addProductoInventarioFragment = AddProductoInventarioFragment()
+            addProductoInventarioFragment.setProducto(producto)
+            UtilFragment.changeFragment(
+                requireContext(),
+                addProductoInventarioFragment,
+                TAG,
+                listKey = ListScrollKeys.INVENTARIO,
+                listRecyclerView = binding.menuListProductoInventario,
+                selectedItemId = producto.id
+            )
+        }
+        ListUiHelper.setupGridList(binding.menuListProductoInventario, 2)
         binding.menuListProductoInventario.adapter = productosAdapter
         obtenerProductos()
-
     }
 
-    fun obtenerInventario(productoModel: ProductoModel, onComplete: (ProductoModel) -> Unit) {
+    private fun obtenerInventario(productoModel: ProductoModel, onComplete: (ProductoModel) -> Unit) {
         FirebaseInventarioUtil.obtenerInventarioPorProducto(productoModel.id) { inventarioList ->
-            // Actualizar el productoModel con la cantidad de inventario
             for (inventario in inventarioList) {
-                println("Cantidad: ${inventario.cantidad}, Fecha: ${inventario.fecha}, Unidad de Medida: ${inventario.unidadMedida}")
                 productoModel.cantidadInventario += inventario.cantidad
             }
-            // Llamar al onComplete con el productoModel actualizado
             onComplete(productoModel)
         }
     }
-    fun obtenerProductos(){
-        FirebaseProductoUtil.obtenerListaProductos(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Limpiar la lista antes de agregar los nuevos datos
+
+    private fun obtenerProductos() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val productos = FirebaseCatalogoUtil.obtenerCatalogoUnificado()
+                if (!isAdded) return@launch
+                if (productos.isEmpty()) {
+                    productosList.clear()
+                    productosAdapter.updateList(emptyList())
+                    ConfigLoading.showNodata()
+                    return@launch
+                }
+
                 productosList.clear()
+                var pendientes = productos.size
 
-                // Recorrer los datos obtenidos y agregarlos a la lista de productos
-                for (productoSnapshot in snapshot.children) {
-                    var producto = productoSnapshot.getValue(ProductoModel::class.java)
-
-                    obtenerInventario(producto!!) { productoActualizado ->
-                        // Aquí puedes trabajar con el producto actualizado, como agregarlo a la lista de productos
+                productos.forEach { producto ->
+                    obtenerInventario(producto) { productoActualizado ->
+                        if (!isAdded) return@obtenerInventario
                         productosList.add(productoActualizado)
-                        // Asegúrate de notificar al adaptador después de agregar el producto a la lista
-                        productosAdapter.notifyDataSetChanged()
-                        ConfigLoading.hideLoadingAnimation()
+                        pendientes--
+                        if (pendientes == 0) {
+                            productosAdapter.updateList(productosList.toList())
+                            ListUiHelper.restoreScrollIfPending(
+                                ListScrollKeys.INVENTARIO,
+                                binding.menuListProductoInventario,
+                                productosList.map { it.id }
+                            )
+                            ConfigLoading.hideLoadingAnimation()
+                        }
                     }
                 }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Manejar errores de la consulta a la base de datos
-                // Por ejemplo, mostrar un mensaje de error
+            } catch (_: Exception) {
+                if (!isAdded) return@launch
                 ConfigLoading.showNodata()
             }
-        })
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.goBackOrHome(requireContext())
+                }
+            })
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

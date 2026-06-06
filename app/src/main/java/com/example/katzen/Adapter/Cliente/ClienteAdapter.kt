@@ -4,15 +4,16 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.example.katzen.DataBaseFirebase.FirebaseClienteUtil
 import com.example.katzen.DataBaseFirebase.OnCompleteListener
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.R
@@ -20,109 +21,149 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ClienteAdapter (
-    activity: Activity,
-    private var clienteList: List<ClienteModel>
-) : ArrayAdapter<ClienteModel>(activity, R.layout.cliente_list_fragment, clienteList) {
+class ClienteAdapter(
+    private val activity: Activity,
+    private val onItemClick: ((ClienteModel) -> Unit)? = null
+) : ListAdapter<ClienteModel, ClienteAdapter.ViewHolder>(DIFF) {
 
-    private var originalList: List<ClienteModel> = clienteList.toList()
-    var activity : Activity = activity
-    var TAG : String = "ClienteAdapter"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.cliente_list_fragment, parent, false)
+        return ViewHolder(view)
+    }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
 
-        if (itemView == null) {
-            itemView = LayoutInflater.from(activity).inflate(R.layout.cliente_list_fragment, parent, false)
-            holder = ViewHolder()
-            holder.imgPerfil = itemView.findViewById(R.id.imgPerfil)
-            holder.nombreCompletoTextView = itemView.findViewById(R.id.textViewNombreCompleto)
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.clearImage()
+        super.onViewRecycled(holder)
+    }
 
-            holder.expediente = itemView.findViewById(R.id.textExpediente)
-            holder.fondoTelefono = itemView.findViewById(R.id.fondoTelefono)
-            holder.fondoCorreo = itemView.findViewById(R.id.fondoCorreo)
-            holder.fondoUbicacion = itemView.findViewById(R.id.fondoUbicacion)
-            holder.btnEliminar = itemView.findViewById(R.id.btnEliminar)
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
-        }
-        val cliente = clienteList[position]
+    fun updateList(newList: List<ClienteModel>) {
+        submitList(newList.toList())
+    }
 
-        holder.nombreCompletoTextView?.text = ""
-        holder.imgPerfil?.setImageResource(R.drawable.ic_person)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imgPerfil: ImageView = itemView.findViewById(R.id.imgPerfil)
+        private val progressImageLoading: ProgressBar = itemView.findViewById(R.id.progressImageLoading)
+        private val nombreCompletoTextView: TextView = itemView.findViewById(R.id.textViewNombreCompleto)
+        private val expediente: TextView = itemView.findViewById(R.id.textExpediente)
+        private val telefono: TextView = itemView.findViewById(R.id.textTelefono)
+        private val fondoTelefono: View = itemView.findViewById(R.id.fondoTelefono)
+        private val fondoCorreo: View = itemView.findViewById(R.id.fondoCorreo)
+        private val fondoUbicacion: View = itemView.findViewById(R.id.fondoUbicacion)
+        private val btnEliminar: View = itemView.findViewById(R.id.btnEliminar)
 
-        holder.nombreCompletoTextView?.text = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}"
-        holder.expediente?.text = cliente.expediente
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onItemClick?.invoke(getItem(pos))
+                }
+            }
 
-        if (cliente.imageUrl.isNotEmpty()) {
-            Glide.with(activity)
-                .load(cliente.imageUrl)
-                .apply(RequestOptions()
-                    .placeholder(R.drawable.ic_person) // Establecer la imagen predeterminada
-                    .error(R.drawable.ic_person)) // Opcional: establecer una imagen en caso de error al cargar
-                .into(holder.imgPerfil!!)
-        } else {
-            holder.imgPerfil?.setImageResource(R.drawable.ic_person)
-        }
+            fondoTelefono.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    UtilHelper.llamarCliente(activity, getItem(pos).telefono)
+                }
+            }
 
-        holder.fondoTelefono!!.setOnClickListener {
-            UtilHelper.llamarCliente(activity, cliente.telefono)
-        }
-        holder.fondoCorreo!!.setOnClickListener {
-            UtilHelper.enviarCorreoElectronicoGmail(activity, cliente.correo)
-        }
-        holder.fondoUbicacion!!.setOnClickListener {
-            UtilHelper.abrirGoogleMaps(activity, cliente.urlGoogleMaps)
-        }
-        holder.btnEliminar?.setOnClickListener {
-            activity.runOnUiThread {
-                DialogMaterialHelper.mostrarConfirmDialog(activity, "¿Estás seguro de que deseas eliminar este Cliente?") { confirmed ->
+            fondoCorreo.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    UtilHelper.enviarCorreoElectronicoGmail(activity, getItem(pos).correo)
+                }
+            }
+
+            fondoUbicacion.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    UtilHelper.abrirGoogleMaps(activity, getItem(pos).urlGoogleMaps)
+                }
+            }
+
+            btnEliminar.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
+                val cliente = getItem(pos)
+                DialogMaterialHelper.mostrarConfirmDialog(
+                    activity,
+                    activity.getString(R.string.cliente_desactivar_confirm)
+                ) { confirmed ->
                     if (confirmed) {
                         CoroutineScope(Dispatchers.IO).launch {
-                            FirebaseClienteUtil.eliminarCliente(cliente.id , object :
-                                OnCompleteListener {
+                            FirebaseClienteUtil.desactivarCliente(cliente.id, object : OnCompleteListener {
                                 override fun onComplete(success: Boolean, message: String) {
                                     if (success) {
-                                        DialogMaterialHelper.mostrarSuccessDialog(activity, message)
+                                        val updated = currentList.filter { it.id != cliente.id }
+                                        activity.runOnUiThread {
+                                            updateList(updated)
+                                            DialogMaterialHelper.mostrarSuccessDialog(activity, message)
+                                        }
                                     } else {
                                         DialogMaterialHelper.mostrarErrorDialog(activity, message)
                                     }
                                 }
                             })
                         }
-                    } else {
-                        // El usuario canceló la operación
                     }
                 }
             }
         }
 
-        return itemView!!
+        fun bind(cliente: ClienteModel) {
+            nombreCompletoTextView.text = formatNombreCompleto(cliente)
+            expediente.text = activity.getString(
+                R.string.cliente_expediente,
+                cliente.expediente.ifBlank { "—" }
+            )
+            telefono.text = activity.getString(
+                R.string.cliente_telefono,
+                cliente.telefono.ifBlank { "—" }
+            )
+
+            ImageLoaderHelper.loadListImage(
+                imageView = imgPerfil,
+                progressBar = progressImageLoading,
+                imageUrl = cliente.imageUrl,
+                placeholderRes = R.drawable.avatar_sin_imagen,
+                errorRes = R.drawable.avatar_sin_imagen,
+                storageFolder = "Clientes",
+                imageFileName = cliente.imageFileName
+            )
+        }
+
+        fun clearImage() {
+            ImageLoaderHelper.clearListImage(imgPerfil, progressImageLoading, R.drawable.avatar_sin_imagen)
+        }
     }
 
-    override fun getCount(): Int {
-        return clienteList.size
-    }
+    companion object {
+        fun formatNombreCompleto(cliente: ClienteModel): String {
+            val nombre = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}".trim()
+            return nombre.ifBlank { "Sin nombre" }
+        }
 
-    override fun getItem(position: Int): ClienteModel? {
-        return clienteList[position]
-    }
-    fun updateList(newList: List<ClienteModel>) {
-        clienteList = newList.toList()
-        originalList = newList.toList()
-        notifyDataSetChanged()
-    }
+        private val DIFF = object : DiffUtil.ItemCallback<ClienteModel>() {
+            override fun areItemsTheSame(oldItem: ClienteModel, newItem: ClienteModel): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-    private class ViewHolder {
-        var imgPerfil: ImageView? = null
-        var nombreCompletoTextView: TextView? = null
-        var expediente: TextView? = null
-        var fondoTelefono: ImageView? = null
-        var fondoCorreo: ImageView? = null
-        var fondoUbicacion: ImageView? = null
-        var btnEliminar: LinearLayout? = null
-
+            override fun areContentsTheSame(oldItem: ClienteModel, newItem: ClienteModel): Boolean {
+                return oldItem.id == newItem.id &&
+                    oldItem.nombre == newItem.nombre &&
+                    oldItem.apellidoPaterno == newItem.apellidoPaterno &&
+                    oldItem.apellidoMaterno == newItem.apellidoMaterno &&
+                    oldItem.expediente == newItem.expediente &&
+                    oldItem.telefono == newItem.telefono &&
+                    oldItem.correo == newItem.correo &&
+                    oldItem.urlGoogleMaps == newItem.urlGoogleMaps &&
+                    oldItem.imageUrl == newItem.imageUrl &&
+                    oldItem.imageFileName == newItem.imageFileName
+            }
+        }
     }
 }

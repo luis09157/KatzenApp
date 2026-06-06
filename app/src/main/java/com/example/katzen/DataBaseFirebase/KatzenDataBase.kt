@@ -1,8 +1,11 @@
+package com.example.katzen.DataBaseFirebase
+
 import android.app.Activity
 import android.net.Uri
 import android.util.Log
 import com.afollestad.materialdialogs.MaterialDialog
 import com.example.katzen.Helper.UtilHelper
+import com.example.katzen.Model.PacienteModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 
@@ -12,7 +15,7 @@ class KatzenDataBase(activity: Activity) {
 
     // Referencia a la base de datos
     private val database = FirebaseDatabase.getInstance()
-    private val mascotasRef = database.getReference("Katzen/Mascota/paciente")
+    private val mascotasRef = database.getReference("Katzen/Mascota")
 
     // Función para agregar una nueva mascota y paciente a la base de datos
     fun agregarMascota(

@@ -6,17 +6,16 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Config.ConfigLoading
-import com.ninodev.katzen.DataBaseFirebase.FirebaseProductoVariosUtil
+import com.example.katzen.DataBaseFirebase.FirebaseProductoVariosUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Adapter.ProductosVariosAdapter
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
-import com.ninodev.katzen.Model.ProductoVariosModel
+import com.example.katzen.Model.ProductoVariosModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -60,13 +59,13 @@ class ListaProductosVariosFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        productosAdapter = ProductosVariosAdapter(productosList, { producto ->
+        productosAdapter = ProductosVariosAdapter({ producto ->
             editarProducto(producto)
         }, { producto ->
             eliminarProducto(producto)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuProductos)
         binding.lisMenuProductos.adapter = productosAdapter
-        binding.lisMenuProductos.divider = null
     }
 
     private fun setupSearchBar() {
@@ -91,16 +90,21 @@ class ListaProductosVariosFragment : Fragment() {
             productosList.clear()
             productosList.addAll(filteredList)
         }
-        productosAdapter.notifyDataSetChanged()
+        productosAdapter.updateList(productosList.toList())
+        restoreProductosScroll()
+    }
+
+    private fun restoreProductosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.PRODUCTOS_VARIOS,
+            binding.lisMenuProductos,
+            productosList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
         binding.btnAddProducto.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoVariosFragment(), TAG)
-        }
-        
-        binding.lisMenuProductos.setOnItemClickListener { _, _, position, _ ->
-            editarProducto(productosList[position])
         }
     }
 
@@ -120,7 +124,8 @@ class ListaProductosVariosFragment : Fragment() {
                         productosListOriginal.add(it)
                     }
                 }
-                productosAdapter.notifyDataSetChanged()
+                productosAdapter.updateList(productosList.toList())
+                restoreProductosScroll()
 
                 if (productosList.size > 0) {
                     requireActivity().title = "Productos Varios (${productosList.size})"
@@ -149,7 +154,14 @@ class ListaProductosVariosFragment : Fragment() {
 
     private fun editarProducto(producto: ProductoVariosModel) {
         val fragment = AddProductoVariosFragment.newInstance(producto)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.PRODUCTOS_VARIOS,
+            listRecyclerView = binding.lisMenuProductos,
+            selectedItemId = producto.id
+        )
     }
 
     private fun eliminarProducto(producto: ProductoVariosModel) {
@@ -173,7 +185,7 @@ class ListaProductosVariosFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }
@@ -185,50 +197,4 @@ class ListaProductosVariosFragment : Fragment() {
         }
         _binding = null
     }
-    
-    // Adapter interno para la lista de productos
-    inner class ProductosVariosAdapter(
-        private var productosList: List<ProductoVariosModel>,
-        private val onItemClick: (ProductoVariosModel) -> Unit,
-        private val onDeleteClick: (ProductoVariosModel) -> Unit
-    ) : BaseAdapter() {
-
-        override fun getCount(): Int = productosList.size
-
-        override fun getItem(position: Int): Any = productosList[position]
-
-        override fun getItemId(position: Int): Long = position.toLong()
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view = convertView ?: LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_producto_varios, parent, false)
-            
-            val producto = productosList[position]
-            
-            val tvNombre: TextView = view.findViewById(R.id.tvNombre)
-            val tvPrecio: TextView = view.findViewById(R.id.tvPrecio)
-            val tvCodigo: TextView = view.findViewById(R.id.tvCodigo)
-            val btnEstado: Button = view.findViewById(R.id.btnEstado)
-            val btnEliminar: LinearLayout = view.findViewById(R.id.btnEliminar)
-            
-            tvNombre.text = producto.nombre
-            tvPrecio.text = "Precio: $${producto.precioFinal}"
-            tvCodigo.text = "Código: ${producto.codigoInterno}"
-            
-            btnEstado.text = if (producto.activo) "Activo" else "Inactivo"
-            btnEstado.backgroundTintList = view.context.getColorStateList(
-                if (producto.activo) R.color.green_300 else R.color.grey_300
-            )
-            
-            btnEliminar.setOnClickListener {
-                onDeleteClick(producto)
-            }
-            
-            view.setOnClickListener {
-                onItemClick(producto)
-            }
-            
-            return view
-        }
-    }
-} 
+}

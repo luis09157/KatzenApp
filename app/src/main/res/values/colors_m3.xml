@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 — paleta Katzen -->
+    <color name="md_theme_primary">#0A969B</color>
+    <color name="md_theme_on_primary">#FFFFFF</color>
+    <color name="md_theme_primary_container">#B8E8EA</color>
+    <color name="md_theme_on_primary_container">#065D60</color>
+
+    <color name="md_theme_secondary">#AD067E</color>
+    <color name="md_theme_on_secondary">#FFFFFF</color>
+    <color name="md_theme_secondary_container">#F5D4EA</color>
+    <color name="md_theme_on_secondary_container">#7D055B</color>
+
+    <color name="md_theme_tertiary">#09C1CD</color>
+    <color name="md_theme_on_tertiary">#00363A</color>
+    <color name="md_theme_tertiary_container">#D4F7FA</color>
+    <color name="md_theme_on_tertiary_container">#065D60</color>
+
+    <color name="md_theme_surface">#F8FBFB</color>
+    <color name="md_theme_on_surface">#1A2E2E</color>
+    <color name="md_theme_surface_variant">#E0EBEB</color>
+    <color name="md_theme_on_surface_variant">#5C7070</color>
+
+    <color name="md_theme_outline">#B0C4C4</color>
+    <color name="md_theme_outline_variant">#D0DEDE</color>
+    <color name="md_theme_error">#BA1A1A</color>
+    <color name="md_theme_on_error">#FFFFFF</color>
+</resources>

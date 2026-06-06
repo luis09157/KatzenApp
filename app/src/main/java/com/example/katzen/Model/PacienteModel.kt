@@ -1,3 +1,5 @@
+package com.example.katzen.Model
+
 import android.content.Context
 import com.example.katzen.Helper.UtilHelper
 import com.example.katzen.Model.ValidationResult
@@ -17,9 +19,11 @@ data class PacienteModel(
     var idCliente: String = "",
     var fecha: String = UtilHelper.getDate(),
     var imageUrl: String = "",
-    var imageFileName: String = ""
+    var imageFileName: String = "",
+    var activo: Boolean = true,
+    var fechaBaja: String = ""
 ) {
-    constructor() : this("", "", "", "", "", "", "", "", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", "", "", "", "", "", "", "", "", true, "")
 
     companion object {
         fun validarMascota(context: Context, mascota: PacienteModel): ValidationResult {

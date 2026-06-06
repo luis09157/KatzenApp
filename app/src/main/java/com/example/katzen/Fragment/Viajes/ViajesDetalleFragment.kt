@@ -5,13 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.katzen.Adapter.Viaje.ViajeMesDetalleAdapter
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseViajesUtil
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
 import com.example.katzen.Model.VentaMesDetalleModel
@@ -20,7 +23,6 @@ import com.ninodev.katzen.databinding.ViajesDetalleFragmentBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,6 +34,7 @@ class ViajesDetalleFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viajesDetalleList: MutableList<VentaMesDetalleModel>
     private lateinit var viajesDetalleAdapter: ViajeMesDetalleAdapter
+    private var viajesListener: ValueEventListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,37 +42,48 @@ class ViajesDetalleFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = ViajesDetalleFragmentBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
         requireActivity().title = getString(R.string.menu_viajes)
-
         initLoading()
-        init()
+        setupAdapter()
         listeners()
-
-        return root
+        cargarViajes()
+        return binding.root
     }
 
-    private fun init() {
-        ConfigLoading.showLoadingAnimation()
+    private fun setupAdapter() {
         viajesDetalleList = mutableListOf()
-        viajesDetalleAdapter = ViajeMesDetalleAdapter(requireActivity(), viajesDetalleList)
+        viajesDetalleAdapter = ViajeMesDetalleAdapter(requireActivity()) { viaje ->
+            AddViajeFragment.EDIT_VIAJE = viaje
+            UtilFragment.changeFragment(
+                requireContext(),
+                AddViajeFragment(),
+                TAG,
+                listKey = ListScrollKeys.VIAJES_DETALLE,
+                listRecyclerView = binding.lisMenuViaje,
+                selectedItemId = viaje.id
+            )
+        }
+        viajesDetalleAdapter.tag = TAG
+        ListUiHelper.setupVerticalList(binding.lisMenuViaje)
         binding.lisMenuViaje.adapter = viajesDetalleAdapter
-        binding.lisMenuViaje.divider = null
+    }
 
-        // Obtener los cargos de viaje
-        FirebaseViajesUtil.obtenerListaCargosViajes(object : ValueEventListener {
+    private fun cargarViajes() {
+        ConfigLoading.showLoadingAnimation()
+        viajesListener?.let { FirebaseViajesUtil.removerListenerCargosViajes(it) }
+
+        viajesListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded) return
                 getData(snapshot)
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e(TAG, "Error al obtener los datos de Firebase: ${error.message}")
                 ConfigLoading.showNodata()
-                // Manejar errores de la consulta a la base de datos
-                // Por ejemplo, mostrar un mensaje de error
             }
-        })
+        }
+        viajesListener?.let { FirebaseViajesUtil.obtenerListaCargosViajes(it) }
     }
 
     private data class ResultadoDatos(
@@ -80,7 +94,7 @@ class ViajesDetalleFragment : Fragment() {
     )
 
     private fun getData(dataSnapshot: DataSnapshot) {
-        CoroutineScope(Dispatchers.Main).launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val result = withContext(Dispatchers.Default) {
                     processSnapshotData(dataSnapshot)
@@ -94,20 +108,17 @@ class ViajesDetalleFragment : Fragment() {
     }
 
     private suspend fun processSnapshotData(dataSnapshot: DataSnapshot): ResultadoDatos {
-        var tempList = mutableListOf<VentaMesDetalleModel>()
+        val tempList = mutableListOf<VentaMesDetalleModel>()
         var costoTotal = 0.00
         var gananciaTotal = 0.00
         var ventaTotal = 0.00
 
         for (postSnapshot in dataSnapshot.children) {
             for (data in postSnapshot.children) {
-                val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java)
-                    ?: continue
-
+                val ventaMesDetalleModel = data.getValue(VentaMesDetalleModel::class.java) ?: continue
                 costoTotal += ventaMesDetalleModel.costo.toDouble()
                 ventaTotal += ventaMesDetalleModel.venta.toDouble()
                 gananciaTotal += ventaMesDetalleModel.ganancia.toDouble()
-
                 tempList.add(ventaMesDetalleModel)
             }
         }
@@ -124,7 +135,12 @@ class ViajesDetalleFragment : Fragment() {
 
         if (viajesDetalleList.isNotEmpty()) {
             FirebaseViajesUtil.editarResumenViajes()
-            viajesDetalleAdapter.notifyDataSetChanged()
+            viajesDetalleAdapter.updateList(viajesDetalleList.toList())
+            ListUiHelper.restoreScrollIfPending(
+                ListScrollKeys.VIAJES_DETALLE,
+                binding.lisMenuViaje,
+                viajesDetalleList.map { it.id }
+            )
             ConfigLoading.hideLoadingAnimation()
         } else {
             ConfigLoading.showNodata()
@@ -136,26 +152,16 @@ class ViajesDetalleFragment : Fragment() {
             viaje.nombreDomicilio.contains(text, ignoreCase = true)
         }
         viajesDetalleAdapter.updateList(filteredList)
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.VIAJES_DETALLE,
+            binding.lisMenuViaje,
+            filteredList.map { it.id }
+        )
     }
 
     private fun listeners() {
-        binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                // Aplicar el filtro del adaptador al escribir en el SearchView
-                filterClientes(newText.toString())
-                return true
-            }
-        })
-
-        binding.lisMenuViaje.setOnItemClickListener { _, _, i, _ ->
-            // Acción al hacer clic en un ítem de la lista
-            // Config.MES_DETALLE = "${UtilHelper.obtenerNumeroMes(viajesDetalleList[i].mes)}-${viajesDetalleList[i].anio}"
-            // UtilFragment.changeFragment(requireContext(), ViajesDetalleFragment(), TAG)
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterClientes(query)
         }
 
         binding.btnAddViaje.setOnClickListener {
@@ -163,11 +169,10 @@ class ViajesDetalleFragment : Fragment() {
             AddViajeFragment.ADD_CLIENTE_VIAJE = ClienteModel()
             AddViajeFragment.EDIT_VIAJE = VentaMesDetalleModel()
             UtilFragment.changeFragment(requireContext(), AddViajeFragment(), TAG)
-            // DialogHelper.dialogAddDomicilio(requireActivity())
         }
     }
 
-    fun initLoading() {
+    private fun initLoading() {
         ConfigLoading.init(
             binding.lottieAnimationView,
             binding.contAddProducto,
@@ -176,20 +181,20 @@ class ViajesDetalleFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        viajesListener?.let { FirebaseViajesUtil.removerListenerCargosViajes(it) }
+        viajesListener = null
         super.onDestroyView()
         _binding = null
     }
 
     override fun onResume() {
         super.onResume()
-        init()
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                // Obtener el año del mes detalle actual
-                val year = Config.MES_DETALLE.split("-")[1]
-                val fragment = ViajesFragment.newInstance(year)
-                UtilFragment.changeFragment(requireContext(), fragment, TAG)
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    UtilFragment.goBackOrHome(requireContext())
+                }
+            })
     }
 }

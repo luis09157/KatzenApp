@@ -1,0 +1,14 @@
+{
+  "activo": true,
+  "created_at": "2026-06-05 13:45:00",
+  "diagnostico": "Control de rutina (PRUEBA)",
+  "diagnostico_presuntivo": "Control de rutina (PRUEBA)",
+  "fecha_registro": "2026-06-05 13:45:00",
+  "historia_clinica": "Dueño reporta buen apetito y actividad normal.",
+  "manejo_terapeutico": "Vitamina B12 oral por 5 días",
+  "medico_atendio": "Dra. KatzenVet",
+  "medicamentos": "Vitamina B12",
+  "notas": "Paciente en buen estado general. Registro de prueba portal.",
+  "paciente_id": "99f5856b-0419-4807-ba5b-a83fb146585b",
+  "tratamiento": "Vitamina B12 oral por 5 días"
+}

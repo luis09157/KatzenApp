@@ -25,6 +25,15 @@ class ClienteModel() { // Constructor vacío requerido por Firebase
     var fecha: String = UtilHelper.getDate()
     var imageUrl: String = ""
     var imageFileName: String = ""
+    var authUid: String = ""
+    var portalActivo: Boolean = false
+    var fechaInvitacion: String = ""
+    var activo: Boolean = true
+    var fechaBaja: String = ""
+
+    fun estaActivo(): Boolean = activo
+
+    fun tienePortalActivo(): Boolean = portalActivo && authUid.isNotBlank() && activo
 
     // Constructor principal con parámetros
     constructor(

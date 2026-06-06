@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Campaña.CampañaEventoAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.CampañaModel
@@ -30,6 +32,7 @@ class CampañaEventoFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var campañaList: MutableList<CampañaModel>
     private lateinit var campañaListAdapter: CampañaEventoAdapter
+    private var campañasListener: ValueEventListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,28 +64,27 @@ class CampañaEventoFragment : Fragment() {
         binding.btnAddPacienteCampaA.visibility = View.GONE
         binding.btnAddCampania.visibility = View.VISIBLE
         campañaList = mutableListOf()
-        campañaListAdapter = CampañaEventoAdapter(requireActivity(), campañaList)
+        campañaListAdapter = CampañaEventoAdapter(requireActivity()) { campaña ->
+            CampañaFragment.ADD_CAMPAÑA = campaña
+            UtilFragment.changeFragment(
+                requireContext(),
+                CampañaPacienteFragment(),
+                TAG,
+                listKey = ListScrollKeys.CAMPANIA_EVENTOS,
+                listRecyclerView = binding.lisMenuMascota,
+                selectedItemId = campaña.id
+            )
+        }
+        ListUiHelper.setupVerticalList(binding.lisMenuMascota)
         binding.lisMenuMascota.adapter = campañaListAdapter
-        binding.lisMenuMascota.divider = null
-
 
         obtenerCampañas()
     }
     private fun listeners() {
-        binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterMascotas(newText.toString())
-                return true
-            }
-        })
-        binding.lisMenuMascota.setOnItemClickListener { adapterView, view, i, l ->
-            CampañaFragment.ADD_CAMPAÑA = campañaList.get(i)
-            UtilFragment.changeFragment(requireContext(),CampañaPacienteFragment(),TAG)
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterMascotas(query)
         }
+
         binding.btnAddCampania.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddCampañaFragment(), TAG)
         }
@@ -104,13 +106,21 @@ class CampañaEventoFragment : Fragment() {
             campaña.mes.contains(text, ignoreCase = true)
         }
         campañaListAdapter.updateList(filteredList)
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.CAMPANIA_EVENTOS,
+            binding.lisMenuMascota,
+            filteredList.map { it.id }
+        )
     }
     override fun onDestroyView() {
+        campañasListener?.let { FirebaseCampañaUtil.removerListenerCampañas(it) }
+        campañasListener = null
         super.onDestroyView()
         _binding = null
     }
     private fun obtenerCampañas() {
-        FirebaseCampañaUtil.obtenerListaCampañas(object : ValueEventListener {
+        campañasListener?.let { FirebaseCampañaUtil.removerListenerCampañas(it) }
+        campañasListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val campañas = mutableListOf<CampañaModel>()
 
@@ -132,7 +142,12 @@ class CampañaEventoFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         campañaList.clear()
                         campañaList.addAll(campañas)
-                        campañaListAdapter.notifyDataSetChanged()
+                        campañaListAdapter.updateList(campañaList)
+                        ListUiHelper.restoreScrollIfPending(
+                            ListScrollKeys.CAMPANIA_EVENTOS,
+                            binding.lisMenuMascota,
+                            campañaList.map { it.id }
+                        )
 
                         if (campañaList.size > 0) {
                             ConfigLoading.hideLoadingAnimation()
@@ -148,14 +163,14 @@ class CampañaEventoFragment : Fragment() {
                 Log.e(TAG, "Error al obtener campañas: ${error.message}")
                 ConfigLoading.showNodata()
             }
-        })
+        }
+        campañasListener?.let { FirebaseCampañaUtil.obtenerListaCampañas(it) }
     }
     override fun onResume() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                val fragment = CampañaFragment.newInstance(CampañaFragment.ADD_CAMPAÑA.año)
-                UtilFragment.changeFragment(requireContext(), fragment, TAG)
+                UtilFragment.goBackOrHome(requireContext())
             }
         })
     }

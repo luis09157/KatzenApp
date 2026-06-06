@@ -68,7 +68,7 @@ class AddCampañaFragment: Fragment() {
             guardarCampaña()
         }
         binding.btnCancelar.setOnClickListener {
-            UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+            UtilFragment.goBackOrHome(requireContext())
         }
         binding.editTextFecha2.setOnClickListener {
             it.hideKeyboard()
@@ -104,7 +104,7 @@ class AddCampañaFragment: Fragment() {
             val result = FirebaseCampañaUtil.agregarCampaña(ADD_CAMPAÑA)
             if (result.isSuccess) {
                 // Show success message and navigate back
-                UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+                UtilFragment.goBackOrHome(requireContext())
             } else {
                 // Handle error (e.g., show a toast message)
                 println("Error al agregar la campaña: ${result.exceptionOrNull()?.message}")
@@ -118,7 +118,7 @@ class AddCampañaFragment: Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

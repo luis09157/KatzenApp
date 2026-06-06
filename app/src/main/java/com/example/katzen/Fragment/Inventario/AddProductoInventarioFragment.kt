@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Config.Config
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseInventarioUtil
@@ -128,9 +128,12 @@ class AddProductoInventarioFragment : Fragment() {
     fun init(){
         try {
             ConfigLoading.showLoadingAnimation()
-            Glide.with(binding.imageViewProducto.context)
-                .load(productoModel.rutaImagen)
-                .into(binding.imageViewProducto)
+            ImageLoaderHelper.load(
+                imageView = binding.imageViewProducto,
+                imageUrl = productoModel.rutaImagen,
+                placeholderRes = R.drawable.ic_loading_michi,
+                errorRes = R.drawable.no_disponible_rosa
+            )
 
             binding.editTextNombre.editText!!.setText(productoModel.nombre)
 

@@ -1,59 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    app:cardBackgroundColor="@color/surface_card"
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="@dimen/card_elevation"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="5dp"
-        tools:ignore="MissingConstraints">
+        android:padding="12dp">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            app:cardCornerRadius="50dp">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            app:cardCornerRadius="48dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
             <ImageView
                 android:id="@+id/imagen"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_imagen"
-                android:scaleType="centerInside"/>
-        </androidx.cardview.widget.CardView>
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_imagen" />
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/textViewNombre"
+            style="@style/TextAppearance.Katzen.ListTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="producto"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:layout_margin="5dp"
-            android:fontFamily="@font/varela"
-            android:gravity="center"></TextView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@color/katzen_verde_fuerte">
-            <TextView
-                android:id="@+id/textViewCantidad"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="0 piezas"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textSize="18dp"
-                android:fontFamily="@font/varela"></TextView>
-        </LinearLayout>
+            android:maxLines="2"
+            android:text="producto" />
 
+        <TextView
+            android:id="@+id/textViewCantidad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/katzen_verde_fuerte"
+            android:fontFamily="@font/poppins_bold"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:text="0 piezas"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

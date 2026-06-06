@@ -9,30 +9,62 @@
             android:icon="@drawable/ic_home"
             android:title="@string/nav_home" />
         <item
-            android:id="@+id/nav_fuel"
-            android:icon="@drawable/ic_gas_station"
-            android:title="@string/menu_gallery" />
-        <item
-            android:id="@+id/nav_payment_card"
-            android:icon="@drawable/ic_tarjeta"
-            android:title="@string/menu_home" />
-
-        <item
-            android:id="@+id/nav_viajes"
-            android:icon="@drawable/baseline_directions_car_24"
-            android:title="@string/menu_viajes" />
-
-
-        <item
             android:id="@+id/nav_paciente"
             android:icon="@drawable/ic_pet"
-            android:title= "@string/menu_mascota" />
-
+            android:title="@string/menu_paciente" />
         <item
             android:id="@+id/nav_cliente"
             android:icon="@drawable/ic_perfil"
             android:title="@string/menu_cliente" />
+    </group>
 
+    <item android:title="@string/menu_section_admin">
+        <menu>
+            <item
+                android:id="@+id/nav_productos"
+                android:icon="@drawable/img_productos"
+                android:title="@string/menu_productos" />
+            <item
+                android:id="@+id/nav_venta"
+                android:icon="@drawable/img_productos"
+                android:title="@string/menu_venta" />
+            <item
+                android:id="@+id/nav_inventario"
+                android:icon="@drawable/img_productos"
+                android:title="@string/menu_inventario" />
+            <item
+                android:id="@+id/nav_inactivos"
+                android:icon="@drawable/ic_no_data"
+                android:title="@string/menu_registros_inactivos" />
+        </menu>
+    </item>
+
+    <item android:title="@string/menu_section_operaciones">
+        <menu>
+            <item
+                android:id="@+id/nav_fuel"
+                android:icon="@drawable/ic_gas_station"
+                android:title="@string/menu_gasolina" />
+            <item
+                android:id="@+id/nav_payment_card"
+                android:icon="@drawable/ic_tarjeta"
+                android:title="@string/menu_pago_tarjeta" />
+            <item
+                android:id="@+id/nav_viajes"
+                android:icon="@drawable/baseline_directions_car_24"
+                android:title="@string/menu_viajes" />
+            <item
+                android:id="@+id/nav_campania"
+                android:icon="@drawable/img_campania"
+                android:title="@string/menu_campania" />
+        </menu>
+    </item>
+
+    <group>
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_account_outline"
+            android:title="@string/perfil_mi_cuenta" />
         <item
             android:id="@+id/nav_cerrar_sesion"
             android:icon="@drawable/ic_cerrar_sesion"

@@ -11,6 +11,8 @@ import com.example.katzen.Adapter.ProductosEsteticaAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseProductoEsteticaUtil
 import com.example.katzen.Helper.DialogMaterialHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ProductoEsteticaModel
 import com.google.firebase.database.DataSnapshot
@@ -56,13 +58,13 @@ class ListaProductosEsteticaFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        productosAdapter = ProductosEsteticaAdapter(productosList, { producto ->
+        productosAdapter = ProductosEsteticaAdapter({ producto ->
             editarProducto(producto)
         }, { producto ->
             eliminarProducto(producto)
         })
+        ListUiHelper.setupVerticalList(binding.lisMenuProductos)
         binding.lisMenuProductos.adapter = productosAdapter
-        binding.lisMenuProductos.divider = null
     }
 
     private fun setupSearchBar() {
@@ -84,15 +86,20 @@ class ListaProductosEsteticaFragment : Fragment() {
             productosList.addAll(filteredList)
         }
         productosAdapter.updateList(productosList)
+        restoreProductosScroll()
+    }
+
+    private fun restoreProductosScroll() {
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.PRODUCTOS_ESTETICA,
+            binding.lisMenuProductos,
+            productosList.map { it.id }
+        )
     }
 
     private fun setupListeners() {
         binding.btnAddProducto.setOnClickListener {
             UtilFragment.changeFragment(requireContext(), AddProductoEsteticaFragment(), TAG)
-        }
-        
-        binding.lisMenuProductos.setOnItemClickListener { _, _, position, _ ->
-            editarProducto(productosList[position])
         }
     }
 
@@ -113,6 +120,7 @@ class ListaProductosEsteticaFragment : Fragment() {
                     }
                 }
                 productosAdapter.updateList(productosList)
+                restoreProductosScroll()
 
                 if (productosList.size > 0) {
                     requireActivity().title = "${getString(R.string.submenu_productos_estetica)} (${productosList.size})"
@@ -141,7 +149,14 @@ class ListaProductosEsteticaFragment : Fragment() {
 
     private fun editarProducto(producto: ProductoEsteticaModel) {
         val fragment = AddProductoEsteticaFragment.newInstance(producto)
-        UtilFragment.changeFragment(requireContext(), fragment, TAG)
+        UtilFragment.changeFragment(
+            requireContext(),
+            fragment,
+            TAG,
+            listKey = ListScrollKeys.PRODUCTOS_ESTETICA,
+            listRecyclerView = binding.lisMenuProductos,
+            selectedItemId = producto.id
+        )
     }
 
     private fun eliminarProducto(producto: ProductoEsteticaModel) {
@@ -165,7 +180,7 @@ class ListaProductosEsteticaFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    UtilFragment.changeFragment(requireContext(), MenuProductosFragment(), TAG)
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
     }

@@ -1,12 +1,11 @@
 package com.example.katzen.Fragment.Campaña
 
-import PacienteModel
+import com.example.katzen.Model.PacienteModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +15,9 @@ import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.DataBaseFirebase.FirebasePacienteUtil
 import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Paciente.PacienteDetalleFragment
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.ninodev.katzen.R
 import com.ninodev.katzen.databinding.CampaniaEventoFragmentBinding
@@ -60,28 +62,26 @@ class CampañaPacienteFragment : Fragment() {
         binding.btnAddPacienteCampaA.visibility = View.VISIBLE
         binding.btnAddCampania.visibility = View.GONE
         pacienteList = mutableListOf()
-        pacienteListAdapter = PacienteListAdapter(requireActivity(), pacienteList)
+        pacienteListAdapter = PacienteListAdapter(requireActivity()) { paciente ->
+            PacienteListAdapter.FLAG_IN_PACIENTE = false
+            EditarPacienteFragment.PACIENTE_EDIT = paciente
+            UtilFragment.changeFragment(
+                requireActivity(),
+                PacienteDetalleFragment(),
+                TAG,
+                listKey = ListScrollKeys.CAMPANIA_PACIENTES,
+                listRecyclerView = binding.lisMenuMascota,
+                selectedItemId = paciente.id
+            )
+        }
+        ListUiHelper.setupVerticalList(binding.lisMenuMascota)
         binding.lisMenuMascota.adapter = pacienteListAdapter
-        binding.lisMenuMascota.divider = null
         PacienteListAdapter.FLAG_IN_PACIENTE = false
     }
 
     private fun listeners() {
-        binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterPacientes(newText.toString())
-                return true
-            }
-        })
-
-        binding.lisMenuMascota.setOnItemClickListener { _, _, i, _ ->
-            PacienteListAdapter.FLAG_IN_PACIENTE = false
-            EditarPacienteFragment.PACIENTE_EDIT = pacienteListAdapter.getItem(i)!!
-            UtilFragment.changeFragment(requireActivity(), PacienteDetalleFragment(), TAG)
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterPacientes(query)
         }
 
         binding.btnAddCampania.setOnClickListener {
@@ -94,9 +94,7 @@ class CampañaPacienteFragment : Fragment() {
             UtilFragment.changeFragment(requireContext(), AddPacienteCampañaFragment(), TAG)
         }
 
-        binding.btnPDF.setOnClickListener {
-
-        }
+        binding.btnPDF.visibility = View.GONE
     }
 
     fun initLoading() {
@@ -113,6 +111,11 @@ class CampañaPacienteFragment : Fragment() {
             paciente.nombre.contains(text, ignoreCase = true)
         }
         pacienteListAdapter.updateList(filteredList)
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.CAMPANIA_PACIENTES,
+            binding.lisMenuMascota,
+            filteredList.map { it.id }
+        )
     }
 
 
@@ -139,7 +142,12 @@ class CampañaPacienteFragment : Fragment() {
             pacienteList.addAll(pacientesCompletos.filterNotNull())
 
             withContext(Dispatchers.Main) {
-                pacienteListAdapter.notifyDataSetChanged()
+                pacienteListAdapter.updateList(pacienteList)
+                ListUiHelper.restoreScrollIfPending(
+                    ListScrollKeys.CAMPANIA_PACIENTES,
+                    binding.lisMenuMascota,
+                    pacienteList.map { it.id }
+                )
                 if (pacienteList.isNotEmpty()) {
                     ConfigLoading.hideLoadingAnimation()
                 } else {
@@ -159,7 +167,7 @@ class CampañaPacienteFragment : Fragment() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), CampañaEventoFragment(), TAG)
+                UtilFragment.goBackOrHome(requireContext())
             }
         })
     }

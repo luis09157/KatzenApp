@@ -13,7 +13,28 @@
     <color name="purple">#9A1CB6</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_color">#EAEAEA</color>
+    <color name="background_color">#F8FBFB</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_muted">#E8F4F4</color>
+    <color name="text_primary">#1A2E2E</color>
+    <color name="text_secondary">#5C7070</color>
+    <color name="text_hint">#8A9A9A</color>
+    <color name="divider">#D0DEDE</color>
+    <color name="ripple_light">#3309C1CD</color>
+    <color name="accent_soft">#F5E6F0</color>
+
+    <!-- Portal cliente — acentos por sección -->
+    <color name="portal_vacunas_accent">#00897B</color>
+    <color name="portal_vacunas_surface">#E0F2F1</color>
+    <color name="portal_citas_accent">#1E88E5</color>
+    <color name="portal_citas_surface">#E3F2FD</color>
+    <color name="portal_historial_accent">#7B1FA2</color>
+    <color name="portal_historial_surface">#EDE7F6</color>
+    <color name="portal_timeline_line">#C5D5D5</color>
+    <color name="portal_notif_accent">#AD067E</color>
+    <color name="portal_notif_surface">#F5E6F0</color>
+    <color name="image_loading_base">#C8C8C8</color>
+    <color name="image_loading_shimmer">#F0FFFE</color>
 
 
     <color name="red_50">#FFEBEE</color>
@@ -307,6 +328,8 @@
     <color name="dark_bg_light_hint_text">#80FFFFFF</color>
 
     <color name="chip_background">#E0E0E0</color>
+
+
 
     <color name="colorPrimary">@color/purple_500</color>
     <color name="gray_500">#9E9E9E</color>

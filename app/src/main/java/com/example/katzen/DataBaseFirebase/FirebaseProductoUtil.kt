@@ -1,3 +1,5 @@
+package com.example.katzen.DataBaseFirebase
+
 import android.app.Activity
 import android.net.Uri
 import com.example.katzen.Config.Config
@@ -12,13 +14,16 @@ import java.util.UUID
 
 class FirebaseProductoUtil {
     companion object {
-        private const val PRODUCTOS_PATH = "Katzen/Producto" // Ruta donde se guardarán los productos
-        private const val PRODUCTOS_IMAGES_PATH = "Productos" // Carpeta en Firebase Storage para guardar las imágenes de los productos
+        private const val PRODUCTOS_IMAGES_PATH = "Productos"
+
+        private fun writePath(producto: ProductoModel): String =
+            FirebaseCatalogoUtil.resolveWritePath(producto.categoria)
 
         @JvmStatic
         fun guardarProducto(activity: Activity, producto: ProductoModel, imagenUri: Uri) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-            val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
+            val productPath = writePath(producto)
+            val referenciaProductos: DatabaseReference = database.getReference(productPath)
             val storage: FirebaseStorage = FirebaseStorage.getInstance()
             val storageRef: StorageReference = storage.reference.child(PRODUCTOS_IMAGES_PATH)
 
@@ -74,19 +79,29 @@ class FirebaseProductoUtil {
         @JvmStatic
         fun obtenerListaProductos(listener: ValueEventListener) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-            val referenciaProductos: DatabaseReference = database.getReference(PRODUCTOS_PATH)
+            val referenciaProductos: DatabaseReference =
+                database.getReference(FirebaseCatalogoUtil.resolveWritePath("Legacy"))
             referenciaProductos.addValueEventListener(listener)
+        }
+
+        @JvmStatic
+        fun removerListener(listener: ValueEventListener) {
+            val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+            database.getReference(FirebaseCatalogoUtil.resolveWritePath("Legacy"))
+                .removeEventListener(listener)
         }
         @JvmStatic
         fun obtenerProducto(productoId: String, listener: ValueEventListener) {
             val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-            val referenciaProducto: DatabaseReference = database.getReference("$PRODUCTOS_PATH/$productoId")
+            val referenciaProducto: DatabaseReference = database.getReference(
+                "${FirebaseCatalogoUtil.resolveWritePath("Legacy")}/$productoId"
+            )
             referenciaProducto.addListenerForSingleValueEvent(listener)
         }
         @JvmStatic
         fun editarProducto(activity: Activity, producto: ProductoModel, imagenUri: Uri?) {
             val database = FirebaseDatabase.getInstance()
-            val referenciaProductos = database.getReference(PRODUCTOS_PATH)
+            val referenciaProductos = database.getReference(writePath(producto))
             producto.id = Config.PRODUCTO_EDIT.id
 
             if (Config.IMG_CHANGE) {

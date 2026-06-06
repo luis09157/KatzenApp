@@ -1,63 +1,85 @@
 package com.example.katzen.Adapter.Producto
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.katzen.Helper.ImageLoaderHelper
 import com.example.katzen.Model.ProductoModel
 import com.ninodev.katzen.R
 
-class ProductoInventarioAdapter (context: Context, private val productList: List<ProductoModel>) :
-    ArrayAdapter<ProductoModel>(context, R.layout.item_menu_inventario, productList) {
+class ProductoInventarioAdapter(
+    private val onItemClick: (ProductoModel) -> Unit
+) : ListAdapter<ProductoModel, ProductoInventarioAdapter.ViewHolder>(DIFF) {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        val holder: ViewHolder
-
-        if (itemView == null) {
-            itemView = LayoutInflater.from(context).inflate(R.layout.item_menu_inventario, parent, false)
-            holder = ViewHolder()
-            holder.imageView = itemView.findViewById(R.id.imagen)
-            holder.nombreTextView = itemView.findViewById(R.id.textViewNombre)
-            holder.cantidadTextView = itemView.findViewById(R.id.textViewCantidad)
-            itemView.tag = holder
-        } else {
-            holder = itemView.tag as ViewHolder
-        }
-
-        val producto = productList[position]
-
-        holder.nombreTextView?.text = ""
-        holder.cantidadTextView?.text = ""
-        holder.imageView?.setImageResource(R.drawable.ic_loading_michi)
-
-        // Asigna los valores del producto a las vistas correspondientes
-        holder.nombreTextView?.text = producto.nombre
-        holder.cantidadTextView?.text = "${producto.cantidadInventario} Piezas"
-
-        // Cargar la imagen del producto utilizando Picasso
-        if (producto.rutaImagen.isNotEmpty()) {
-            // Si hay una URL de imagen disponible, cargar desde la URL
-            Glide.with(holder.imageView!!.context)
-                .load(producto.rutaImagen)
-                .placeholder(R.drawable.ic_loading_michi) // Establecer la imagen predeterminada mientras se carga
-                .into(holder.imageView!!)
-        } else {
-            // Si no hay una URL de imagen, cargar desde el recurso drawable
-            holder.imageView?.setImageResource(R.drawable.no_disponible_rosa)
-        }
-
-
-        return itemView!!
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_menu_inventario, parent, false)
+        return ViewHolder(view)
     }
 
-    private class ViewHolder {
-        var imageView: ImageView? = null
-        var nombreTextView: TextView? = null
-        var cantidadTextView: TextView? = null
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    override fun onViewRecycled(holder: ViewHolder) {
+        holder.clearImage()
+        super.onViewRecycled(holder)
+    }
+
+    fun updateList(newList: List<ProductoModel>) {
+        submitList(newList.toList())
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageView: ImageView = itemView.findViewById(R.id.imagen)
+        private val nombreTextView: TextView = itemView.findViewById(R.id.textViewNombre)
+        private val cantidadTextView: TextView = itemView.findViewById(R.id.textViewCantidad)
+
+        init {
+            itemView.setOnClickListener {
+                val pos = bindingAdapterPosition
+                if (pos != RecyclerView.NO_POSITION) {
+                    onItemClick(getItem(pos))
+                }
+            }
+        }
+
+        fun bind(producto: ProductoModel) {
+            nombreTextView.text = producto.nombre
+            cantidadTextView.text = "${producto.cantidadInventario} Piezas"
+
+            if (producto.rutaImagen.isNotEmpty()) {
+                ImageLoaderHelper.loadListImage(
+                    imageView = imageView,
+                    progressBar = null,
+                    imageUrl = producto.rutaImagen,
+                    placeholderRes = R.drawable.ic_loading_michi,
+                    errorRes = R.drawable.no_disponible_rosa
+                )
+            } else {
+                imageView.setImageResource(R.drawable.no_disponible_rosa)
+            }
+        }
+
+        fun clearImage() {
+            ImageLoaderHelper.clearListImage(imageView, null, R.drawable.ic_loading_michi)
+        }
+    }
+
+    companion object {
+        private val DIFF = object : DiffUtil.ItemCallback<ProductoModel>() {
+            override fun areItemsTheSame(oldItem: ProductoModel, newItem: ProductoModel): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: ProductoModel, newItem: ProductoModel): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

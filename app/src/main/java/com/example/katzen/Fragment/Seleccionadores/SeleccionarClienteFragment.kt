@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Cliente.SeleccionClienteAdapter
@@ -17,6 +16,11 @@ import com.example.katzen.Fragment.Cliente.AddClienteFragment
 import com.example.katzen.Fragment.Paciente.AddPacienteFragment
 import com.example.katzen.Fragment.Paciente.EditarPacienteFragment
 import com.example.katzen.Fragment.Viajes.AddViajeFragment
+import com.example.katzen.Helper.ImageLoaderHelper
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListScrollStateHelper
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.Model.ClienteModel
 import com.ninodev.katzen.databinding.ClienteFragmentBinding
@@ -54,40 +58,11 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
             ConfigLoading.showLoadingAnimation()
             binding.btnAddCliente.visibility = View.GONE
             clientesList = mutableListOf()
-            seleccionClienteAdapter = SeleccionClienteAdapter(requireActivity(), clientesList)
-            binding.lisMenuClientes.adapter = seleccionClienteAdapter
-            binding.lisMenuClientes.divider = null
-            binding.lisMenuClientes.setOnItemClickListener { adapterView, view, i, l ->
-                try {
-                    when (flagVentana) {
-                        "EDIT_PACIENTE" -> {
-                            EditarPacienteFragment.PACIENTE_EDIT.idCliente = seleccionClienteAdapter.getItem(i).toString()
-                            EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
-                            UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
-                        }
-                        "ADD_PACIENTE" -> {
-                            AddPacienteFragment.ADD_PACIENTE.idCliente = seleccionClienteAdapter.getItem(i)!!.id
-                            AddPacienteFragment.ADD_PACIENTE.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
-                            UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
-                        }
-                        "ADD_VIAJE" -> {
-                            AddViajeFragment.ADD_CLIENTE_VIAJE = seleccionClienteAdapter.getItem(i)!!
-                            UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
-                        }
-                        "ADD_CAMPAÑA" -> {
-                            CampañaFragment.ADD_CAMPAÑA.idCliente = seleccionClienteAdapter.getItem(i)!!.id
-                            CampañaFragment.ADD_CAMPAÑA.nombreCliente = "${seleccionClienteAdapter.getItem(i)!!.nombre} ${seleccionClienteAdapter.getItem(i)!!.apellidoPaterno} ${seleccionClienteAdapter.getItem(i)!!.apellidoMaterno}"
-                            UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
-                        }
-                        else -> {
-                            // En caso de que flagVentanaEdit no sea ni true ni false
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    // Manejar excepción específica si es necesario
-                }
+            seleccionClienteAdapter = SeleccionClienteAdapter(requireActivity()) { cliente ->
+                handleClienteSelection(cliente)
             }
+            ListUiHelper.setupVerticalList(binding.lisMenuClientes)
+            binding.lisMenuClientes.adapter = seleccionClienteAdapter
 
             obtenerClientes()
         } catch (e: Exception) {
@@ -103,6 +78,11 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
                 fullName.contains(text, ignoreCase = true)
             }
             seleccionClienteAdapter.updateList(filteredList)
+            ListUiHelper.restoreScrollIfPending(
+                ListScrollKeys.SELECCION_CLIENTES,
+                binding.lisMenuClientes,
+                filteredList.map { it.id }
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             // Manejar la excepción durante el filtrado
@@ -114,18 +94,9 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
             binding.btnAddCliente.setOnClickListener {
                 UtilFragment.changeFragment(requireActivity(), AddClienteFragment(), TAG)
             }
-            binding.buscarCliente.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    // No se necesita implementación aquí, ya que filtramos a medida que el usuario escribe
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    // Aplicar el filtro del adaptador al escribir en el SearchView
-                    filterClientes(newText.toString())
-                    return true
-                }
-            })
+            SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterClientes(query)
+        }
         } catch (e: Exception) {
             e.printStackTrace()
             // Manejar la excepción durante la configuración de los listeners
@@ -152,11 +123,25 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
                         // Recorrer los datos obtenidos y agregarlos a la lista de productos
                         for (productoSnapshot in snapshot.children) {
                             val producto = productoSnapshot.getValue(ClienteModel::class.java)
-                            producto?.let { clientesList.add(it) }
+                            producto?.let { cliente ->
+                                val resolvedImage = ImageLoaderHelper.resolveProfileImage(
+                                    imageUrl = cliente.imageUrl,
+                                    imageFileName = cliente.imageFileName,
+                                    snapshot = productoSnapshot
+                                )
+                                cliente.imageUrl = resolvedImage.imageUrl
+                                cliente.imageFileName = resolvedImage.imageFileName
+                                clientesList.add(cliente)
+                            }
                         }
 
                         // Notificar al adaptador que los datos han cambiado
-                        seleccionClienteAdapter.notifyDataSetChanged()
+                        seleccionClienteAdapter.updateList(clientesList)
+                        ListUiHelper.restoreScrollIfPending(
+                            ListScrollKeys.SELECCION_CLIENTES,
+                            binding.lisMenuClientes,
+                            clientesList.map { it.id }
+                        )
 
                         if (clientesList.size > 0) {
                             ConfigLoading.hideLoadingAnimation()
@@ -186,6 +171,36 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
         }
     }
 
+    private fun handleClienteSelection(cliente: ClienteModel) {
+        ListScrollStateHelper.saveSelection(
+            ListScrollKeys.SELECCION_CLIENTES,
+            binding.lisMenuClientes,
+            cliente.id
+        )
+        val nombreCompleto = "${cliente.nombre} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}".trim()
+        when (flagVentana) {
+            "EDIT_PACIENTE" -> {
+                EditarPacienteFragment.PACIENTE_EDIT.idCliente = cliente.id
+                EditarPacienteFragment.PACIENTE_EDIT.nombreCliente = nombreCompleto
+                UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
+            }
+            "ADD_PACIENTE" -> {
+                AddPacienteFragment.ADD_PACIENTE.idCliente = cliente.id
+                AddPacienteFragment.ADD_PACIENTE.nombreCliente = nombreCompleto
+                UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
+            }
+            "ADD_VIAJE" -> {
+                AddViajeFragment.ADD_CLIENTE_VIAJE = cliente
+                UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
+            }
+            "ADD_CAMPAÑA" -> {
+                CampañaFragment.ADD_CAMPAÑA.idCliente = cliente.id
+                CampañaFragment.ADD_CAMPAÑA.nombreCliente = nombreCompleto
+                UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -193,37 +208,12 @@ class SeleccionarClienteFragment(val flagVentana : String) : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        try {
-            init()
-            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    try {
-                        when (flagVentana) {
-                            "EDIT_PACIENTE" -> {
-                                UtilFragment.changeFragment(requireActivity(), EditarPacienteFragment(), TAG)
-                            }
-                            "ADD_PACIENTE" -> {
-                                UtilFragment.changeFragment(requireActivity(), AddPacienteFragment(), TAG)
-                            }
-                            "ADD_VIAJE" -> {
-                                UtilFragment.changeFragment(requireActivity(), AddViajeFragment(), TAG)
-                            }
-                            "ADD_CAMPAÑA" -> {
-                                UtilFragment.changeFragment(requireActivity(), AddPacienteCampañaFragment(), TAG)
-                            }
-                            else -> {
-                                // En caso de que flagVentanaEdit no sea ni true ni false
-                            }
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        // Manejar la excepción durante la navegación
-                    }
+                    UtilFragment.goBackOrHome(requireContext())
                 }
             })
-        } catch (e: Exception) {
-            e.printStackTrace()
-            // Manejar la excepción durante la configuración de onBackPressedDispatcher
-        }
     }
 }

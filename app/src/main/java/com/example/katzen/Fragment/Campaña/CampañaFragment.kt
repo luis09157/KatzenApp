@@ -5,13 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.example.katzen.Adapter.Campaña.CampañaAdapter
 import com.example.katzen.Config.ConfigLoading
 import com.example.katzen.DataBaseFirebase.FirebaseCampañaUtil
 import com.example.katzen.Helper.CalendarioUtil
+import com.example.katzen.Helper.ListScrollKeys
+import com.example.katzen.Helper.ListUiHelper
+import com.example.katzen.Helper.SearchUiHelper
 import com.example.katzen.Helper.UtilFragment
 import com.example.katzen.MenuFragment
 import com.example.katzen.Model.CampañaModel
@@ -75,25 +77,25 @@ class CampañaFragment : Fragment() {
     fun init() {
         ConfigLoading.showLoadingAnimation()
         campañaList = mutableListOf()
-        campañaListAdapter = CampañaAdapter(requireActivity(), campañaList)
+        campañaListAdapter = CampañaAdapter { position, campaña ->
+            ADD_CAMPAÑA.año = selectedYear ?: CalendarioUtil.obtenerAñoActual()
+            ADD_CAMPAÑA.mes = String.format("%02d", (position + 1))
+            UtilFragment.changeFragment(
+                requireActivity(),
+                CampañaEventoFragment(),
+                TAG,
+                listKey = ListScrollKeys.CAMPANIA_MESES,
+                listRecyclerView = binding.lisMenuCampaA,
+                selectedItemId = campaña.mes
+            )
+        }
+        ListUiHelper.setupGridList(binding.lisMenuCampaA, 2)
         binding.lisMenuCampaA.adapter = campañaListAdapter
     }
     fun listeners() {
-        binding.lisMenuCampaA.setOnItemClickListener { adapterView, view, i, l ->
-            ADD_CAMPAÑA.año = selectedYear ?: CalendarioUtil.obtenerAñoActual()
-            ADD_CAMPAÑA.mes = String.format("%02d", (i + 1))
-            UtilFragment.changeFragment(requireActivity(), CampañaEventoFragment(),TAG)
+        SearchUiHelper.bindSearch(binding.searchBar.searchEditText) { query ->
+            filterMascotas(query)
         }
-        binding.buscarMascota.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                filterMascotas(newText.toString())
-                return true
-            }
-        })
     }
     fun initLoading() {
         ConfigLoading.init(
@@ -124,7 +126,12 @@ class CampañaFragment : Fragment() {
             campañaList.add(campañaModel)
         }
 
-        campañaListAdapter.notifyDataSetChanged()
+        campañaListAdapter.updateList(campañaList.toList())
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.CAMPANIA_MESES,
+            binding.lisMenuCampaA,
+            campañaList.map { it.mes }
+        )
     }
     suspend fun obtenerCantidadCampañasPorMes() {
         for (campañaModel in campañaList) {
@@ -140,7 +147,12 @@ class CampañaFragment : Fragment() {
                 
                 campañaModel.cantidadCampañas = cantidadCampañas.toString()
                 withContext(Dispatchers.Main) {
-                    campañaListAdapter.notifyDataSetChanged()
+                    campañaListAdapter.updateList(campañaList.toList())
+                    ListUiHelper.restoreScrollIfPending(
+                        ListScrollKeys.CAMPANIA_MESES,
+                        binding.lisMenuCampaA,
+                        campañaList.map { it.mes }
+                    )
                 }
                 ConfigLoading.hideLoadingAnimation()
             } catch (e: Exception) {
@@ -155,6 +167,11 @@ class CampañaFragment : Fragment() {
             campaña.mes.contains(text, ignoreCase = true)
         }
         campañaListAdapter.updateList(filteredList)
+        ListUiHelper.restoreScrollIfPending(
+            ListScrollKeys.CAMPANIA_MESES,
+            binding.lisMenuCampaA,
+            filteredList.map { it.mes }
+        )
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -180,7 +197,7 @@ class CampañaFragment : Fragment() {
         super.onResume()
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                UtilFragment.changeFragment(requireContext(), YearListFragment(), TAG)
+                UtilFragment.goBackOrHome(requireContext())
             }
         })
     }
